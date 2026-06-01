@@ -4,8 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IlustraPro - Dashboard</title>
-  
-  <!-- CSS -->
   <link rel="stylesheet" href="css/style.css">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 </head>
@@ -25,49 +23,77 @@
   <!-- Main Content -->
   <div class="main-content">
     <div class="header">
-      <h1>Bem-vindo de volta, Ilustrador!</h1>
-      <button class="btn">+ Novo Agendamento</button>
+      <div>
+        <h1 class="hero">Bem-vindo de volta!</h1>
+        <p class="text-gray-400 text-xl">Que tal criar algo incrível hoje?</p>
+      </div>
+      <button class="btn" onclick="window.location.href='agenda.html'">
+        <i class="fas fa-plus"></i> Novo Agendamento
+      </button>
     </div>
 
+    <!-- Stats Cards -->
     <div class="grid grid-cols-4 gap-6">
       <div class="card">
-        <h3>Agendamentos Hoje</h3>
-        <h2 class="text-5xl font-bold mt-4 purple-text">03</h2>
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-purple-300">Agendamentos Hoje</p>
+            <p class="stat-number">03</p>
+          </div>
+          <i class="fas fa-calendar-day text-5xl text-purple-500 opacity-20"></i>
+        </div>
       </div>
+
       <div class="card">
-        <h3>Projetos em Andamento</h3>
-        <h2 class="text-5xl font-bold mt-4 purple-text">07</h2>
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-purple-300">Projetos Ativos</p>
+            <p class="stat-number">07</p>
+          </div>
+          <i class="fas fa-paint-brush text-5xl text-purple-500 opacity-20"></i>
+        </div>
       </div>
+
       <div class="card">
-        <h3>Clientes Totais</h3>
-        <h2 class="text-5xl font-bold mt-4 purple-text">24</h2>
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-purple-300">Clientes</p>
+            <p class="stat-number">24</p>
+          </div>
+          <i class="fas fa-users text-5xl text-purple-500 opacity-20"></i>
+        </div>
       </div>
+
       <div class="card">
-        <h3>Faturamento Junho</h3>
-        <h2 class="text-5xl font-bold mt-4 purple-text">R$ 9.870</h2>
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-purple-300">Faturamento Junho</p>
+            <p class="stat-number">R$ 9.870</p>
+          </div>
+          <i class="fas fa-wallet text-5xl text-purple-500 opacity-20"></i>
+        </div>
       </div>
     </div>
 
-    <h2 class="mt-10 mb-6 text-2xl">Próximos Agendamentos</h2>
-    <div class="card">
-      <table>
-        <thead>
-          <tr>
-            <th>Data</th>
-            <th>Cliente</th>
-            <th>Serviço</th>
-            <th>Horário</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>03/06/2026</td>
-            <td>Ana Clara</td>
-            <td>Ilustração de Personagem</td>
-            <td>14:00</td>
-          </tr>
-        </tbody>
-      </table>
+    <!-- Quick Actions -->
+    <h2 class="text-2xl mt-12 mb-6 text-white">Ações Rápidas</h2>
+    <div class="quick-actions">
+      <div class="action-card" onclick="window.location.href='agenda.html'">
+        <i class="fas fa-calendar-plus"></i>
+        <h3>Agendar Reunião</h3>
+      </div>
+      <div class="action-card" onclick="window.location.href='portfolio.html'">
+        <i class="fas fa-upload"></i>
+        <h3>Adicionar ao Portfólio</h3>
+      </div>
+      <div class="action-card" onclick="window.location.href='clientes.html'">
+        <i class="fas fa-user-plus"></i>
+        <h3>Novo Cliente</h3>
+      </div>
+      <div class="action-card" onclick="window.location.href='servicos.html'">
+        <i class="fas fa-palette"></i>
+        <h3>Ver Serviços</h3>
+      </div>
     </div>
   </div>
 
