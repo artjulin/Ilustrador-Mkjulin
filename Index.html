@@ -3,79 +3,78 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>JULIO | Concept Artist</title>
-  <meta name="description" content="Portfolio de Concept Art - Julio">
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <title>IlustraPro - Dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo">IlustraPro</div>
+    <nav>
+      <a href="index.html" class="nav-link active"><i class="fas fa-home"></i> Dashboard</a>
+      <a href="agenda.html" class="nav-link"><i class="fas fa-calendar-alt"></i> Agenda</a>
+      <a href="clientes.html" class="nav-link"><i class="fas fa-users"></i> Clientes</a>
+      <a href="portfolio.html" class="nav-link"><i class="fas fa-images"></i> Portfólio</a>
+      <a href="servicos.html" class="nav-link"><i class="fas fa-palette"></i> Serviços</a>
+    </nav>
+  </div>
 
-  <!-- NAV -->
-  <nav class="navbar">
-    <div class="nav-container">
-      <h3 class="logo">JULIO</h3>
-      <div class="nav-links">
-        <a href="#sobre">Sobre</a>
-        <a href="#projetos">Projetos</a>
-        <a href="#processo">Processo</a>
-        <a href="#contato">Contato</a>
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="header">
+      <h1>Bem-vindo de volta, Ilustrador!</h1>
+      <button class="btn">+ Novo Agendamento</button>
+    </div>
+
+    <div class="grid grid-cols-4 gap-6">
+      <div class="card">
+        <h3>Agendamentos Hoje</h3>
+        <h2 class="text-5xl font-bold mt-4 purple-text">03</h2>
       </div>
-      <div class="hamburger">
-        <i class="fas fa-bars"></i>
+      <div class="card">
+        <h3>Projetos em Andamento</h3>
+        <h2 class="text-5xl font-bold mt-4 purple-text">07</h2>
+      </div>
+      <div class="card">
+        <h3>Clientes Totais</h3>
+        <h2 class="text-5xl font-bold mt-4 purple-text">24</h2>
+      </div>
+      <div class="card">
+        <h3>Faturamento Junho</h3>
+        <h2 class="text-5xl font-bold mt-4 purple-text">R$ 9.870</h2>
       </div>
     </div>
-  </nav>
 
-  <!-- HERO -->
-  <header class="hero">
-    <div class="hero-content">
-      <h1>JULIO</h1>
-      <p>Concept Artist &amp; Illustrator</p>
-      <a href="#projetos" class="btn">Ver Portfólio</a>
+    <h2 class="mt-10 mb-6 text-2xl">Próximos Agendamentos</h2>
+    <div class="card">
+      <table>
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Cliente</th>
+            <th>Serviço</th>
+            <th>Horário</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>03/06/2026</td>
+            <td>Ana Clara</td>
+            <td>Ilustração de Personagem</td>
+            <td>14:00</td>
+          </tr>
+          <tr>
+            <td>04/06/2026</td>
+            <td>João Mendes</td>
+            <td>Capa para Livro</td>
+            <td>10:30</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-  </header>
+  </div>
 
-  <!-- SOBRE -->
-  <section id="sobre" class="section">
-    <h2>Sobre Mim</h2>
-    <p class="about-text">
-      Concept Artist apaixonado por criar mundos, personagens e narrativas visuais. 
-      Especializado em games, filmes e produção independente.
-    </p>
-  </section>
-
-  <!-- PROJETOS -->
-  <section id="projetos" class="section bg-dark">
-    <h2>Projetos em Destaque</h2>
-    <div class="projects-grid" id="projects-grid"></div>
-  </section>
-
-  <!-- PROCESSO -->
-  <section id="processo" class="section">
-    <h2>Meu Processo Criativo</h2>
-    <div class="process-steps">
-      <div class="step">1. Thumbnail &amp; Silhouette</div>
-      <div class="step">2. Value Study</div>
-      <div class="step">3. Color Key</div>
-      <div class="step">4. Detalhes</div>
-      <div class="step">5. Final Render</div>
-    </div>
-  </section>
-
-  <!-- CONTATO -->
-  <section id="contato" class="section bg-dark">
-    <h2>Vamos trabalhar juntos?</h2>
-    <p class="email">seu.email@exemplo.com</p>
-    <div class="social-links">
-      <a href="https://artstation.com" target="_blank" class="btn">ArtStation</a>
-      <a href="https://behance.net" target="_blank" class="btn">Behance</a>
-    </div>
-  </section>
-
-  <footer>
-    <p>&copy; 2026 Julio — Concept Artist</p>
-  </footer>
-
-  <script src="script.js"></script>
+  <script src="js/script.js"></script>
 </body>
 </html>
