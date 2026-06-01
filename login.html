@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IlustraPro - Entrar</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <style>
+    .login-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #0f0a1f 0%, #2a1b4a 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=1920') center/cover no-repeat;
+      opacity: 0.15;
+      z-index: 1;
+    }
+
+    .login-box {
+      background: rgba(15, 10, 31, 0.92);
+      border: 1px solid rgba(192, 38, 211, 0.3);
+      border-radius: 24px;
+      padding: 50px 40px;
+      width: 100%;
+      max-width: 420px;
+      z-index: 2;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+    }
+
+    .logo-login {
+      font-size: 3.5rem;
+      font-weight: 900;
+      background: linear-gradient(90deg, #c026d3, #e879f9, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #c4b5fd;
+      font-size: 1.1rem;
+      margin-bottom: 40px;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #c4b5fd;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 16px 20px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(192, 38, 211, 0.3);
+      border-radius: 12px;
+      color: white;
+      font-size: 1.05rem;
+      transition: 0.3s;
+    }
+
+    .input-group input:focus {
+      outline: none;
+      border-color: #c026d3;
+      box-shadow: 0 0 0 3px rgba(192, 38, 211, 0.2);
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(90deg, #a855f7, #c026d3);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: all 0.4s;
+    }
+
+    .btn-login:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 25px rgba(192, 38, 211, 0.4);
+    }
+
+    .demo-btn {
+      width: 100%;
+      padding: 14px;
+      background: transparent;
+      color: #c4b5fd;
+      border: 2px solid #6b21a8;
+      border-radius: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-container">
+    <div class="login-box">
+      <h1 class="logo-login">IlustraPro</h1
