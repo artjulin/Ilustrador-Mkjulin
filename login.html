@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IlustraPro - Entrar</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="css/style.css">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
   <style>
     .login-container {
@@ -120,4 +120,55 @@
 
   <div class="login-container">
     <div class="login-box">
-      <h1 class="logo-login">IlustraPro</h1
+      <h1 class="logo-login">IlustraPro</h1>
+      <p class="subtitle">Seu estúdio digital de ilustração</p>
+
+      <form id="loginForm">
+        <div class="input-group">
+          <label for="usuario">Usuário ou E-mail</label>
+          <input type="text" id="usuario" placeholder="Seu nome de usuário" value="admin" required>
+        </div>
+
+        <div class="input-group">
+          <label for="senha">Senha</label>
+          <input type="password" id="senha" placeholder="Digite sua senha" value="1234" required>
+        </div>
+
+        <button type="submit" class="btn-login">
+          <i class="fas fa-sign-in-alt"></i> Entrar no Sistema
+        </button>
+      </form>
+
+      <button onclick="entrarComoDemo()" class="demo-btn">
+        <i class="fas fa-play"></i> Entrar em Modo Demonstração
+      </button>
+
+      <p style="text-align: center; margin-top: 25px; color: #6b7280; font-size: 0.9rem;">
+        Usuário demo: <strong>admin</strong> | Senha: <strong>1234</strong>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const usuario = document.getElementById('usuario').value;
+      const senha = document.getElementById('senha').value;
+
+      if ((usuario === "admin" || usuario === "demo") && senha === "1234") {
+        alert("✅ Login realizado com sucesso!");
+        window.location.href = "index.html";
+      } else {
+        alert("❌ Usuário ou senha incorretos!");
+      }
+    });
+
+    function entrarComoDemo() {
+      alert("✅ Entrando em modo demonstração...");
+      window.location.href = "index.html";
+    }
+  </script>
+
+</body>
+</html>
