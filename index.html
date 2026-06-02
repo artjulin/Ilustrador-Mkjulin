@@ -4,15 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IlustraPro - Dashboard</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="css/style.css">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
   <!-- Sidebar -->
   <div class="sidebar">
     <div class="logo">IlustraPro</div>
-    <nav id="sidebar-nav">
-      <!-- Preenchido via JavaScript -->
+    <nav>
+      <a href="index.html" class="nav-link active"><i class="fas fa-home"></i> Dashboard</a>
+      <a href="agenda.html" class="nav-link"><i class="fas fa-calendar-alt"></i> Agenda</a>
+      <a href="clientes.html" class="nav-link"><i class="fas fa-users"></i> Clientes</a>
+      <a href="portfolio.html" class="nav-link"><i class="fas fa-images"></i> Portfólio</a>
+      <a href="servicos.html" class="nav-link"><i class="fas fa-palette"></i> Serviços</a>
     </nav>
   </div>
 
@@ -20,21 +24,21 @@
   <div class="main-content">
     <div class="header">
       <div>
-        <h1 class="hero" id="welcome-text">Bem-vindo!</h1>
-        <p id="user-role" class="text-purple-300"></p>
+        <h1 class="hero">Bem-vindo ao IlustraPro</h1>
+        <p class="text-purple-300">Gerencie seu estúdio de ilustração</p>
       </div>
-      <button onclick="logout()" class="btn" style="background: #7f1d1d;">
-        <i class="fas fa-sign-out-alt"></i> Sair
+      <button class="btn" onclick="window.location.href='agenda.html'">
+        <i class="fas fa-plus"></i> Novo Agendamento
       </button>
     </div>
 
-    <!-- Cards - Visível para todos -->
+    <!-- Cards -->
     <div class="grid grid-cols-4 gap-6">
       <div class="card">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-purple-300">Agendamentos Hoje</p>
-            <p class="stat-number" id="hoje-count">0</p>
+            <p class="stat-number" id="hoje-count">3</p>
           </div>
           <i class="fas fa-calendar-day text-5xl text-purple-500 opacity-20"></i>
         </div>
@@ -43,18 +47,18 @@
       <div class="card">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-purple-300">Meus Projetos</p>
-            <p class="stat-number" id="projetos-count">0</p>
+            <p class="text-purple-300">Projetos Ativos</p>
+            <p class="stat-number" id="projetos-count">8</p>
           </div>
           <i class="fas fa-paint-brush text-5xl text-purple-500 opacity-20"></i>
         </div>
       </div>
 
-      <div class="card" id="card-clientes" style="display: none;">
+      <div class="card">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-purple-300">Total de Clientes</p>
-            <p class="stat-number" id="clientes-count">0</p>
+            <p class="stat-number" id="clientes-count">19</p>
           </div>
           <i class="fas fa-users text-5xl text-purple-500 opacity-20"></i>
         </div>
@@ -64,87 +68,35 @@
         <div class="flex items-center justify-between">
           <div>
             <p class="text-purple-300">Faturamento Mês</p>
-            <p class="stat-number" id="faturamento-count">R$ 0</p>
+            <p class="stat-number" id="faturamento-count">R$ 7.840</p>
           </div>
           <i class="fas fa-wallet text-5xl text-purple-500 opacity-20"></i>
         </div>
       </div>
     </div>
 
+    <!-- Ações Rápidas -->
     <h2 class="text-2xl mt-12 mb-6">Ações Rápidas</h2>
-    <div class="quick-actions" id="quick-actions">
-      <!-- Preenchido via JavaScript -->
+    <div class="quick-actions">
+      <div class="action-card" onclick="window.location.href='agenda.html'">
+        <i class="fas fa-calendar-plus"></i>
+        <h3>Novo Agendamento</h3>
+      </div>
+      <div class="action-card" onclick="window.location.href='portfolio.html'">
+        <i class="fas fa-upload"></i>
+        <h3>Adicionar ao Portfólio</h3>
+      </div>
+      <div class="action-card" onclick="window.location.href='clientes.html'">
+        <i class="fas fa-user-plus"></i>
+        <h3>Novo Cliente</h3>
+      </div>
+      <div class="action-card" onclick="window.location.href='servicos.html'">
+        <i class="fas fa-palette"></i>
+        <h3>Ver Serviços</h3>
+      </div>
     </div>
   </div>
 
-  <script>
-    let currentUser = null;
-
-    function carregarUsuario() {
-      const userData = localStorage.getItem('user');
-      if (!userData) {
-        window.location.href = "login.html";
-        return;
-      }
-
-      currentUser = JSON.parse(userData);
-      
-      document.getElementById('welcome-text').textContent = `Bem-vindo, ${currentUser.nome}!`;
-      document.getElementById('user-role').textContent = 
-        currentUser.role === 'admin' ? 'Administrador' : 'Cliente';
-
-      configurarInterface();
-    }
-
-    function configurarInterface() {
-      const nav = document.getElementById('sidebar-nav');
-      const quickActions = document.getElementById('quick-actions');
-      const cardClientes = document.getElementById('card-clientes');
-
-      if (currentUser.role === 'admin') {
-        // Menu completo para Administrador
-        nav.innerHTML = `
-          <a href="index.html" class="nav-link active"><i class="fas fa-home"></i> Dashboard</a>
-          <a href="agenda.html" class="nav-link"><i class="fas fa-calendar-alt"></i> Agenda</a>
-          <a href="clientes.html" class="nav-link"><i class="fas fa-users"></i> Clientes</a>
-          <a href="portfolio.html" class="nav-link"><i class="fas fa-images"></i> Portfólio</a>
-          <a href="servicos.html" class="nav-link"><i class="fas fa-palette"></i> Serviços</a>
-        `;
-        cardClientes.style.display = 'block';
-      } else {
-        // Menu limitado para Cliente
-        nav.innerHTML = `
-          <a href="index.html" class="nav-link active"><i class="fas fa-home"></i> Dashboard</a>
-          <a href="agenda.html" class="nav-link"><i class="fas fa-calendar-alt"></i> Meus Agendamentos</a>
-          <a href="servicos.html" class="nav-link"><i class="fas fa-palette"></i> Serviços</a>
-        `;
-        cardClientes.style.display = 'none';
-      }
-
-      // Ações rápidas diferentes por tipo de usuário
-      if (currentUser.role === 'admin') {
-        quickActions.innerHTML = `
-          <div class="action-card" onclick="window.location.href='agenda.html'"><i class="fas fa-calendar-plus"></i><h3>Novo Agendamento</h3></div>
-          <div class="action-card" onclick="window.location.href='portfolio.html'"><i class="fas fa-upload"></i><h3>Adicionar ao Portfólio</h3></div>
-          <div class="action-card" onclick="window.location.href='clientes.html'"><i class="fas fa-user-plus"></i><h3>Novo Cliente</h3></div>
-        `;
-      } else {
-        quickActions.innerHTML = `
-          <div class="action-card" onclick="window.location.href='servicos.html'"><i class="fas fa-palette"></i><h3>Ver Serviços</h3></div>
-          <div class="action-card" onclick="window.location.href='agenda.html'"><i class="fas fa-calendar"></i><h3>Meus Agendamentos</h3></div>
-        `;
-      }
-    }
-
-    function logout() {
-      if (confirm("Deseja realmente sair?")) {
-        localStorage.removeItem('user');
-        window.location.href = "login.html";
-      }
-    }
-
-    // Carregar ao abrir a página
-    window.onload = carregarUsuario;
-  </script>
+  <script src="js/script.js"></script>
 </body>
 </html>
