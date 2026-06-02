@@ -1,46 +1,67 @@
-const express = require('express');
-const sqlite3 = require('sqlite3').verbose();
-const bodyParser = require('body-parser');
-const path = require('path');
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IlustraPro - Login</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <style>
+    .login-container { ... } /* mantenha o estilo anterior */
+    /* (use o estilo bonito que eu te enviei antes) */
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-box">
+      <h1 class="logo-login">IlustraPro</h1>
+      <p class="subtitle">Entre no sistema</p>
 
-const app = express();
-app.use(bodyParser.json());
-app.use(express.static('.'));
+      <form id="loginForm">
+        <div class="input-group">
+          <label>Usuário</label>
+          <input type="text" id="username" placeholder="admin ou seu email" required>
+        </div>
 
-const db = new sqlite3.Database('ilustrapro.db');
+        <div class="input-group">
+          <label>Senha</label>
+          <input type="password" id="password" required>
+        </div>
 
-// Criar tabelas
-db.serialize(() => {
-  // Usuários
-  db.run(`CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY,
-    username TEXT UNIQUE,
-    password TEXT,
-    nome TEXT,
-    role TEXT DEFAULT 'cliente'  -- 'admin' ou 'cliente'
-  )`);
+        <button type="submit" class="btn-login">
+          Entrar
+        </button>
+      </form>
 
-  // Clientes (pessoas que contratam)
-  db.run(`CREATE TABLE IF NOT EXISTS clientes (...)`); // mantenha as anteriores
+      <p style="text-align:center; margin-top:20px; color:#777;">
+        Admin: <strong>admin</strong> / 1234
+      </p>
+    </div>
+  </div>
 
-  // Inserir usuário admin padrão
-  db.run(`INSERT OR IGNORE INTO users (username, password, nome, role) VALUES 
-    ('admin', '1234', 'Ilustrador', 'admin')`);
-});
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
 
-app.post('/api/login', (req, res) => {
-  const { username, password } = req.body;
-  
-  db.get("SELECT * FROM users WHERE username = ? AND password = ?", 
-    [username, password], (err, user) => {
-    if (user) {
-      res.json({ success: true, user: { id: user.id, nome: user.nome, role: user.role } });
-    } else {
-      res.json({ success: false });
-    }
-  });
-});
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
 
-app.listen(3000, () => {
-  console.log('🚀 Servidor rodando em http://localhost:3000');
-});
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        localStorage.setItem('user', JSON.stringify(data.user));
+        alert(`Bem-vindo, ${data.user.nome}!`);
+        window.location.href = "index.html";
+      } else {
+        alert("Usuário ou senha incorretos!");
+      }
+    });
+  </script>
+</body>
+</html>
