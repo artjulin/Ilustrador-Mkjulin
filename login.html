@@ -3,65 +3,222 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IlustraPro - Login</title>
-  <link rel="stylesheet" href="login.css">
+  <title>IlustraPro - Entrar</title>
+  <link rel="stylesheet" href="css/style.css">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
   <style>
-    .login-container { ... } /* mantenha o estilo anterior */
-    /* (use o estilo bonito que eu te enviei antes) */
+    .login-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #0f0a1f 0%, #2a1b4a 100%);
+      position: relative;
+    }
+
+    .login-box {
+      background: rgba(15, 10, 31, 0.95);
+      border: 1px solid rgba(192, 38, 211, 0.3);
+      border-radius: 24px;
+      padding: 40px 45px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+    }
+
+    .logo-login {
+      font-size: 3.2rem;
+      font-weight: 900;
+      background: linear-gradient(90deg, #c026d3, #e879f9);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .tabs {
+      display: flex;
+      background: #1f1633;
+      border-radius: 12px;
+      padding: 6px;
+      margin-bottom: 30px;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 12px;
+      text-align: center;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .tab.active {
+      background: #c026d3;
+      color: white;
+      font-weight: 600;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #c4b5fd;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 15px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(192, 38, 211, 0.3);
+      border-radius: 12px;
+      color: white;
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(90deg, #a855f7, #c026d3);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .demo-info {
+      text-align: center;
+      margin-top: 25px;
+      font-size: 0.9rem;
+      color: #777;
+    }
   </style>
 </head>
 <body>
+
   <div class="login-container">
     <div class="login-box">
       <h1 class="logo-login">IlustraPro</h1>
-      <p class="subtitle">Entre no sistema</p>
+      <p class="subtitle" style="text-align:center; color:#c4b5fd; margin-bottom:20px;">Seu estúdio de ilustração</p>
 
+      <!-- Tabs -->
+      <div class="tabs">
+        <div class="tab active" onclick="showTab(0)" id="tab-login">Login</div>
+        <div class="tab" onclick="showTab(1)" id="tab-cadastro">Cadastro</div>
+      </div>
+
+      <!-- Form Login -->
       <form id="loginForm">
         <div class="input-group">
-          <label>Usuário</label>
-          <input type="text" id="username" placeholder="admin ou seu email" required>
+          <label>Usuário / E-mail</label>
+          <input type="text" id="username" value="admin" required>
         </div>
-
         <div class="input-group">
           <label>Senha</label>
-          <input type="password" id="password" required>
+          <input type="password" id="password" value="1234" required>
         </div>
-
-        <button type="submit" class="btn-login">
-          Entrar
-        </button>
+        <button type="submit" class="btn-login">Entrar</button>
       </form>
 
-      <p style="text-align:center; margin-top:20px; color:#777;">
-        Admin: <strong>admin</strong> / 1234
-      </p>
+      <!-- Form Cadastro -->
+      <form id="cadastroForm" style="display: none;">
+        <div class="input-group">
+          <label>Nome Completo</label>
+          <input type="text" id="nomeCadastro" required>
+        </div>
+        <div class="input-group">
+          <label>E-mail</label>
+          <input type="email" id="emailCadastro" required>
+        </div>
+        <div class="input-group">
+          <label>Telefone</label>
+          <input type="tel" id="telefoneCadastro" placeholder="(41) 99999-9999">
+        </div>
+        <div class="input-group">
+          <label>Senha</label>
+          <input type="password" id="senhaCadastro" required>
+        </div>
+        <button type="submit" class="btn-login">Criar Conta (Cliente)</button>
+      </form>
+
+      <div class="demo-info">
+        <strong>Demo Admin:</strong> admin / 1234
+      </div>
     </div>
   </div>
 
   <script>
+    let currentTab = 0;
+
+    function showTab(tab) {
+      currentTab = tab;
+      document.getElementById('loginForm').style.display = tab === 0 ? 'block' : 'none';
+      document.getElementById('cadastroForm').style.display = tab === 1 ? 'block' : 'none';
+
+      document.getElementById('tab-login').classList.toggle('active', tab === 0);
+      document.getElementById('tab-cadastro').classList.toggle('active', tab === 1);
+    }
+
+    // Login
     document.getElementById('loginForm').addEventListener('submit', async function(e) {
       e.preventDefault();
-
       const username = document.getElementById('username').value;
       const password = document.getElementById('password').value;
 
-      const response = await fetch('/api/login', {
+      const res = await fetch('/api/login', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({ username, password })
       });
 
-      const data = await response.json();
+      const data = await res.json();
 
       if (data.success) {
         localStorage.setItem('user', JSON.stringify(data.user));
-        alert(`Bem-vindo, ${data.user.nome}!`);
         window.location.href = "index.html";
       } else {
         alert("Usuário ou senha incorretos!");
       }
     });
+
+    // Cadastro (Apenas Cliente)
+    document.getElementById('cadastroForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const novoUsuario = {
+        username: document.getElementById('emailCadastro').value,
+        password: document.getElementById('senhaCadastro').value,
+        nome: document.getElementById('nomeCadastro').value,
+        role: 'cliente'
+      };
+
+      try {
+        const res = await fetch('/api/register', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(novoUsuario)
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          alert("✅ Cadastro realizado com sucesso! Agora faça login.");
+          showTab(0); // Volta para aba de login
+        } else {
+          alert(data.message || "Erro ao cadastrar.");
+        }
+      } catch (err) {
+        alert("Erro de conexão com o servidor.");
+      }
+    });
+
+    // Inicia na aba Login
+    window.onload = () => showTab(0);
   </script>
 </body>
 </html>
