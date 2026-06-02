@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IlustraPro - Portfólio</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <style>
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 25px;
+      margin-top: 20px;
+    }
+
+    .portfolio-card {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(192, 38, 211, 0.25);
+      border-radius: 20px;
+      overflow: hidden;
+      transition: all 0.4s;
+    }
+
+    .portfolio-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(192, 38, 211, 0.25);
+    }
+
+    .portfolio-image {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      background: #1a1428;
+    }
+
+    .portfolio-info {
+      padding: 18px;
+    }
+
+    .portfolio-info h3 {
+      color: #e879f9;
+      margin-bottom: 8px;
+    }
+
+    .portfolio-category {
+      display: inline-block;
+      padding: 4px 12px;
+      background: #4c1d95;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo">IlustraPro</div>
+    <nav>
+      <a href="index.html" class="nav-link"><i class="fas fa-home"></i> Dashboard</a>
+      <a href="agenda.html" class="nav-link"><i class="fas fa-calendar-alt"></i> Agenda</a>
+      <a href="clientes.html" class="nav-link"><i class="fas fa-users"></i> Clientes</a>
+      <a href="portfolio.html" class="nav-link active"><i class="fas fa-images"></i> Portfólio</a>
+      <a href="servicos.html" class="nav-link"><i class="fas fa-palette"></i> Serviços</a>
+    </nav>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="header">
+      <h1 class="hero">Meu Portfólio</h1>
+      <button class="btn" onclick="abrirModalPortfolio()">
+        <i class="fas fa-plus"></i> Adicionar Obra
+      </button>
+    </div>
+
+    <!-- Filtro -->
+    <div class="card mb-8">
+      <input type="text" id="searchPortfolio" 
+             onkeyup="filtrarPortfolio()" 
+             placeholder="🔍 Buscar por título ou categoria..." 
+             style="width: 100%; padding: 14px; background: rgba(255,255,255,0.08); border: 1px solid #6b21a8; border-radius: 12px; color: white;">
+    </div>
+
+    <!-- Grid do Portfólio -->
+    <div class="portfolio-grid" id="portfolio-grid">
+      <!-- Preenchido via JavaScript -->
+    </div>
+  </div>
+
+  <!-- Modal Adicionar Obra -->
+  <div id="modalPortfolio" class="modal">
+    <div class="modal-content">
+      <h2 id="modalTitlePortfolio">Nova Obra</h2>
+      
+      <form id="formPortfolio">
+        <div class="input-group">
+          <label>Título da Obra</label>
+          <input type="text" id="titulo" required>
+        </div>
+
+        <div class="input-group">
+          <label>Categoria</label>
+          <select id="categoria" required>
+            <option value="Personagem">Personagem</option>
+            <option value="Capa de Livro">Capa de Livro</option>
+            <option value="Redes Sociais">Redes Sociais</option>
+            <option value="Logotipo">Logotipo</option>
+            <option value="Ilustração Infantil">Ilustração Infantil</option>
+            <option value="Fantasia">Fantasia</option>
+            <option value="Outro">Outro</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label>Descrição</label>
+          <textarea id="descricao" rows="3" style="width:100%; padding:14px; background:rgba(255,255,255,0.08); border:1px solid #6b21a8; border-radius:12px; color:white;"></textarea>
+        </div>
+
+        <div class="input-group">
+          <label>Data de Criação</label>
+          <input type="date" id="dataObra">
+        </div>
+
+        <div class="input-group">
+          <label>Link da Imagem (URL)</label>
+          <input type="text" id="imagemUrl" placeholder="https://exemplo.com/imagem.jpg">
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-top: 25px;">
+          <button type="button" onclick="fecharModalPortfolio()" 
+                  style="flex: 1; padding: 14px; background: #374151; border-radius: 12px;">
+            Cancelar
+          </button>
+          <button type="submit" class="btn" style="flex: 1;">
+            Salvar Obra
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let portfolio = [
+      {
+        id: 1,
+        titulo: "Guerreiro das Sombras",
+        categoria: "Personagem",
+        descricao: "Ilustração digital para jogo indie",
+        data: "2026-05-15",
+        imagem: "https://images.unsplash.com/photo-1618005182384-2d1c1c8c5d0f?w=600"
+      },
+      {
+        id: 2,
+        titulo: "A Biblioteca Esquecida",
+        categoria: "Capa de Livro",
+        descricao: "Capa para romance de fantasia",
+        data: "2026-04-28",
+        imagem: "https://images.unsplash.com/photo-1544716278-ca5e3f4b0c3c?w=600"
+      },
+      {
+        id: 3,
+        titulo: "Magia das Flores",
+        categoria: "Ilustração Infantil",
+        descricao: "Arte para livro infantil",
+        data: "2026-05-20",
+        imagem: "https://images.unsplash.com/photo-1544967278-9e0b6c8b8e0a?w=600"
+      }
+    ];
+
+    function renderizarPortfolio(lista) {
+      const grid = document.getElementById('portfolio-grid');
+      grid.innerHTML = '';
+
+      lista.forEach(obra => {
+        const card = document.createElement('div');
+        card.className = 'portfolio-card';
+        card.innerHTML = `
+          <img src="${obra.imagem}" class="portfolio-image" alt="${obra.titulo}">
+          <div class="portfolio-info">
+            <span class="portfolio-category">${obra.categoria}</span>
+            <h3>${obra.titulo}</h3>
+            <p style="color:#aaa; font-size:0.95rem; margin-bottom:10px;">${obra.descricao}</p>
+            <small style="color:#777;">${obra.data}</small>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function filtrarPortfolio() {
+      const termo = document.getElementById('searchPortfolio').value.toLowerCase();
+      const filtrados = portfolio.filter(obra => 
+        obra.titulo.toLowerCase().includes(termo) ||
+        obra.categoria.toLowerCase().includes(termo) ||
+        obra.descricao.toLowerCase().includes(termo)
+      );
+      renderizarPortfolio(filtrados);
+    }
+
+    function abrirModalPortfolio() {
+      document.getElementById('modalTitlePortfolio').textContent = "Adicionar Nova Obra";
+      document.getElementById('formPortfolio').reset();
+      document.getElementById('modalPortfolio').style.display = 'flex';
+    }
+
+    function fecharModalPortfolio() {
+      document.getElementById('modalPortfolio').style.display = 'none';
+    }
+
+    // Salvar nova obra
+    document.getElementById('formPortfolio').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const novaObra = {
+        id: Date.now(),
+        titulo: document.getElementById('titulo').value,
+        categoria: document.getElementById('categoria').value,
+        descricao: document.getElementById('descricao').value,
+        data: document.getElementById('dataObra').value || new Date().toISOString().split('T')[0],
+        imagem: document.getElementById('imagemUrl').value || "https://via.placeholder.com/600x400?text=Sem+Imagem"
+      };
+
+      portfolio.unshift(novaObra);
+      renderizarPortfolio(portfolio);
+      fecharModalPortfolio();
+      alert("Obra adicionada ao portfólio com sucesso!");
+    });
+
+    // Carregar ao abrir a página
+    window.onload = () => renderizarPortfolio(portfolio);
+  </script>
+</body>
+</html>
