@@ -3,62 +3,51 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IlustraPro - Estúdio de Ilustração</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>IlustraPro</title>
+  <link rel="stylesheet" href="css/style.css">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
   <style>
-    .hero-section {
-      min-height: 100vh;
-      background: linear-gradient(135deg, #0f0a1f 0%, #2a1b4a 100%);
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #0f0a1f, #2a1b4a);
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
+    }
+
+    .welcome-box {
       text-align: center;
-      position: relative;
-      overflow: hidden;
+      max-width: 700px;
+      padding: 60px 40px;
     }
 
-    .hero-section::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: url('https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=1920') center/cover;
-      opacity: 0.15;
-    }
-
-    .content {
-      position: relative;
-      z-index: 2;
-      max-width: 800px;
-      padding: 40px;
-    }
-
-    .logo-welcome {
-      font-size: 4.5rem;
+    .logo-big {
+      font-size: 5rem;
       font-weight: 900;
-      background: linear-gradient(90deg, #c026d3, #e879f9, #a855f7);
+      background: linear-gradient(90deg, #c026d3, #e879f9);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       margin-bottom: 20px;
     }
 
-    .tagline {
-      font-size: 1.5rem;
+    .subtitle {
+      font-size: 1.6rem;
       color: #c4b5fd;
-      margin-bottom: 40px;
+      margin-bottom: 50px;
     }
 
-    .btn-welcome {
-      padding: 18px 40px;
+    .btn {
+      display: inline-block;
+      padding: 18px 45px;
+      margin: 15px;
       font-size: 1.2rem;
       border-radius: 50px;
-      margin: 15px;
       text-decoration: none;
-      display: inline-block;
-      transition: all 0.4s;
+      transition: 0.3s;
     }
 
     .btn-admin {
@@ -66,49 +55,37 @@
       color: white;
     }
 
-    .btn-cliente {
+    .btn-client {
       background: transparent;
-      border: 2px solid #22c55e;
-      color: #86efac;
+      border: 2px solid #4ade80;
+      color: #4ade80;
     }
 
-    .btn-welcome:hover {
-      transform: scale(1.08);
+    .btn:hover {
+      transform: scale(1.1);
     }
   </style>
 </head>
 <body>
 
-  <div class="hero-section">
-    <div class="content">
-      <h1 class="logo-welcome">IlustraPro</h1>
-      <p class="tagline">Transformando ideias em arte digital de alta qualidade</p>
+  <div class="welcome-box">
+    <h1 class="logo-big">IlustraPro</h1>
+    <p class="subtitle">Estúdio Digital de Ilustração</p>
+    
+    <div>
+      <a href="login.html" class="btn btn-admin">
+        <i class="fas fa-user-tie"></i> Entrar como Administrador
+      </a>
       
-      <div style="margin-top: 50px;">
-        <a href="login.html" class="btn-welcome btn-admin">
-          <i class="fas fa-user-tie"></i> Sou o Ilustrador (Administrador)
-        </a>
-        
-        <a href="login.html" onclick="selecionarCliente()" class="btn-welcome btn-cliente">
-          <i class="fas fa-user"></i> Sou Cliente
-        </a>
-      </div>
-
-      <p style="margin-top: 60px; color: #777; font-size: 1rem;">
-        Crie, agende e gerencie suas ilustrações em um só lugar
-      </p>
+      <a href="login.html" class="btn btn-client">
+        <i class="fas fa-user"></i> Entrar como Cliente
+      </a>
     </div>
+
+    <p style="margin-top: 60px; color: #888;">
+      Crie artes incríveis • Gerencie seus clientes • Organize sua agenda
+    </p>
   </div>
 
-  <script>
-    function selecionarCliente() {
-      // Pode adicionar lógica futura se quiser destacar a aba de cliente
-      alert("✅ Vá para a aba 'Cliente' na tela de login");
-      window.location.href = "login.html";
-    }
-
-    // Redireciona automaticamente para login após 8 segundos (opcional)
-    // setTimeout(() => window.location.href = "login.html", 8000);
-  </script>
 </body>
 </html>
