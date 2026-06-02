@@ -1,1 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IlustraPro - Agenda</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo">IlustraPro</div>
+    <nav>
+      <a href="index.html" class="nav-link"><i class="fas fa-home"></i> Dashboard</a>
+      <a href="agenda.html" class="nav-link active"><i class="fas fa-calendar-alt"></i> Agenda</a>
+      <a href="clientes.html" class="nav-link"><i class="fas fa-users"></i> Clientes</a>
+      <a href="portfolio.html" class="nav-link"><i class="fas fa-images"></i> Portfólio</a>
+      <a href="servicos.html" class="nav-link"><i class="fas fa-palette"></i> Serviços</a>
+    </nav>
+  </div>
 
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="header">
+      <h1 class="hero">Agenda</h1>
+      <button class="btn" onclick="abrirModalAgendamento()">
+        <i class="fas fa-plus"></i> Novo Agendamento
+      </button>
+    </div>
+
+    <!-- Filtros -->
+    <div class="card mb-6">
+      <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+        <input type="date" id="filtroData" style="padding: 12px; background: rgba(255,255,255,0.08); border: 1px solid #6b21a8; border-radius: 12px; color: white;">
+        <select id="filtroStatus" style="padding: 12px; background: rgba(255,255,255,0.08); border: 1px solid #6b21a8; border-radius: 12px; color: white;">
+          <option value="">Todos os Status</option>
+          <option value="Confirmado">Confirmado</option>
+          <option value="Pendente">Pendente</option>
+          <option value="Finalizado">Finalizado</option>
+        </select>
+        <button class="btn" onclick="carregarAgenda()">Filtrar</button>
+      </div>
+    </div>
+
+    <!-- Tabela de Agendamentos -->
+    <div class="card">
+      <table>
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Hora</th>
+            <th>Cliente</th>
+            <th>Serviço</th>
+            <th>Valor</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="agenda-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modal Novo Agendamento -->
+  <div id="modalAgendamento" class="modal">
+    <div class="modal-content">
+      <h2 id="modalTitleAgenda">Novo Agendamento</h2>
+      
+      <form id="formAgendamento">
+        <input type="hidden" id="agendamentoId">
+
+        <div class="input-group">
+          <label>Cliente</label>
+          <input type="text" id="clienteAgenda" required>
+        </div>
+
+        <div class="input-group">
+          <label>Serviço</label>
+          <select id="servicoAgenda" required>
+            <option value="Ilustração de Personagem">Ilustração de Personagem</option>
+            <option value="Capa para Livro">Capa para Livro</option>
+            <option value="Arte para Redes Sociais">Arte para Redes Sociais</option>
+            <option value="Logotipo">Logotipo</option>
+            <option value="Ilustração Infantil">Ilustração Infantil</option>
+            <option value="Outro">Outro</option>
+          </select>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+          <div class="input-group">
+            <label>Data</label>
+            <input type="date" id="dataAgenda" required>
+          </div>
+          <div class="input-group">
+            <label>Hora</label>
+            <input type="time" id="horaAgenda" required>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label>Valor (R$)</label>
+          <input type="number" id="valorAgenda" value="450" required>
+        </div>
+
+        <div class="input-group">
+          <label>Status</label>
+          <select id="statusAgenda">
+            <option value="Pendente">Pendente</option>
+            <option value="Confirmado">Confirmado</option>
+            <option value="Finalizado">Finalizado</option>
+          </select>
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-top: 25px;">
+          <button type="button" onclick="fecharModalAgenda()" 
+                  style="flex: 1; padding: 14px; background: #374151; border-radius: 12px;">
+            Cancelar
+          </button>
+          <button type="submit" class="btn" style="flex: 1;">
+            Salvar Agendamento
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let agendamentos = [];
+
+    async function carregarAgenda() {
+      try {
+        const res = await fetch('/api/agendamentos');
+        agendamentos = await res.json();
+        renderizarAgenda(agendamentos);
+      } catch (error) {
+        console.error(error);
+        alert("Erro ao carregar agenda. Verifique se o servidor está rodando.");
+      }
+    }
+
+    function renderizarAgenda(lista) {
+      const tbody = document.getElementById('agenda-tbody');
+      tbody.innerHTML = '';
+
+      lista.forEach(ag => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${ag.data}</td>
+          <td>${ag.hora}</td>
+          <td><strong>${ag.cliente}</strong></td>
+          <td>${ag.servico}</td>
+          <td>R$ ${parseFloat(ag.valor).toFixed(2)}</td>
+          <td>
+            <span class="px-4 py-1 rounded-full text-sm ${ag.status === 'Confirmado' ? 'bg-green-600' : ag.status === 'Finalizado' ? 'bg-blue-600' : 'bg-yellow-600'}">
+              ${ag.status}
+            </span>
+          </td>
+          <td>
+            <button onclick="editarAgendamento(${ag.id})" class="text-purple-400 hover:text-purple-300 mr-4">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button onclick="excluirAgendamento(${ag.id})" class="text-red-400 hover:text-red-300">
+              <i class="fas fa-trash"></i>
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function abrirModalAgendamento() {
+      document.getElementById('modalTitleAgenda').textContent = "Novo Agendamento";
+      document.getElementById('formAgendamento').reset();
+      document.getElementById('agendamentoId').value = '';
+      document.getElementById('modalAgendamento').style.display = 'flex';
+    }
+
+    function fecharModalAgenda() {
+      document.getElementById('modalAgendamento').style.display = 'none';
+    }
+
+    async function editarAgendamento(id) {
+      // Implementação completa em breve
+      alert("Editar agendamento em desenvolvimento");
+    }
+
+    async function excluirAgendamento(id) {
+      if (confirm("Excluir este agendamento?")) {
+        alert("Exclusão será implementada em breve");
+        carregarAgenda();
+      }
+    }
+
+    // Salvar Agendamento
+    document.getElementById('formAgendamento').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const agendamento = {
+        cliente: document.getElementById('clienteAgenda').value,
+        servico: document.getElementById('servicoAgenda').value,
+        data: document.getElementById('dataAgenda').value,
+        hora: document.getElementById('horaAgenda').value,
+        valor: document.getElementById('valorAgenda').value,
+        status: document.getElementById('statusAgenda').value
+      };
+
+      try {
+        await fetch('/api/agendamentos', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(agendamento)
+        });
+
+        alert("Agendamento salvo com sucesso!");
+        fecharModalAgenda();
+        carregarAgenda();
+      } catch (error) {
+        alert("Erro ao salvar agendamento");
+      }
+    });
+
+    // Carregar agenda ao abrir a página
+    window.onload = carregarAgenda;
+  </script>
+</body>
+</html>
