@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IlustraPro - Estúdio de Ilustração</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <style>
+    .hero-section {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0f0a1f 0%, #2a1b4a 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=1920') center/cover;
+      opacity: 0.15;
+    }
+
+    .content {
+      position: relative;
+      z-index: 2;
+      max-width: 800px;
+      padding: 40px;
+    }
+
+    .logo-welcome {
+      font-size: 4.5rem;
+      font-weight: 900;
+      background: linear-gradient(90deg, #c026d3, #e879f9, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 20px;
+    }
+
+    .tagline {
+      font-size: 1.5rem;
+      color: #c4b5fd;
+      margin-bottom: 40px;
+    }
+
+    .btn-welcome {
+      padding: 18px 40px;
+      font-size: 1.2rem;
+      border-radius: 50px;
+      margin: 15px;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.4s;
+    }
+
+    .btn-admin {
+      background: linear-gradient(90deg, #7c3aed, #a855f7);
+      color: white;
+    }
+
+    .btn-cliente {
+      background: transparent;
+      border: 2px solid #22c55e;
+      color: #86efac;
+    }
+
+    .btn-welcome:hover {
+      transform: scale(1.08);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="hero-section">
+    <div class="content">
+      <h1 class="logo-welcome">IlustraPro</h1>
+      <p class="tagline">Transformando ideias em arte digital de alta qualidade</p>
+      
+      <div style="margin-top: 50px;">
+        <a href="login.html" class="btn-welcome btn-admin">
+          <i class="fas fa-user-tie"></i> Sou o Ilustrador (Administrador)
+        </a>
+        
+        <a href="login.html" onclick="selecionarCliente()" class="btn-welcome btn-cliente">
+          <i class="fas fa-user"></i> Sou Cliente
+        </a>
+      </div>
+
+      <p style="margin-top: 60px; color: #777; font-size: 1rem;">
+        Crie, agende e gerencie suas ilustrações em um só lugar
+      </p>
+    </div>
+  </div>
+
+  <script>
+    function selecionarCliente() {
+      // Pode adicionar lógica futura se quiser destacar a aba de cliente
+      alert("✅ Vá para a aba 'Cliente' na tela de login");
+      window.location.href = "login.html";
+    }
+
+    // Redireciona automaticamente para login após 8 segundos (opcional)
+    // setTimeout(() => window.location.href = "login.html", 8000);
+  </script>
+</body>
+</html>
