@@ -1,218 +1,31 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IlustraPro - Clientes</title>
-  <link rel="stylesheet" href="styles.css">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Área do Cliente - Mkjulin</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <div class="logo">IlustraPro</div>
-    <nav>
-      <a href="index.html" class="nav-link"><i class="fas fa-home"></i> Dashboard</a>
-      <a href="agenda.html" class="nav-link"><i class="fas fa-calendar-alt"></i> Agenda</a>
-      <a href="clientes.html" class="nav-link active"><i class="fas fa-users"></i> Clientes</a>
-      <a href="portfolio.html" class="nav-link"><i class="fas fa-images"></i> Portfólio</a>
-      <a href="servicos.html" class="nav-link"><i class="fas fa-palette"></i> Serviços</a>
-    </nav>
-  </div>
 
-  <!-- Main Content -->
-  <div class="main-content">
-    <div class="header">
-      <h1 class="hero">Meus Clientes</h1>
-      <button class="btn" onclick="abrirModalCliente()">
-        <i class="fas fa-user-plus"></i> Novo Cliente
-      </button>
-    </div>
+    <header>
+        <nav>
+            <div class="logo">Mkjulin</div>
+            <ul>
+                <li><a href="portfolio.html">Portfólio</a></li>
+                <li><a href="agendamento.html">Fazer Agendamento</a></li>
+                <li><a href="clientes.html" class="active">Área do Cliente</a></li>
+            </ul>
+        </nav>
+    </header>
 
-    <!-- Barra de Pesquisa -->
-    <div class="card mb-6">
-      <input type="text" id="searchInput" 
-             onkeyup="filtrarClientes()" 
-             placeholder="🔍 Buscar por nome, email ou telefone..." 
-             style="width: 100%; padding: 14px; background: rgba(255,255,255,0.08); border: 1px solid #6b21a8; border-radius: 12px; color: white;">
-    </div>
+    <main>
+        <section class="hero-portfolio" style="padding: 3rem 1rem; margin-bottom: 2rem;">
+            <h1>Olá, Cliente!</h1>
+            <p>Gerencie seus pedidos, acompanhe prazos e solicite novas ilustrações em um só lugar.</p>
+        </section>
 
-    <!-- Tabela de Clientes -->
-    <div class="card">
-      <table>
-        <thead>
-          <tr>
-            <th>Nome</th>
-            <th>Email</th>
-            <th>Telefone</th>
-            <th>Tipo</th>
-            <th>Data de Cadastro</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody id="clientes-tbody"></tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- Modal Novo/Editar Cliente -->
-  <div id="modalCliente" class="modal">
-    <div class="modal-content">
-      <h2 id="modalTitle">Novo Cliente</h2>
-      
-      <form id="formCliente">
-        <input type="hidden" id="clienteId">
-
-        <div class="input-group">
-          <label>Nome Completo</label>
-          <input type="text" id="nome" required>
-        </div>
-
-        <div class="input-group">
-          <label>Email</label>
-          <input type="email" id="email">
-        </div>
-
-        <div class="input-group">
-          <label>Telefone</label>
-          <input type="tel" id="telefone" placeholder="(41) 99999-9999">
-        </div>
-
-        <div class="input-group">
-          <label>Tipo de Cliente</label>
-          <select id="tipo">
-            <option value="Particular">Particular</option>
-            <option value="Editora">Editora</option>
-            <option value="Marca">Marca / Empresa</option>
-            <option value="Autor">Autor / Escritor</option>
-            <option value="Outro">Outro</option>
-          </select>
-        </div>
-
-        <div style="display: flex; gap: 12px; margin-top: 25px;">
-          <button type="button" onclick="fecharModal()" 
-                  style="flex: 1; padding: 14px; background: #374151; border-radius: 12px;">
-            Cancelar
-          </button>
-          <button type="submit" class="btn" style="flex: 1;">
-            Salvar Cliente
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <script>
-    let clientes = [];
-
-    // Carregar clientes do banco
-    async function carregarClientes() {
-      try {
-        const res = await fetch('/api/clientes');
-        clientes = await res.json();
-        renderizarClientes(clientes);
-      } catch (error) {
-        console.error("Erro ao carregar clientes:", error);
-        alert("Erro ao conectar com o servidor. Certifique-se que o backend está rodando.");
-      }
-    }
-
-    function renderizarClientes(lista) {
-      const tbody = document.getElementById('clientes-tbody');
-      tbody.innerHTML = '';
-
-      lista.forEach(cliente => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td><strong>${cliente.nome}</strong></td>
-          <td>${cliente.email || '-'}</td>
-          <td>${cliente.telefone || '-'}</td>
-          <td><span class="px-3 py-1 bg-purple-900 rounded-full text-sm">${cliente.tipo || 'Particular'}</span></td>
-          <td>${cliente.data_cadastro}</td>
-          <td>
-            <button onclick="editarCliente(${cliente.id})" class="text-purple-400 hover:text-purple-300 mr-4">
-              <i class="fas fa-edit"></i>
-            </button>
-            <button onclick="excluirCliente(${cliente.id})" class="text-red-400 hover:text-red-300">
-              <i class="fas fa-trash"></i>
-            </button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    function filtrarClientes() {
-      const termo = document.getElementById('searchInput').value.toLowerCase();
-      const filtrados = clientes.filter(c => 
-        c.nome.toLowerCase().includes(termo) ||
-        (c.email && c.email.toLowerCase().includes(termo)) ||
-        (c.telefone && c.telefone.includes(termo))
-      );
-      renderizarClientes(filtrados);
-    }
-
-    function abrirModalCliente() {
-      document.getElementById('modalTitle').textContent = "Novo Cliente";
-      document.getElementById('formCliente').reset();
-      document.getElementById('clienteId').value = '';
-      document.getElementById('modalCliente').style.display = 'flex';
-    }
-
-    function fecharModal() {
-      document.getElementById('modalCliente').style.display = 'none';
-    }
-
-    async function editarCliente(id) {
-      const cliente = clientes.find(c => c.id === id);
-      if (!cliente) return;
-
-      document.getElementById('modalTitle').textContent = "Editar Cliente";
-      document.getElementById('clienteId').value = cliente.id;
-      document.getElementById('nome').value = cliente.nome;
-      document.getElementById('email').value = cliente.email || '';
-      document.getElementById('telefone').value = cliente.telefone || '';
-      document.getElementById('tipo').value = cliente.tipo || 'Particular';
-
-      document.getElementById('modalCliente').style.display = 'flex';
-    }
-
-    async function excluirCliente(id) {
-      if (confirm("Deseja realmente excluir este cliente?")) {
-        // Para exclusão completa seria necessário criar uma rota DELETE no backend
-        alert("Exclusão completa será implementada em breve.");
-        carregarClientes();
-      }
-    }
-
-    // Enviar formulário
-    document.getElementById('formCliente').addEventListener('submit', async function(e) {
-      e.preventDefault();
-
-      const cliente = {
-        nome: document.getElementById('nome').value,
-        email: document.getElementById('email').value,
-        telefone: document.getElementById('telefone').value,
-        tipo: document.getElementById('tipo').value
-      };
-
-      try {
-        await fetch('/api/clientes', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(cliente)
-        });
-
-        alert("Cliente salvo com sucesso!");
-        fecharModal();
-        carregarClientes();
-      } catch (error) {
-        alert("Erro ao salvar cliente.");
-      }
-    });
-
-    // Carregar ao abrir a página
-    window.onload = carregarClientes;
-  </script>
-</body>
-</html>
+        <section class="client-section" style="background-color: #ffffff; border: 1px solid #e9ecef;">
+            <div class="steps-container">
+                
+                <div class="step-card">
