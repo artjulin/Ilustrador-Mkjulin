@@ -215,5 +215,10 @@ footer {
     margin-top: auto;
     border-top: 1px solid #e9ecef;
     color: #6c757d;
+   
+   /* Botão customizado para o WhatsApp na área do cliente */
+.step-card a[href*="wa.me"]:hover {
+    background-color: #20ba5a !important;
+}
     font-size: 0.9rem;
 }
