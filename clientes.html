@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Área do Cliente - Mkjulin</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <nav>
+            <div class="logo">Mkjulin</div>
+            <ul class="nav-buttons">
+                <li><a href="portfolio.html">Portfólio</a></li>
+                <li><a href="agendamento.html">Agendamento</a></li>
+                <li><a href="clientes.html" class="active">Área do Cliente</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero-portfolio" style="padding: 2.5rem 1rem;">
+            <h1 id="boas-vindas">Área de Compras</h1>
+            <p>Acesse suas faturas, histórico de ilustrações e andamento da sua fila.</p>
+            <button class="btn-primary" onclick="fazerLogout()" style="background-color: #dc3545; box-shadow: none; padding: 0.5rem 1.2rem; font-size: 0.85rem;">Sair da Conta</button>
+        </section>
+
+        <section class="client-section">
+            <div class="steps-container">
+                <div class="step-card">
+                    <div class="icon">🛍️</div>
+                    <h3>Minhas Compras</h3>
+                    <p>Veja seus recibos de pagamento e status financeiro.</p>
+                </div>
+                <div class="step-card">
+                    <div class="icon">✨</div>
+                    <h3>Artes Prontas</h3>
+                    <p>Baixe aqui os arquivos em alta definição das ilustrações finalizadas.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const nome = localStorage.getItem('nomeCliente');
+        if (nome) {
+            document.getElementById('boas-vindas').innerText = "Painel de " + nome;
+        }
+
+        function fazerLogout() {
+            localStorage.clear();
+            alert('Você saiu do sistema!');
+            window.location.href = 'portfolio.html';
+        }
+    </script>
+</body>
+</html>
