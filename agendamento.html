@@ -3,49 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agendar - IlustraArt</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Agendamento - Mkjulin</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
     <header>
-        <nav class="navbar">
-            <div class="logo">IlustraArt</div>
-            <ul class="nav-links">
-                <li><a href="index.html">Início</a></li>
+        <nav>
+            <div class="logo">Mkjulin</div>
+            <ul class="nav-buttons">
                 <li><a href="portfolio.html">Portfólio</a></li>
-                <li><a href="tradicional.html">Tradicional</a></li>
-                <li><a href="comprar.html">Preços</a></li>
-                <li><a href="agendamento.html" class="active">Agendar</a></li>
-                <li><a href="status-pedido.html">Meus Pedidos</a></li>
-                <li><a href="cadastro.html">Cadastro / Login</a></li>
+                <li><a href="agendamento.html" class="active">Agendamento</a></li>
+                <li><a href="clientes.html">Área do Cliente</a></li>
             </ul>
         </nav>
     </header>
 
-    <main class="form-container">
-        <h2>Fazer Agendamento</h2>
-        <form id="agendamentoForm">
-            <label>Serviço:</label>
-            <select name="servico" required>
-                <option value="Chibi/Cartoon">Chibi / Cartoon - R$ 50</option>
-                <option value="Anime Full Body">Anime / Mangá Full Body - R$ 120</option>
-                <option value="Concept Art">Concept Art / Cenário - R$ 200</option>
-            </select>
+    <main>
+        <div id="area-bloqueada" class="auth-container" style="display: none; margin-top: 2rem;">
+            <div class="lock-notice">
+                ⚠️ <strong>Acesso Restrito:</strong> Você precisa de uma conta de cliente.
+            </div>
+            <h3>Identificação Necessária</h3>
+            <p>Para garantir a segurança dos pedidos e agendamentos, o cadastro é estritamente obrigatório.</p>
+            <a href="cadastro.html" class="btn-primary" style="display: block; text-align: center; border-radius: 8px;">Criar Conta / Entrar agora</a>
+        </div>
 
-            <label>Descrição da Arte:</label>
-            <textarea name="descricao" rows="6" 
-                placeholder="Descreva detalhadamente: personagem, pose, roupas, cores, referências, estilo desejado..." 
-                required></textarea>
+        <div id="area-liberada" class="auth-container" style="display: none; max-width: 650px; margin-top: 1rem;">
+            <h2>Solicitar Nova Ilustração</h2>
+            <p>Preencha as especificações da arte para a reserva da sua vaga na agenda.</p>
 
-            <label>Data Preferencial:</label>
-            <input type="date" name="data" required>
+            <form action="/api/agendamentos" method="POST">
+                <div class="form-group">
+                    <label for="estilo">Selecione o Estilo de Arte:</label>
+                    <select id="estilo" required>
+                        <option value="anime">Anime / Mangá</option>
+                        <option value="cartoon">Cartoon</option>
+                        <option value="semi-realista">Semi-Realista</option>
+                    </select>
+                </div>
 
-            <button type="submit" class="btn-primary">Enviar Agendamento</button>
-        </form>
+                <div class="form-group">
+                    <label for="detalhes">Briefing / Detalhes da Ilustração:</label>
+                    <textarea id="detalhes" rows="5" required placeholder="Descreva os personagens, cores, poses e referências..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="prazo">Data Desejada:</label>
+                    <input type="date" id="prazo" required>
+                </div>
+
+                <button type="submit" class="btn-primary" style="width: 100%; border-radius: 8px; background-color: #04d361; box-shadow: 0 4px 12px rgba(4, 211, 97, 0.2);">Confirmar e Agendar</button>
+            </form>
+        </div>
     </main>
 
-    <footer>
-        <p>&copy; 2026 Ilustrador Mkjulin. Todos os direitos reservados.</p>
-    </footer>
+    <script>
+        // Executa ao carregar a página para checar obrigatoriedade de conta
+        window.onload = function() {
+            const logado = localStorage.getItem('clienteLogado');
+            if (logado === 'true') {
+                document.getElementById('area-liberada').style.display = 'block';
+            } else {
+                document.getElementById('area-bloqueada').style.display = 'block';
+            }
+        }
+    </script>
 </body>
 </html>
