@@ -1,78 +1,102 @@
 const express = require('express');
-const sqlite3 = require('sqlite3').verbose();
-const bodyParser = require('body-parser');
 const path = require('path');
-
 const app = express();
-app.use(bodyParser.json());
-app.use(express.static('.'));
+const PORT = process.env.PORT || 3000;
 
-const db = new sqlite3.Database('ilustrapro.db');
+// Middleware para processar dados de formulários e JSON
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-db.serialize(() => {
-    // Tabelas melhoradas
-    db.run(`CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY,
-        username TEXT UNIQUE NOT NULL,
-        password TEXT NOT NULL,
-        nome TEXT NOT NULL,
-        role TEXT DEFAULT 'cliente'
-    )`);
+// Servir arquivos estáticos (CSS, JS, Imagens) a partir da pasta raiz ou 'public'
+app.use(express.static(path.join(__dirname)));
 
-    db.run(`CREATE TABLE IF NOT EXISTS agendamentos (
-        id INTEGER PRIMARY KEY,
-        user_id INTEGER,
-        servico TEXT,
-        descricao TEXT,
-        data_preferencial TEXT,
-        valor REAL,
-        status TEXT DEFAULT 'Pendente',
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY(user_id) REFERENCES users(id)
-    )`);
+// Bancos de dados simulados em memória (Arrays)
+const usuarios = [];
+const agendamentos = [];
 
-    // Admin padrão
-    db.run(`INSERT OR IGNORE INTO users (username, password, nome, role) VALUES ('admin', '1234', 'Mkjulin', 'admin')`);
+/* ==========================================================================
+   ROTAS DE NAVEGAÇÃO (SERVIR HTML)
+   ========================================================================== */
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'portfolio.html'));
 });
 
-app.post('/api/register', (req, res) => {
-    const { username, password, nome } = req.body;
-    db.run("INSERT INTO users (username, password, nome) VALUES (?, ?, ?)", 
-        [username, password, nome], function(err) {
-        if (err) return res.json({success: false, message: "Usuário já existe"});
-        res.json({success: true, message: "Cadastro realizado!"});
-    });
+app.get('/portfolio', (req, res) => {
+    res.sendFile(path.join(__dirname, 'portfolio.html'));
 });
 
-app.post('/api/login', (req, res) => {
-    const { username, password } = req.body;
-    db.get("SELECT id, nome, role FROM users WHERE username = ? AND password = ?", 
-        [username, password], (err, user) => {
-        if (user) res.json({success: true, user});
-        else res.json({success: false, message: "Credenciais inválidas"});
-    });
+app.get('/agendamento', (req, res) => {
+    res.sendFile(path.join(__dirname, 'agendamento.html'));
 });
 
-app.post('/api/agendar', (req, res) => {
-    const { user_id, servico, descricao, data_preferencial, valor } = req.body;
-    db.run(`INSERT INTO agendamentos (user_id, servico, descricao, data_preferencial, valor) 
-            VALUES (?, ?, ?, ?, ?)`,
-        [user_id, servico, descricao, data_preferencial, valor],
-        function(err) {
-            if (err) return res.json({success: false});
-            res.json({success: true, id: this.lastID});
-        }
-    );
+app.get('/clientes', (req, res) => {
+    res.sendFile(path.join(__dirname, 'clientes.html'));
 });
 
-app.get('/api/meus-pedidos/:userId', (req, res) => {
-    db.all("SELECT * FROM agendamentos WHERE user_id = ? ORDER BY created_at DESC", 
-        [req.params.userId], (err, rows) => {
-        res.json(rows);
-    });
+app.get('/cadastro', (req, res) => {
+    res.sendFile(path.join(__dirname, 'cadastro.html'));
 });
 
-const PORT = 3000;
+/* ==========================================================================
+   ROTAS DA API (SISTEMA DE CLIENTES E AGENDAMENTO)
+   ========================================================================== */
+
+// Rota para cadastrar um novo cliente
+app.post('/api/cadastro', (req, res) => {
+    const { nome, email, whatsapp, senha } = req.body;
+
+    if (!nome || !email || !senha) {
+        return res.status(400).json({ success: false, message: "Preencha todos os campos obrigatórios." });
+    }
+
+    // Verifica se o e-mail já existe
+    const usuarioExiste = usuarios.find(u => u.email === email);
+    if (usuarioExiste) {
+        return res.status(400).json({ success: false, message: "Este e-mail já está cadastrado." });
+    }
+
+    const novoUsuario = { id: usuarios.length + 1, nome, email, whatsapp, senha };
+    usuarios.push(novoUsuario);
+
+    console.log(`[Sucesso] Novo cliente cadastrado: ${nome} (${email})`);
+    
+    return res.json({ success: true, message: "Cadastro realizado com sucesso!", cliente: { nome, email } });
+});
+
+// Rota para criar um agendamento (Protegida logicamente)
+app.post('/api/agendamentos', (req, res) => {
+    const { estilo, detalhes, prazo, emailCliente } = req.body;
+
+    if (!estilo || !detalhes || !prazo) {
+        return res.status(400).json({ success: false, message: "Campos do agendamento incompletos." });
+    }
+
+    const novoAgendamento = {
+        id: agendamentos.length + 1,
+        estilo,
+        detalhes,
+        prazo,
+        cliente: emailCliente || "Anônimo (LocalStorage)",
+        status: "Aguardando Aprovação",
+        dataSolicitacao: new Date().toLocaleDateString('pt-BR')
+    };
+
+    agendamentos.push(novoAgendamento);
+    console.log(`[Novo Agendamento] Pedido #${novoAgendamento.id} recebido.`);
+
+    return res.json({ success: true, message: "Agendamento registrado na fila com sucesso!", pedidoId: novoAgendamento.id });
+});
+
+// Rota para buscar agendamentos de um cliente específico
+app.get('/api/meus-pedidos', (req, res) => {
+    const email = req.query.email;
+    const pedidosFiltrados = agendamentos.filter(p => p.cliente === email);
+    res.json(pedidosFiltrados);
+});
+
+// Inicialização do Servidor
 app.listen(PORT, () => {
-    console.log(`Servidor rodando em http://localhost:${PORT}`);
+    console.log(`==================================================`);
+    console.log(` Servidor rodando em: http://localhost:${PORT}`);
+    console.log(`==================================================`);
 });
