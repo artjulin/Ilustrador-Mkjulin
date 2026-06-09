@@ -7,34 +7,45 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Navbar igual às outras -->
     <header>
         <nav class="navbar">
             <div class="logo">IlustraArt</div>
             <ul class="nav-links">
-                <!-- ... mesmos links ... -->
+                <li><a href="index.html">Início</a></li>
+                <li><a href="portfolio.html">Portfólio</a></li>
+                <li><a href="tradicional.html">Tradicional</a></li>
+                <li><a href="comprar.html">Preços</a></li>
+                <li><a href="agendamento.html" class="active">Agendar</a></li>
+                <li><a href="status-pedido.html">Meus Pedidos</a></li>
+                <li><a href="cadastro.html">Cadastro / Login</a></li>
             </ul>
         </nav>
     </header>
 
     <main class="form-container">
-        <h2 style="text-align:center; margin-bottom:2rem;">Fazer Agendamento</h2>
+        <h2>Fazer Agendamento</h2>
         <form id="agendamentoForm">
             <label>Serviço:</label>
             <select name="servico" required>
-                <option value="Chibi/Cartoon">Chibi / Cartoon - R$50</option>
-                <option value="Anime Full Body">Anime Full Body - R$120</option>
-                <option value="Concept Art">Concept Art - R$200</option>
+                <option value="Chibi/Cartoon">Chibi / Cartoon - R$ 50</option>
+                <option value="Anime Full Body">Anime / Mangá Full Body - R$ 120</option>
+                <option value="Concept Art">Concept Art / Cenário - R$ 200</option>
             </select>
 
             <label>Descrição da Arte:</label>
-            <textarea name="descricao" rows="5" placeholder="Descreva o personagem, pose, cores, referências..." required></textarea>
+            <textarea name="descricao" rows="6" 
+                placeholder="Descreva detalhadamente: personagem, pose, roupas, cores, referências, estilo desejado..." 
+                required></textarea>
 
             <label>Data Preferencial:</label>
             <input type="date" name="data" required>
 
-            <button type="submit" class="btn-primary" style="width:100%; margin-top:1rem;">Enviar Agendamento</button>
+            <button type="submit" class="btn-primary">Enviar Agendamento</button>
         </form>
     </main>
+
+    <footer>
+        <p>&copy; 2026 Ilustrador Mkjulin. Todos os direitos reservados.</p>
+    </footer>
 </body>
 </html>
