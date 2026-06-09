@@ -1,103 +1,119 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // 1. VERIFICAÇÃO DE PRIVACIDADE E ACESSO NA TELA DE AGENDAMENTO
-    const areaLiberada = document.getElementById('area-liberada');
-    const areaBloqueada = document.getElementById('area-bloqueada');
+// ==================== FUNÇÕES DE AUTENTICAÇÃO ====================
 
-    if (areaLiberada && areaBloqueada) {
-        const clienteLogado = localStorage.getItem('clienteLogado');
-        if (clienteLogado === 'true') {
-            areaLiberada.style.display = 'block';
-            areaBloqueada.style.display = 'none';
-        } else {
-            areaLiberada.style.display = 'none';
-            areaBloqueada.style.display = 'block';
-        }
+function saveUser(user) {
+    localStorage.setItem('currentUser', JSON.stringify(user));
+}
+
+function getCurrentUser() {
+    const user = localStorage.getItem('currentUser');
+    return user ? JSON.parse(user) : null;
+}
+
+function logout() {
+    localStorage.removeItem('currentUser');
+    window.location.href = 'index.html';
+}
+
+// Verificar se usuário está logado
+function checkAuth() {
+    const user = getCurrentUser();
+    if (!user) {
+        alert("Você precisa estar logado para acessar esta página.");
+        window.location.href = 'cadastro.html';
+        return false;
     }
+    return user;
+}
 
-    // 2. EXIBIR NOME DINÂMICO NA ÁREA DO CLIENTE
-    const boasVindasTxt = document.getElementById('boas-vindas');
-    if (boasVindasTxt) {
-        const nomeCliente = localStorage.getItem('nomeCliente');
-        if (nomeCliente) {
-            boasVindasTxt.innerText = `Painel de ${nomeCliente}`;
-        }
-    }
-
-    // 3. ENVIO DO FORMULÁRIO DE CADASTRO VIA AJAX/FETCH
-    const formCadastro = document.getElementById('form-cadastro');
-    if (formCadastro) {
-        formCadastro.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const nome = document.getElementById('nome').value;
-            const email = document.getElementById('email').value;
-            const whatsapp = document.getElementById('whatsapp').value;
-            const senha = document.getElementById('senha').value;
-
-            try {
-                const response = await fetch('/api/cadastro', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ nome, email, whatsapp, senha })
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    // Armazena dados da sessão no navegador
-                    localStorage.setItem('clienteLogado', 'true');
-                    localStorage.setItem('nomeCliente', nome);
-                    localStorage.setItem('emailCliente', email);
-
-                    alert(data.message);
-                    window.location.href = 'agendamento.html'; // Redireciona para o agendamento liberado
-                } else {
-                    alert(data.message || 'Erro ao realizar cadastro.');
-                }
-            } catch (error) {
-                console.error('Erro na requisição:', error);
-                alert('Erro ao conectar com o servidor.');
-            }
+// Login
+async function loginUser(username, password) {
+    try {
+        const response = await fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
         });
+        const data = await response.json();
+        
+        if (data.success) {
+            saveUser(data.user);
+            alert("✅ Login realizado com sucesso!");
+            window.location.href = 'index.html';
+        } else {
+            alert(data.message || "Erro ao fazer login");
+        }
+    } catch (error) {
+        alert("Erro de conexão com o servidor");
     }
+}
 
-    // 4. ENVIO DO FORMULÁRIO DE AGENDAMENTO VIA AJAX/FETCH
-    const formAgendamento = document.querySelector('#area-liberada form');
-    if (formAgendamento) {
-        formAgendamento.addEventListener('submit', async (e) => {
+// Cadastro
+async function registerUser(nome, username, password) {
+    try {
+        const response = await fetch('/api/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nome, username, password })
+        });
+        const data = await response.json();
+        
+        if (data.success) {
+            alert("✅ Cadastro realizado! Faça login agora.");
+            window.location.href = 'cadastro.html';
+        } else {
+            alert(data.message);
+        }
+    } catch (error) {
+        alert("Erro ao cadastrar");
+    }
+}
+
+// Enviar Agendamento
+async function enviarAgendamento(servico, descricao, data_preferencial) {
+    const user = getCurrentUser();
+    if (!user) return alert("Você precisa estar logado!");
+
+    const valores = {
+        "Chibi/Cartoon": 50,
+        "Anime Full Body": 120,
+        "Concept Art": 200
+    };
+
+    try {
+        const response = await fetch('/api/agendar', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                user_id: user.id,
+                servico,
+                descricao,
+                data_preferencial,
+                valor: valores[servico] || 100
+            })
+        });
+        
+        const data = await response.json();
+        if (data.success) {
+            alert("🎉 Agendamento enviado com sucesso! ID: " + data.id);
+            window.location.href = 'status-pedido.html';
+        }
+    } catch (error) {
+        alert("Erro ao enviar agendamento");
+    }
+}
+
+// Exemplo de uso no agendamento.html
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('agendamentoForm');
+    if (form) {
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            const servico = document.querySelector('[name="servico"]').value;
+            const descricao = document.querySelector('[name="descricao"]').value;
+            const data = document.querySelector('[name="data"]').value;
 
-            const estilo = document.getElementById('estilo').value;
-            const detalhes = document.getElementById('detalhes').value;
-            const prazo = document.getElementById('prazo').value;
-            const emailCliente = localStorage.getItem('emailCliente');
-
-            try {
-                const response = await fetch('/api/agendamentos', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ estilo, detalhes, prazo, emailCliente })
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    alert(`${data.message}\nSeu número de protocolo é: #${data.pedidoId}`);
-                    window.location.href = 'clientes.html';
-                } else {
-                    alert(data.message);
-                }
-            } catch (error) {
-                console.error('Erro ao agendar:', error);
-                alert('Erro de rede ao processar agendamento.');
-            }
+            await enviarAgendamento(servico, descricao, data);
         });
     }
 });
-
-// 5. FUNÇÃO DE LOGOUT
-function fazerLogout() {
-    localStorage.clear();
-    alert('Sessão encerrada com sucesso!');
-    window.location.href = 'portfolio.html';
-}
