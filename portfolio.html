@@ -3,39 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfólio - Mkjulin</title>
+    <title>Portfólio - IlustraArt</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
     <header>
-        <nav>
-            <div class="logo">Mkjulin</div>
-            <ul class="nav-buttons">
+        <nav class="navbar">
+            <div class="logo">IlustraArt</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Início</a></li>
                 <li><a href="portfolio.html" class="active">Portfólio</a></li>
-                <li><a href="agendamento.html">Agendamento</a></li>
-                <li><a href="clientes.html">Área do Cliente</a></li>
+                <li><a href="tradicional.html">Tradicional</a></li>
+                <li><a href="comprar.html">Preços</a></li>
+                <li><a href="agendamento.html">Agendar</a></li>
+                <li><a href="status-pedido.html">Meus Pedidos</a></li>
             </ul>
+            <button class="user-btn" onclick="checkLogin()">👤 Entrar / Cadastro</button>
         </nav>
     </header>
 
+    <!-- Restante do conteúdo do portfolio (client-section + gallery) -->
     <main>
-        <section class="hero-portfolio">
-            <h1>Ilustrações Personalizadas</h1>
-            <p>Explore meus estilos e encomende a sua arte digital exclusiva.</p>
-            <a href="agendamento.html" class="btn-primary">Fazer meu Agendamento</a>
+        <section class="client-section">
+            <h2>Como fazer seu pedido?</h2>
+            <!-- ... seus step-cards ... -->
         </section>
 
         <section class="gallery-container">
-            <div class="gallery-grid">
-                <div class="gallery-item">
-                    <img src="https://via.placeholder.com/300x260" alt="Ilustração">
-                    <h3>Estilo Anime / Mangá</h3>
-                </div>
-                <div class="gallery-item">
-                    <img src="https://via.placeholder.com/300x260" alt="Ilustração">
-                    <h3>Estilo Cartoon</h3>
-                </div>
+            <div class="gallery-grid" id="portfolio-grid">
+                <!-- suas imagens -->
             </div>
         </section>
     </main>
@@ -43,5 +39,15 @@
     <footer>
         <p>&copy; 2026 Ilustrador Mkjulin. Todos os direitos reservados.</p>
     </footer>
+
+    <script>
+        function checkLogin() {
+            if (localStorage.getItem('user')) {
+                alert("Você já está logado como: " + JSON.parse(localStorage.getItem('user')).nome);
+            } else {
+                window.location.href = "cadastro.html";
+            }
+        }
+    </script>
 </body>
 </html>
