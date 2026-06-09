@@ -3,63 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solicitar Agendamento - IlustraArt</title>
+    <title>Agendar - IlustraArt</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- Navbar igual às outras -->
     <header>
-        <nav>
-            <div class="logo">Mkjulin</div>
-            <ul>
-                <li><a href="portfolio.html">Portfólio</a></li>
-                <li><a href="agendamento.html" class="active">Fazer Agendamento</a></li>
-                <li><a href="status-pedido.html">Meus Pedidos</a></li>
+        <nav class="navbar">
+            <div class="logo">IlustraArt</div>
+            <ul class="nav-links">
+                <!-- ... mesmos links ... -->
             </ul>
         </nav>
     </header>
 
     <main class="form-container">
-        <h2>Solicitar Nova Ilustração</h2>
-        <p>Preencha os detalhes do seu pedido para realizar o agendamento.</p>
+        <h2 style="text-align:center; margin-bottom:2rem;">Fazer Agendamento</h2>
+        <form id="agendamentoForm">
+            <label>Serviço:</label>
+            <select name="servico" required>
+                <option value="Chibi/Cartoon">Chibi / Cartoon - R$50</option>
+                <option value="Anime Full Body">Anime Full Body - R$120</option>
+                <option value="Concept Art">Concept Art - R$200</option>
+            </select>
 
-        <form id="form-agendamento" action="/api/agendamentos" method="POST">
-            <div class="form-group">
-                <label for="nome">Seu Nome:</label>
-                <input type="text" id="nome" name="nome" required placeholder="Digite seu nome completo">
-            </div>
+            <label>Descrição da Arte:</label>
+            <textarea name="descricao" rows="5" placeholder="Descreva o personagem, pose, cores, referências..." required></textarea>
 
-            <div class="form-group">
-                <label for="email">E-mail de Contato:</label>
-                <input type="email" id="email" name="email" required placeholder="seuemail@exemplo.com">
-            </div>
+            <label>Data Preferencial:</label>
+            <input type="date" name="data" required>
 
-            <div class="form-group">
-                <label for="estilo">Selecione o Estilo:</label>
-                <select id="estilo" name="estilo" required>
-                    <option value="" disabled selected>Escolha uma opção...</option>
-                    <option value="anime">Anime / Mangá</option>
-                    <option value="cartoon">Cartoon</option>
-                    <option value="realista">Semi-Realista</option>
-                    <option value="Chibi">Chibi</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="detalhes">Briefing / Detalhes da Obra:</label>
-                <textarea id="detalhes" name="detalhes" rows="5" required placeholder="Descreva como você quer a sua ilustração (personagens, pose, cores, fundo...)"></textarea>
-            </div>
-
-            <div class="form-group">
-                <label for="prazo">Data Preferencial de Entrega (Sujeito a confirmação):</label>
-                <input type="date" id="prazo" name="prazo" required>
-            </div>
-
-            <button type="submit" class="btn-submit">Confirmar Pedido e Agendamento</button>
+            <button type="submit" class="btn-primary" style="width:100%; margin-top:1rem;">Enviar Agendamento</button>
         </form>
     </main>
-
-    <footer>
-        <p>&copy; 2026 Ilustrador Mkjulin. Todos os direitos reservados.</p>
-    </footer>
 </body>
 </html>
