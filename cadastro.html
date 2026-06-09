@@ -3,72 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Comprar Serviços - IlustraArt</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Cadastro do Cliente - Mkjulin</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
     <header>
         <nav>
-            <div class="logo">IlustraArt</div>
-            <ul>
-                <li><a href="index.html">Início</a></li>
+            <div class="logo">Mkjulin</div>
+            <ul class="nav-buttons">
                 <li><a href="portfolio.html">Portfólio</a></li>
-                <li><a href="comprar.html" class="active">Comprar</a></li>
-                <li><a href="agendamento.html">Fazer Agendamento</a></li>
-                <li><a href="status-pedido.html">Meus Pedidos</a></li>
-                <li><a href="cadastro.html">Cadastro</a></li>
+                <li><a href="agendamento.html">Agendamento</a></li>
+                <li><a href="clientes.html">Área do Cliente</a></li>
+                <li><a href="cadastro.html" class="active">Entrar</a></li>
             </ul>
         </nav>
     </header>
 
-    <main class="form-container">
-        <div style="text-align: center; margin-bottom: 3rem;">
-            <h2>Escolha o seu Serviço</h2>
-            <p>Selecione o pacote que melhor se adapta à sua necessidade de arte digital.</p>
-        </div>
+    <main>
+        <div class="auth-container">
+            <h2>Criar sua Conta</h2>
+            <p>Faça seu cadastro obrigatório para conseguir agendar e gerenciar suas ilustrações.</p>
 
-        <div class="pricing-grid">
-            <div class="price-card">
-                <h3>Estilo Chibi / Cartoon</h3>
-                <div class="price">R$ 50<span> / arte</span></div>
-                <p>Ideal para fotos de perfil, ícones e presentes fofos.</p>
-                <ul>
-                    <li>1 Personagem</li>
-                    <li>Fundo Simples ou Transparente</li>
-                    <li>Uso Pessoal</li>
-                </ul>
-                <a href="agendamento.html" class="btn-primary">Contratar Este</a>
-            </div>
+            <form id="form-cadastro" onsubmit="salvarCadastro(event)">
+                <div class="form-group">
+                    <label for="nome">Nome Completo:</label>
+                    <input type="text" id="nome" required placeholder="Ex: João Silva">
+                </div>
 
-            <div class="price-card featured">
-                <span class="badge">Mais Pedido</span>
-                <h3>Anime / Mangá Full Body</h3>
-                <div class="price">R$ 120<span> / arte</span></div>
-                <p>Ilustração completa do corpo do seu personagem favorito ou autoral.</p>
-                <ul>
-                    <li>1 Personagem (Corpo Inteiro)</li>
-                    <li>Colorização Avançada</li>
-                    <li>Fundo Colorido/Abstrato</li>
-                </ul>
-                <a href="agendamento.html" class="btn-primary">Contratar Este</a>
-            </div>
+                <div class="form-group">
+                    <label for="email">E-mail:</label>
+                    <input type="email" id="email" required placeholder="joao@email.com">
+                </div>
 
-            <div class="price-card">
-                <h3>Concept Art / Cenário</h3>
-                <div class="price">R$ 200<span> / arte</span></div>
-                <p>Criação visual detalhada de cenários ou fichas de personagens de RPG.</p>
-                <ul>
-                    <li>Detalhes Complexos</li>
-                    <li>Fundo Elaborado</li>
-                    <li>Entrega dos Arquivos em Camadas</li>
-                </ul>
-                <a href="agendamento.html" class="btn-primary">Contratar Este</a>
+                <div class="form-group">
+                    <label for="whatsapp">WhatsApp / Celular:</label>
+                    <input type="tel" id="whatsapp" required placeholder="(11) 99999-9999">
+                </div>
+
+                <div class="form-group">
+                    <label for="senha">Crie uma Senha:</label>
+                    <input type="password" id="senha" required placeholder="••••••••">
+                </div>
+
+                <button type="submit" class="btn-primary" style="width: 100%; border-radius: 8px;">Cadastrar e Fazer Login</button>
+            </form>
+
+            <div class="auth-footer">
+                Já tem um cadastro? <a href="#">Fazer Login</a>
             </div>
         </div>
     </main>
 
-    <footer>
-        <p>&copy; 2026 Ilustrador Mkjulin. Todos os direitos reservados.</p>
-    </footer>
+    <script>
+        function salvarCadastro(event) {
+            event.preventDefault();
+            // Salva o estado de login no navegador do cliente (LocalStorage)
+            localStorage.setItem('clienteLogado', 'true');
+            localStorage.setItem('nomeCliente', document.getElementById('nome').value);
+            
+            alert('Cadastro realizado com sucesso! Agora você está liberado para agendar.');
+            window.location.href = 'agendamento.html';
+        }
+    </script>
 </body>
 </html>
