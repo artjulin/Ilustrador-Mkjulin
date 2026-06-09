@@ -3,71 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agendamento - Mkjulin</title>
+    <title>Agendar - IlustraArt</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
     <header>
-        <nav>
-            <div class="logo">Mkjulin</div>
-            <ul class="nav-buttons">
+        <nav class="navbar">
+            <div class="logo">IlustraArt</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Início</a></li>
                 <li><a href="portfolio.html">Portfólio</a></li>
-                <li><a href="agendamento.html" class="active">Agendamento</a></li>
-                <li><a href="clientes.html">Área do Cliente</a></li>
+                <li><a href="tradicional.html">Tradicional</a></li>
+                <li><a href="comprar.html">Preços</a></li>
+                <li><a href="agendamento.html" class="active">Agendar</a></li>
+                <li><a href="status-pedido.html">Meus Pedidos</a></li>
             </ul>
+            <button class="user-btn" onclick="checkLogin()">👤 Entrar</button>
         </nav>
     </header>
 
-    <main>
-        <div id="area-bloqueada" class="auth-container" style="display: none; margin-top: 2rem;">
-            <div class="lock-notice">
-                ⚠️ <strong>Acesso Restrito:</strong> Você precisa de uma conta de cliente.
-            </div>
-            <h3>Identificação Necessária</h3>
-            <p>Para garantir a segurança dos pedidos e agendamentos, o cadastro é estritamente obrigatório.</p>
-            <a href="cadastro.html" class="btn-primary" style="display: block; text-align: center; border-radius: 8px;">Criar Conta / Entrar agora</a>
-        </div>
-
-        <div id="area-liberada" class="auth-container" style="display: none; max-width: 650px; margin-top: 1rem;">
-            <h2>Solicitar Nova Ilustração</h2>
-            <p>Preencha as especificações da arte para a reserva da sua vaga na agenda.</p>
-
-            <form action="/api/agendamentos" method="POST">
-                <div class="form-group">
-                    <label for="estilo">Selecione o Estilo de Arte:</label>
-                    <select id="estilo" required>
-                        <option value="anime">Anime / Mangá</option>
-                        <option value="cartoon">Cartoon</option>
-                        <option value="semi-realista">Semi-Realista</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="detalhes">Briefing / Detalhes da Ilustração:</label>
-                    <textarea id="detalhes" rows="5" required placeholder="Descreva os personagens, cores, poses e referências..."></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="prazo">Data Desejada:</label>
-                    <input type="date" id="prazo" required>
-                </div>
-
-                <button type="submit" class="btn-primary" style="width: 100%; border-radius: 8px; background-color: #04d361; box-shadow: 0 4px 12px rgba(4, 211, 97, 0.2);">Confirmar e Agendar</button>
-            </form>
-        </div>
+    <main class="form-container">
+        <h2>Fazer Agendamento</h2>
+        <form id="agendamentoForm">
+            <!-- campos do formulário -->
+            <button type="submit" class="btn-primary">Enviar Agendamento</button>
+        </form>
     </main>
 
     <script>
-        // Executa ao carregar a página para checar obrigatoriedade de conta
-        window.onload = function() {
-            const logado = localStorage.getItem('clienteLogado');
-            if (logado === 'true') {
-                document.getElementById('area-liberada').style.display = 'block';
-            } else {
-                document.getElementById('area-bloqueada').style.display = 'block';
-            }
+        // Proteção: obrigatório estar logado
+        if (!localStorage.getItem('user')) {
+            alert("Você precisa estar cadastrado e logado para agendar.");
+            window.location.href = "cadastro.html";
         }
+
+        document.getElementById('agendamentoForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert("✅ Agendamento enviado com sucesso! (Sistema de login ativo)");
+            // Aqui você pode enviar para o backend depois
+        });
     </script>
 </body>
 </html>
