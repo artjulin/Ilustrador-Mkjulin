@@ -3,67 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro do Cliente - Mkjulin</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Cadastro / Login - IlustraArt</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
     <header>
-        <nav>
-            <div class="logo">Mkjulin</div>
-            <ul class="nav-buttons">
+        <nav class="navbar">
+            <div class="logo">IlustraArt</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Início</a></li>
                 <li><a href="portfolio.html">Portfólio</a></li>
-                <li><a href="agendamento.html">Agendamento</a></li>
-                <li><a href="clientes.html">Área do Cliente</a></li>
-                <li><a href="cadastro.html" class="active">Entrar</a></li>
+                <li><a href="comprar.html">Preços</a></li>
+                <li><a href="agendamento.html">Agendar</a></li>
             </ul>
         </nav>
     </header>
 
-    <main>
-        <div class="auth-container">
-            <h2>Criar sua Conta</h2>
-            <p>Faça seu cadastro obrigatório para conseguir agendar e gerenciar suas ilustrações.</p>
+    <main class="form-container" style="max-width: 500px;">
+        <h2 id="formTitle">Login</h2>
+        
+        <div id="loginForm">
+            <label>Usuário / E-mail</label>
+            <input type="text" id="username" placeholder="Seu usuário" required>
+            
+            <label>Senha</label>
+            <input type="password" id="password" placeholder="Senha" required>
+            
+            <button onclick="login()" class="btn-primary" style="width:100%; margin-top:20px;">Entrar</button>
+            <p style="text-align:center; margin-top:15px;">
+                Não tem conta? <a href="#" onclick="toggleForm()">Cadastre-se</a>
+            </p>
+        </div>
 
-            <form id="form-cadastro" onsubmit="salvarCadastro(event)">
-                <div class="form-group">
-                    <label for="nome">Nome Completo:</label>
-                    <input type="text" id="nome" required placeholder="Ex: João Silva">
-                </div>
-
-                <div class="form-group">
-                    <label for="email">E-mail:</label>
-                    <input type="email" id="email" required placeholder="joao@email.com">
-                </div>
-
-                <div class="form-group">
-                    <label for="whatsapp">WhatsApp / Celular:</label>
-                    <input type="tel" id="whatsapp" required placeholder="(11) 99999-9999">
-                </div>
-
-                <div class="form-group">
-                    <label for="senha">Crie uma Senha:</label>
-                    <input type="password" id="senha" required placeholder="••••••••">
-                </div>
-
-                <button type="submit" class="btn-primary" style="width: 100%; border-radius: 8px;">Cadastrar e Fazer Login</button>
-            </form>
-
-            <div class="auth-footer">
-                Já tem um cadastro? <a href="#">Fazer Login</a>
-            </div>
+        <div id="registerForm" style="display:none;">
+            <label>Nome Completo</label>
+            <input type="text" id="nome" placeholder="Seu nome" required>
+            
+            <label>Usuário / E-mail</label>
+            <input type="text" id="regUsername" placeholder="usuário ou email" required>
+            
+            <label>Senha</label>
+            <input type="password" id="regPassword" placeholder="Crie uma senha" required>
+            
+            <button onclick="register()" class="btn-primary" style="width:100%; margin-top:20px;">Cadastrar</button>
+            <p style="text-align:center; margin-top:15px;">
+                Já tem conta? <a href="#" onclick="toggleForm()">Faça Login</a>
+            </p>
         </div>
     </main>
 
     <script>
-        function salvarCadastro(event) {
-            event.preventDefault();
-            // Salva o estado de login no navegador do cliente (LocalStorage)
-            localStorage.setItem('clienteLogado', 'true');
-            localStorage.setItem('nomeCliente', document.getElementById('nome').value);
-            
-            alert('Cadastro realizado com sucesso! Agora você está liberado para agendar.');
-            window.location.href = 'agendamento.html';
+        function toggleForm() {
+            const login = document.getElementById('loginForm');
+            const register = document.getElementById('registerForm');
+            login.style.display = login.style.display === 'none' ? 'block' : 'none';
+            register.style.display = register.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function register() {
+            const nome = document.getElementById('nome').value;
+            const username = document.getElementById('regUsername').value;
+            const password = document.getElementById('regPassword').value;
+
+            if (nome && username && password) {
+                const user = { id: Date.now(), nome, username };
+                localStorage.setItem('user', JSON.stringify(user));
+                alert("✅ Cadastro realizado com sucesso!");
+                window.location.href = "index.html";
+            } else {
+                alert("Preencha todos os campos");
+            }
+        }
+
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Simulação (depois conecte com o backend)
+            if (username && password) {
+                const user = { id: 1, nome: "Cliente", username };
+                localStorage.setItem('user', JSON.stringify(user));
+                alert("✅ Login realizado!");
+                window.location.href = "index.html";
+            } else {
+                alert("Usuário ou senha incorretos");
+            }
         }
     </script>
 </body>
