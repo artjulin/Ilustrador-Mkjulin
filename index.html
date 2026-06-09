@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IlustraArt - Mkjulin</title>
+    <title>IlustraArt - Mkjulin | Ilustrações Digitais & Tradicionais</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -12,51 +12,52 @@
             <div class="logo">IlustraArt</div>
             <ul class="nav-links">
                 <li><a href="index.html" class="active">Início</a></li>
-                <li><a href="portfolio.html">Portfólio Digital</a></li>
-                <li><a href="tradicional.html">Arte Tradicional</a></li>
+                <li><a href="portfolio.html">Portfólio</a></li>
+                <li><a href="tradicional.html">Tradicional</a></li>
                 <li><a href="comprar.html">Preços</a></li>
                 <li><a href="agendamento.html">Agendar</a></li>
                 <li><a href="status-pedido.html">Meus Pedidos</a></li>
-                <li><a href="cadastro.html">Cadastro / Login</a></li>
             </ul>
+            <button class="user-btn" onclick="toggleUserMenu()">👤 <span id="userName">Entrar</span></button>
         </nav>
     </header>
 
     <main>
+        <!-- HERO SECTION -->
         <section class="hero-section">
             <div class="hero-content">
-                <h1>Ilustrações Digitais &amp; Tradicionais</h1>
-                <p>Transformo suas ideias em arte única. Digital (Anime, Cartoon, Concept) e Tradicional (lápis, aquarela, nanquim).</p>
+                <h1>Transforme suas ideias em arte única</h1>
+                <p>Ilustrações digitais (Anime, Chibi, Concept Art) e tradicionais à mão. Qualidade profissional com atendimento personalizado.</p>
                 <div class="hero-buttons">
-                    <a href="portfolio.html" class="btn-secondary">Ver Portfólio Digital</a>
-                    <a href="tradicional.html" class="btn-secondary">Arte Tradicional</a>
+                    <a href="portfolio.html" class="btn-secondary">Ver Portfólio</a>
                     <a href="agendamento.html" class="btn-primary">Agendar Agora</a>
                 </div>
             </div>
         </section>
 
+        <!-- SOBRE -->
         <section class="info-section">
             <div class="info-block">
-                <h2>Sobre Mkjulin</h2>
-                <p>Especialista em Anime/Mangá, Chibi, Concept Art e ilustrações tradicionais à mão. Cada peça é criada com dedicação, feedback constante e alta qualidade.</p>
+                <h2>Sobre o Ilustrador</h2>
+                <p>Olá! Sou o Mkjulin, especialista em ilustrações digitais no estilo Anime/Mangá, Chibi, Cartoon e Concept Art. Também trabalho com arte tradicional (lápis, aquarela e nanquim). Cada projeto é feito com dedicação, revisões inclusas e alta qualidade.</p>
             </div>
         </section>
 
-        <!-- Restante mantido similar com melhorias visuais -->
+        <!-- VANTAGENS -->
         <section class="advantages-section">
             <h2>Por que escolher IlustraArt?</h2>
             <div class="advantages-grid">
                 <div class="advantage-card">
                     <h3>🎨 Feedback em Tempo Real</h3>
-                    <p>Você aprova rascunhos antes da finalização.</p>
+                    <p>Você aprova os rascunhos antes da arte final.</p>
                 </div>
                 <div class="advantage-card">
-                    <h3>🚀 Entrega Rápida</h3>
-                    <p>Prazos respeitados e comunicação clara.</p>
+                    <h3>🚀 Entrega no Prazo</h3>
+                    <p>Compromisso com as datas combinadas.</p>
                 </div>
                 <div class="advantage-card">
-                    <h3>💎 Alta Qualidade</h3>
-                    <p>Arquivos em alta resolução + camadas (PSD) quando solicitado.</p>
+                    <h3>💎 Alta Resolução + PSD</h3>
+                    <p>Arquivos em 300 DPI prontos para impressão ou uso digital.</p>
                 </div>
             </div>
         </section>
@@ -65,5 +66,34 @@
     <footer>
         <p>&copy; 2026 Ilustrador Mkjulin. Todos os direitos reservados.</p>
     </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Atualiza nome do usuário na navbar
+        function updateUserUI() {
+            const user = getCurrentUser();
+            const userNameEl = document.getElementById('userName');
+            
+            if (user) {
+                userNameEl.textContent = user.nome.split(" ")[0];
+            } else {
+                userNameEl.textContent = "Entrar";
+            }
+        }
+
+        function toggleUserMenu() {
+            const user = getCurrentUser();
+            if (user) {
+                if (confirm("Deseja sair da conta?")) {
+                    logout();
+                }
+            } else {
+                window.location.href = "cadastro.html";
+            }
+        }
+
+        // Atualiza ao carregar a página
+        document.addEventListener('DOMContentLoaded', updateUserUI);
+    </script>
 </body>
 </html>
