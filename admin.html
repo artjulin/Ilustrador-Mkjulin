@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin - Mkjulin</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .admin-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            padding: 2rem;
+        }
+        .calendar {
+            background: #1e2937;
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid #4f46e5;
+        }
+        .chat-box {
+            background: #1e2937;
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid #4f46e5;
+            display: flex;
+            flex-direction: column;
+            height: 500px;
+        }
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+        }
+        .admin-tab {
+            background: #6366f1;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">IlustraArt - ADMIN</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="admin.html" class="active admin-tab">Painel Admin</a></li>
+                <li><a href="clientes.html">Clientes</a></li>
+            </ul>
+            <button onclick="logout()" class="user-btn">Sair</button>
+        </nav>
+    </header>
+
+    <main>
+        <div class="admin-container">
+            <!-- Agenda -->
+            <div class="calendar">
+                <h2>📅 Agenda de Agendamentos</h2>
+                <div id="agenda-list"></div>
+            </div>
+
+            <!-- Chat -->
+            <div class="chat-box">
+                <h2>💬 Chat com Clientes</h2>
+                <div id="chat-messages" class="messages"></div>
+                <input type="text" id="chat-input" placeholder="Digite sua mensagem..." style="flex: 1; padding: 12px; border-radius: 8px;">
+                <button onclick="sendAdminMessage()" style="margin-top: 10px; padding: 12px;">Enviar</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Ilustrador Mkjulin - Painel Administrativo</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Proteção Admin
+        function checkAdmin() {
+            const user = getCurrentUser();
+            if (!user || user.role !== 'admin') {
+                alert('Acesso restrito ao Administrador!');
+                window.location.href = 'index.html';
+                return false;
+            }
+            return user;
+        }
+
+        // Carregar Agenda
+        async function loadAgenda() {
+            const list = document.getElementById('agenda-list');
+            try {
+                const res = await fetch('/api/admin/agendamentos');
+                const agendamentos = await res.json();
+                
+                list.innerHTML = agendamentos.map(a => `
+                    <div class="order-card" style="margin-bottom: 1rem;">
+                        <h3>Pedido #${a.id} - ${a.servico}</h3>
+                        <p><strong>Cliente:</strong> ${a.nome || 'Cliente'}</p>
+                        <p><strong>Data:</strong> ${a.data_preferencial}</p>
+                        <p><strong>Status:</strong> ${a.status}</p>
+                        <button onclick="openChat(${a.id})">💬 Abrir Chat</button>
+                    </div>
+                `).join('');
+            } catch(e) {
+                list.innerHTML = '<p>Erro ao carregar agenda.</p>';
+            }
+        }
+
+        let currentRoom = null;
+
+        function openChat(roomId) {
+            currentRoom = roomId;
+            document.getElementById('chat-messages').innerHTML = `<p>Chat aberto com pedido #${roomId}</p>`;
+        }
+
+        function sendAdminMessage() {
+            const input = document.getElementById('chat-input');
+            if (!currentRoom || !input.value) return;
+            
+            const msgDiv = document.createElement('div');
+            msgDiv.textContent = 'Admin: ' + input.value;
+            document.getElementById('chat-messages').appendChild(msgDiv);
+            input.value = '';
+            // Aqui você pode integrar Socket.IO no futuro
+        }
+
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            if (checkAdmin()) {
+                loadAgenda();
+            }
+        });
+    </script>
+</body>
+</html>
