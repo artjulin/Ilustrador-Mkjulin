@@ -3,92 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro / Login - IlustraArt</title>
+    <title>Cadastro / Login - Mkjulin</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <nav class="navbar">
-            <div class="logo">IlustraArt</div>
-            <ul class="nav-links">
-                <li><a href="index.html">Início</a></li>
-                <li><a href="portfolio.html">Portfólio</a></li>
-                <li><a href="comprar.html">Preços</a></li>
-                <li><a href="agendamento.html">Agendar</a></li>
-            </ul>
-        </nav>
-    </header>
+    <nav class="navbar">
+        <div class="logo">Mkjulin</div>
+        <ul class="nav-links">
+            <li><a href="index.html">Início</a></li>
+            <li><a href="portfolio.html">Portfólio</a></li>
+            <li><a href="comprar.html">Preços</a></li>
+            <li><a href="agendamento.html">Agendar</a></li>
+            <li><a href="status-pedidos.html">Meus Pedidos</a></li>
+        </ul>
+    </nav>
 
-    <main class="form-container" style="max-width: 500px;">
-        <h2 id="formTitle">Login</h2>
-        
-        <div id="loginForm">
-            <label>Usuário / E-mail</label>
-            <input type="text" id="username" placeholder="Seu usuário" required>
-            
-            <label>Senha</label>
-            <input type="password" id="password" placeholder="Senha" required>
-            
-            <button onclick="login()" class="btn-primary" style="width:100%; margin-top:20px;">Entrar</button>
-            <p style="text-align:center; margin-top:15px;">
-                Não tem conta? <a href="#" onclick="toggleForm()">Cadastre-se</a>
-            </p>
-        </div>
-
-        <div id="registerForm" style="display:none;">
-            <label>Nome Completo</label>
-            <input type="text" id="nome" placeholder="Seu nome" required>
-            
-            <label>Usuário / E-mail</label>
-            <input type="text" id="regUsername" placeholder="usuário ou email" required>
-            
-            <label>Senha</label>
-            <input type="password" id="regPassword" placeholder="Crie uma senha" required>
-            
-            <button onclick="register()" class="btn-primary" style="width:100%; margin-top:20px;">Cadastrar</button>
-            <p style="text-align:center; margin-top:15px;">
-                Já tem conta? <a href="#" onclick="toggleForm()">Faça Login</a>
-            </p>
-        </div>
+    <main>
+        <section class="section-card" style="max-width: 500px; margin: 4rem auto;">
+            <h1>Entrar / Cadastrar</h1>
+            <!-- Formulário de login/cadastro -->
+        </section>
     </main>
 
-    <script>
-        function toggleForm() {
-            const login = document.getElementById('loginForm');
-            const register = document.getElementById('registerForm');
-            login.style.display = login.style.display === 'none' ? 'block' : 'none';
-            register.style.display = register.style.display === 'none' ? 'block' : 'none';
-        }
-
-        function register() {
-            const nome = document.getElementById('nome').value;
-            const username = document.getElementById('regUsername').value;
-            const password = document.getElementById('regPassword').value;
-
-            if (nome && username && password) {
-                const user = { id: Date.now(), nome, username };
-                localStorage.setItem('user', JSON.stringify(user));
-                alert("✅ Cadastro realizado com sucesso!");
-                window.location.href = "index.html";
-            } else {
-                alert("Preencha todos os campos");
-            }
-        }
-
-        function login() {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-
-            // Simulação (depois conecte com o backend)
-            if (username && password) {
-                const user = { id: 1, nome: "Cliente", username };
-                localStorage.setItem('user', JSON.stringify(user));
-                alert("✅ Login realizado!");
-                window.location.href = "index.html";
-            } else {
-                alert("Usuário ou senha incorretos");
-            }
-        }
-    </script>
+    <footer>
+        <p>&copy; 2026 Ilustrador Mkjulin. Todos os direitos reservados.</p>
+    </footer>
 </body>
 </html>
