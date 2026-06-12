@@ -7,46 +7,28 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <nav class="navbar">
-            <div class="logo">Mkjulin</div>
-            <ul class="nav-links">
-                <li><a href="index.html">Início</a></li>
-                <li><a href="portfolio.html">Portfólio</a></li>
-                <li><a href="agendamento.html">Fazer Agendamento</a></li>
-                <li><a href="status-pedido.html" class="active">Meus Pedidos</a></li>
-            </ul>
-        </nav>
-    </header>
+    <nav class="navbar">
+        <div class="logo">Mkjulin</div>
+        <ul class="nav-links">
+            <li><a href="index.html">Início</a></li>
+            <li><a href="portfolio.html">Portfólio</a></li>
+            <li><a href="comprar.html">Preços</a></li>
+            <li><a href="agendamento.html">Agendar</a></li>
+            <li><a href="status-pedidos.html" class="active">Meus Pedidos</a></li>
+        </ul>
+        <button class="user-btn">👤 Perfil</button>
+    </nav>
 
-    <main class="container">
-        <section class="section-header">
-            <h2>Acompanhar Meus Agendamentos</h2>
-            <p>Verifica em tempo real o estado de produção das tuas ilustrações encomendas.</p>
-        </section>
-
-        <section class="orders-list">
-            <div class="order-card">
-                <div class="order-header">
-                    <h3>Pedido #4901 - Ícone Chibi</h3>
-                    <span class="badge badge-pending">Aguardando Confirmação</span>
-                </div>
-                <div class="order-body">
-                    <p><strong>Data do Pedido:</strong> 03 de Junho de 2026</p>
-                    <p><strong>Descrição:</strong> Foto de perfil para canais de streaming com headphones.</p>
-                    <p><strong>Prazo Proposto:</strong> 12/06/2026</p>
-                </div>
-            </div>
-
-            <div class="order-card">
-                <div class="order-header">
-                    <h3>Pedido #4883 - Estilo Anime</h3>
-                    <span class="badge badge-progress">Em Produção (Lineart)</span>
-                </div>
-                <div class="order-body">
-                    <p><strong>Data do Pedido:</strong> 29 de Maio de 2026</p>
-                    <p><strong>Descrição:</strong> Ilustração de corpo inteiro de guerreiro medieval.</p>
-                    <p><strong>Prazo Confirmado:</strong> 08/06/2026</p>
+    <main>
+        <section class="section-card">
+            <h1>Minhas Compras</h1>
+            <div id="orders-list">
+                <!-- Pedidos carregados via JS -->
+                <div class="order-card">
+                    <h3>Pedido #1234</h3>
+                    <p>Ilustração Anime - Personagem Customizado</p>
+                    <p>Status: <strong>Em Andamento</strong></p>
+                    <button class="btn-primary" onclick="openChat(1234)">💬 Abrir Chat com Artista</button>
                 </div>
             </div>
         </section>
@@ -55,5 +37,11 @@
     <footer>
         <p>&copy; 2026 Ilustrador Mkjulin. Todos os direitos reservados.</p>
     </footer>
+
+    <script>
+        function openChat(orderId) {
+            alert(`Chat aberto para o pedido #${orderId} (em desenvolvimento)`);
+        }
+    </script>
 </body>
 </html>
