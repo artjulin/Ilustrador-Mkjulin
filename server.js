@@ -1,103 +1,60 @@
 const express = require('express');
-const sqlite3 = require('sqlite3').verbose();
 const bodyParser = require('body-parser');
 const path = require('path');
-
 const app = express();
+const port = 3000;
+
 app.use(bodyParser.json());
-app.use(express.static('.')); // Serve arquivos HTML, CSS, JS
+app.use(express.static(__dirname));
 
-const db = new sqlite3.Database('ilustrapro.db');
+let pedidos = []; // Armazenamento em memória (em produção use banco de dados)
 
-// ====================== CRIAÇÃO DAS TABELAS ======================
-db.serialize(() => {
-    // Usuários
-    db.run(`CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT UNIQUE NOT NULL,
-        password TEXT NOT NULL,
-        nome TEXT NOT NULL,
-        role TEXT DEFAULT 'cliente'
-    )`);
+// ==================== ROTAS ====================
 
-    // Agendamentos
-    db.run(`CREATE TABLE IF NOT EXISTS agendamentos (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id INTEGER,
-        servico TEXT,
-        descricao TEXT,
-        data_preferencial TEXT,
-        valor REAL,
-        status TEXT DEFAULT 'Pendente',
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY(user_id) REFERENCES users(id)
-    )`);
-
-    // Admin padrão
-    db.run(`INSERT OR IGNORE INTO users (username, password, nome, role) 
-            VALUES ('admin', '1234', 'Mkjulin', 'admin')`);
-
-    console.log("✅ Banco de dados carregado com sucesso!");
-});
-
-// ====================== ROTAS ======================
-
-// Cadastro
-app.post('/api/register', (req, res) => {
-    const { nome, username, password } = req.body;
-    
-    db.run("INSERT INTO users (nome, username, password) VALUES (?, ?, ?)",
-        [nome, username, password], function(err) {
-            if (err) {
-                return res.json({ success: false, message: "Usuário já existe" });
-            }
-            res.json({ success: true, message: "Cadastro realizado com sucesso!" });
-        });
-});
-
-// Login
-app.post('/api/login', (req, res) => {
-    const { username, password } = req.body;
-    
-    db.get("SELECT id, nome, username, role FROM users WHERE username = ? AND password = ?",
-        [username, password], (err, user) => {
-            if (err) return res.status(500).json({ success: false });
-            
-            if (user) {
-                res.json({ success: true, user });
-            } else {
-                res.json({ success: false, message: "Usuário ou senha incorretos" });
-            }
-        });
-});
-
-// Agendar (protegido)
+// Salvar novo agendamento/pedido
 app.post('/api/agendar', (req, res) => {
-    const { user_id, servico, descricao, data_preferencial, valor } = req.body;
-    
-    if (!user_id) {
-        return res.json({ success: false, message: "Você precisa estar logado" });
-    }
-
-    db.run(`INSERT INTO agendamentos (user_id, servico, descricao, data_preferencial, valor) 
-            VALUES (?, ?, ?, ?, ?)`,
-        [user_id, servico, descricao, data_preferencial, valor],
-        function(err) {
-            if (err) return res.json({ success: false });
-            res.json({ success: true, id: this.lastID, message: "Agendamento realizado!" });
-        });
+  const { nome, email, descricao, tipo } = req.body;
+  
+  const novoPedido = {
+    id: Date.now(),
+    nome: nome || "Cliente",
+    email: email || "email@exemplo.com",
+    descricao: descricao || "Sem descrição",
+    tipo: tipo || "Ilustração Personalizada",
+    status: "Pendente",
+    data: new Date().toLocaleDateString('pt-BR'),
+    timestamp: new Date()
+  };
+  
+  pedidos.unshift(novoPedido); // Adiciona no topo
+  console.log("✅ Novo pedido recebido:", novoPedido);
+  
+  res.json({ success: true, pedido: novoPedido });
 });
 
-// Buscar meus pedidos
-app.get('/api/meus-pedidos/:userId', (req, res) => {
-    db.all("SELECT * FROM agendamentos WHERE user_id = ? ORDER BY created_at DESC",
-        [req.params.userId], (err, rows) => {
-            res.json(rows);
-        });
+// Listar todos os pedidos (para admin)
+app.get('/api/pedidos', (req, res) => {
+  res.json(pedidos);
 });
 
-const PORT = 3000;
-app.listen(PORT, () => {
-    console.log(`🚀 Servidor rodando em http://localhost:${PORT}`);
-    console.log(`Acesse: http://localhost:${PORT}/index.html`);
+// Listar pedidos de um cliente (simulado por email)
+app.get('/api/meus-pedidos', (req, res) => {
+  const email = req.query.email;
+  if (email) {
+    const meusPedidos = pedidos.filter(p => p.email === email);
+    res.json(meusPedidos);
+  } else {
+    res.json(pedidos); // retorna todos se não filtrar
+  }
+});
+
+// Chat (simulado)
+app.post('/api/chat', (req, res) => {
+  const { pedidoId, mensagem, remetente } = req.body;
+  console.log(`💬 [${remetente}] Pedido #${pedidoId}: ${mensagem}`);
+  res.json({ success: true, mensagem: "Mensagem enviada!" });
+});
+
+app.listen(port, () => {
+  console.log(`🚀 Servidor rodando em http://localhost:${port}`);
 });
