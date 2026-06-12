@@ -21,16 +21,11 @@
 
     <main>
         <section class="section-card">
-            <h1>Minhas Compras</h1>
-            <div id="orders-list">
-                <!-- Pedidos carregados via JS -->
-                <div class="order-card">
-                    <h3>Pedido #1234</h3>
-                    <p>Ilustração Anime - Personagem Customizado</p>
-                    <p>Status: <strong>Em Andamento</strong></p>
-                    <button class="btn-primary" onclick="openChat(1234)">💬 Abrir Chat com Artista</button>
-                </div>
-            </div>
+            <h1>Meus Pedidos</h1>
+            <input type="email" id="emailFiltro" placeholder="Digite seu email para ver pedidos" style="width:100%; padding:12px; margin-bottom:20px;">
+            <button onclick="carregarMeusPedidos()" class="btn-primary">Buscar Meus Pedidos</button>
+            
+            <div id="lista-pedidos"></div>
         </section>
     </main>
 
@@ -39,8 +34,43 @@
     </footer>
 
     <script>
-        function openChat(orderId) {
-            alert(`Chat aberto para o pedido #${orderId} (em desenvolvimento)`);
+        async function carregarMeusPedidos() {
+            const email = document.getElementById('emailFiltro').value;
+            const res = await fetch(`/api/meus-pedidos?email=${email}`);
+            const pedidos = await res.json();
+            
+            const container = document.getElementById('lista-pedidos');
+            container.innerHTML = '';
+
+            if (pedidos.length === 0) {
+                container.innerHTML = '<p>Nenhum pedido encontrado.</p>';
+                return;
+            }
+
+            pedidos.forEach(p => {
+                const div = document.createElement('div');
+                div.className = 'order-card';
+                div.innerHTML = `
+                    <h3>Pedido #${p.id}</h3>
+                    <p><strong>Tipo:</strong> ${p.tipo}</p>
+                    <p><strong>Status:</strong> ${p.status}</p>
+                    <p><strong>Data:</strong> ${p.data}</p>
+                    <button class="btn-primary" onclick="abrirChat(${p.id})">💬 Abrir Chat</button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function abrirChat(pedidoId) {
+            const msg = prompt("Digite sua mensagem para o artista:");
+            if (msg) {
+                fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ pedidoId, mensagem: msg, remetente: 'cliente' })
+                });
+                alert('Mensagem enviada!');
+            }
         }
     </script>
 </body>
