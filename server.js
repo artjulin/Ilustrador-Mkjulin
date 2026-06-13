@@ -7,52 +7,38 @@ const port = 3000;
 app.use(bodyParser.json());
 app.use(express.static(__dirname));
 
-let pedidos = []; // Armazenamento em memória (em produção use banco de dados)
+let pedidos = [];
+let mensagens = {}; // { pedidoId: [ {remetente, mensagem, data} ] }
 
-// ==================== ROTAS ====================
+// ===================== ROTAS =====================
 
-// Salvar novo agendamento/pedido
-app.post('/api/agendar', (req, res) => {
-  const { nome, email, descricao, tipo } = req.body;
+app.post('/api/agendar', (req, res) => { /* ... mesmo código anterior */ });
+
+app.get('/api/pedidos', (req, res) => res.json(pedidos));
+app.get('/api/meus-pedidos', (req, res) => { /* ... mesmo código anterior */ });
+
+// ==================== CHAT ====================
+app.post('/api/mensagem', (req, res) => {
+  const { pedidoId, remetente, mensagem } = req.body;
   
-  const novoPedido = {
+  if (!mensagens[pedidoId]) mensagens[pedidoId] = [];
+  
+  const novaMsg = {
     id: Date.now(),
-    nome: nome || "Cliente",
-    email: email || "email@exemplo.com",
-    descricao: descricao || "Sem descrição",
-    tipo: tipo || "Ilustração Personalizada",
-    status: "Pendente",
-    data: new Date().toLocaleDateString('pt-BR'),
-    timestamp: new Date()
+    remetente, // 'cliente' ou 'admin'
+    mensagem,
+    data: new Date().toLocaleTimeString('pt-BR')
   };
   
-  pedidos.unshift(novoPedido); // Adiciona no topo
-  console.log("✅ Novo pedido recebido:", novoPedido);
+  mensagens[pedidoId].push(novaMsg);
+  console.log(`💬 Nova mensagem no pedido #${pedidoId} de ${remetente}`);
   
-  res.json({ success: true, pedido: novoPedido });
+  res.json({ success: true, mensagem: novaMsg });
 });
 
-// Listar todos os pedidos (para admin)
-app.get('/api/pedidos', (req, res) => {
-  res.json(pedidos);
-});
-
-// Listar pedidos de um cliente (simulado por email)
-app.get('/api/meus-pedidos', (req, res) => {
-  const email = req.query.email;
-  if (email) {
-    const meusPedidos = pedidos.filter(p => p.email === email);
-    res.json(meusPedidos);
-  } else {
-    res.json(pedidos); // retorna todos se não filtrar
-  }
-});
-
-// Chat (simulado)
-app.post('/api/chat', (req, res) => {
-  const { pedidoId, mensagem, remetente } = req.body;
-  console.log(`💬 [${remetente}] Pedido #${pedidoId}: ${mensagem}`);
-  res.json({ success: true, mensagem: "Mensagem enviada!" });
+app.get('/api/mensagens/:pedidoId', (req, res) => {
+  const pedidoId = req.params.pedidoId;
+  res.json(mensagens[pedidoId] || []);
 });
 
 app.listen(port, () => {
