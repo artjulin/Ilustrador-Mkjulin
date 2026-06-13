@@ -5,72 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfólio - Mkjulin</title>
     <link rel="stylesheet" href="styles.css">
-    <style>
-        /* Estilos específicos do Portfolio (mantendo consistência) */
-        .portfolio-hero {
-            text-align: center;
-            padding: 4rem 2rem;
-            background: linear-gradient(135deg, #1e2937, #312e81);
-            border-radius: 20px;
-            margin-bottom: 3rem;
-        }
-
-        .portfolio-hero h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            color: #c4d0ff;
-        }
-
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-            gap: 25px;
-            margin-top: 30px;
-        }
-
-        .gallery-item {
-            position: relative;
-            overflow: hidden;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-            transition: all 0.4s;
-        }
-
-        .gallery-item:hover {
-            transform: translateY(-12px);
-            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.35);
-        }
-
-        .gallery-item img {
-            width: 100%;
-            height: 380px;
-            object-fit: cover;
-            transition: all 0.5s;
-        }
-
-        .gallery-item:hover img {
-            transform: scale(1.08);
-        }
-
-        .gallery-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(transparent, rgba(15, 23, 42, 0.95));
-            padding: 25px;
-            color: white;
-        }
-
-        .instructions {
-            background: #1e2937;
-            padding: 35px;
-            border-radius: 20px;
-            border: 1px solid #6366f1;
-            max-width: 850px;
-            margin: 40px auto;
-        }
-    </style>
 </head>
 <body>
     <nav class="navbar">
@@ -82,59 +16,47 @@
             <li><a href="agendamento.html">Agendar</a></li>
             <li><a href="status-pedidos.html">Meus Pedidos</a></li>
         </ul>
-        <button class="user-btn" onclick="window.location.href='cadastro.html'">👤 Entrar</button>
+        <button class="user-btn">👤 Entrar</button>
     </nav>
 
     <main>
-        <!-- Hero Section -->
-        <section class="portfolio-hero section-card">
-            <h1>Portfólio</h1>
-            <p style="font-size: 1.3rem; max-width: 700px; margin: 0 auto;">
-                Explore meu trabalho em diferentes estilos de ilustração
-            </p>
-        </section>
-
-        <!-- Instruções -->
-        <div class="instructions">
-            <h2>Como Realizar sua Compra</h2>
-            <ol>
-                <li>Escolha o estilo desejado na <a href="comprar.html">Tabela de Preços</a></li>
-                <li>Faça seu <a href="agendamento.html">Agendamento</a> (é necessário estar logado)</li>
-                <li>Envie referências e detalhes do projeto</li>
-                <li>Confirme o pagamento via Pix</li>
-                <li>Receba sua arte digital em alta qualidade</li>
-            </ol>
-        </div>
-
-        <!-- Galeria de Artes -->
         <section class="section-card">
-            <h2 style="text-align: center; margin-bottom: 2rem;">Exemplos de Trabalhos</h2>
+            <h1>Portfólio</h1>
             
-            <div class="gallery">
-                <!-- Imagem 1 -->
-                <div class="gallery-item">
-                    <img src="https://via.placeholder.com/800x600/4f46e5/ffffff?text=Anime+Full+Body" alt="Anime Style">
-                    <div class="gallery-overlay">
+            <div class="instructions" style="background:#1e2937; padding:30px; border-radius:16px; margin:25px 0;">
+                <h2>Como Comprar</h2>
+                <ol>
+                    <li>Veja os preços em <a href="comprar.html">Tabela de Preços</a></li>
+                    <li>Faça login e agende seu projeto</li>
+                    <li>O administrador receberá seu pedido imediatamente</li>
+                    <li>Converse pelo chat até a entrega</li>
+                </ol>
+            </div>
+
+            <h2 style="text-align:center; margin:40px 0 25px;">Exemplos de Trabalhos</h2>
+            
+            <div class="portfolio-grid">
+                <div class="portfolio-box">
+                    <img src="https://via.placeholder.com/800x600/4f46e5/ffffff?text=Anime+Style" alt="Anime">
+                    <div class="info">
                         <h3>Anime / Mangá</h3>
-                        <p>Estilo detalhado e dinâmico</p>
+                        <p>Estilo japonês detalhado</p>
                     </div>
                 </div>
 
-                <!-- Imagem 2 -->
-                <div class="gallery-item">
-                    <img src="https://via.placeholder.com/800x600/7c3aed/ffffff?text=Cartoon+Character" alt="Cartoon Style">
-                    <div class="gallery-overlay">
+                <div class="portfolio-box">
+                    <img src="https://via.placeholder.com/800x600/7c3aed/ffffff?text=Cartoon" alt="Cartoon">
+                    <div class="info">
                         <h3>Cartoon</h3>
-                        <p>Estilo fofo e expressivo</p>
+                        <p>Estilo fofo e divertido</p>
                     </div>
                 </div>
 
-                <!-- Imagem 3 -->
-                <div class="gallery-item">
+                <div class="portfolio-box">
                     <img src="https://via.placeholder.com/800x600/6366f1/ffffff?text=Concept+Art" alt="Concept Art">
-                    <div class="gallery-overlay">
+                    <div class="info">
                         <h3>Concept Art</h3>
-                        <p>Arte conceitual e cenários</p>
+                        <p>Arte conceitual profissional</p>
                     </div>
                 </div>
             </div>
