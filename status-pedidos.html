@@ -16,62 +16,165 @@
             <li><a href="agendamento.html">Agendar</a></li>
             <li><a href="status-pedidos.html" class="active">Meus Pedidos</a></li>
         </ul>
-        <button class="user-btn">👤 Perfil</button>
+        <button class="user-btn" onclick="logout()">Sair</button>
     </nav>
 
     <main>
         <section class="section-card">
             <h1>Meus Pedidos</h1>
-            <input type="email" id="emailFiltro" placeholder="Digite seu email para ver pedidos" style="width:100%; padding:12px; margin-bottom:20px;">
-            <button onclick="carregarMeusPedidos()" class="btn-primary">Buscar Meus Pedidos</button>
             
+            <div style="margin-bottom: 20px;">
+                <input type="email" id="emailFiltro" placeholder="Digite seu email para ver seus pedidos" style="width:100%; max-width:500px; padding:12px; border-radius:8px; background:#334155; border:none; color:white;">
+                <button onclick="carregarMeusPedidos()" class="btn-primary">Buscar Pedidos</button>
+            </div>
+
             <div id="lista-pedidos"></div>
         </section>
     </main>
+
+    <!-- ==================== MODAL DE CHAT ==================== -->
+    <div id="chatModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:2000; align-items:center; justify-content:center;">
+        <div style="width:90%; max-width:650px; background:#1e2937; border-radius:20px; height:85vh; display:flex; flex-direction:column; box-shadow:0 20px 50px rgba(0,0,0,0.6);">
+            
+            <div style="padding:20px; border-bottom:1px solid #6366f1; display:flex; justify-content:space-between; align-items:center;">
+                <h3>💬 Chat - Pedido #<span id="modalPedidoId"></span></h3>
+                <button onclick="fecharChat()" style="background:none; border:none; font-size:28px; color:#94a3b8; cursor:pointer;">✕</button>
+            </div>
+
+            <div id="chatBody" style="flex:1; padding:20px; overflow-y:auto; display:flex; flex-direction:column; gap:12px;"></div>
+
+            <div style="padding:20px; border-top:1px solid #6366f1; display:flex; gap:10px;">
+                <input type="text" id="chatInput" placeholder="Digite sua mensagem..." 
+                       style="flex:1; padding:14px; border-radius:12px; background:#334155; border:none; color:white; font-size:1rem;"
+                       onkeypress="if(event.key === 'Enter') enviarMensagem()">
+                <button onclick="enviarMensagem()" class="btn-primary">Enviar</button>
+            </div>
+        </div>
+    </div>
 
     <footer>
         <p>&copy; 2026 Ilustrador Mkjulin. Todos os direitos reservados.</p>
     </footer>
 
     <script>
-        async function carregarMeusPedidos() {
-            const email = document.getElementById('emailFiltro').value;
-            const res = await fetch(`/api/meus-pedidos?email=${email}`);
-            const pedidos = await res.json();
-            
-            const container = document.getElementById('lista-pedidos');
-            container.innerHTML = '';
+        let chatPedidoId = null;
 
-            if (pedidos.length === 0) {
-                container.innerHTML = '<p>Nenhum pedido encontrado.</p>';
+        // ===================== CARREGAR PEDIDOS =====================
+        async function carregarMeusPedidos() {
+            const email = document.getElementById('emailFiltro').value.trim();
+            if (!email) {
+                alert("Por favor, digite seu email para ver seus pedidos.");
                 return;
             }
 
-            pedidos.forEach(p => {
-                const div = document.createElement('div');
-                div.className = 'order-card';
-                div.innerHTML = `
-                    <h3>Pedido #${p.id}</h3>
-                    <p><strong>Tipo:</strong> ${p.tipo}</p>
-                    <p><strong>Status:</strong> ${p.status}</p>
-                    <p><strong>Data:</strong> ${p.data}</p>
-                    <button class="btn-primary" onclick="abrirChat(${p.id})">💬 Abrir Chat</button>
-                `;
-                container.appendChild(div);
-            });
-        }
+            try {
+                const res = await fetch(`/api/meus-pedidos?email=${encodeURIComponent(email)}`);
+                const pedidos = await res.json();
+                
+                const container = document.getElementById('lista-pedidos');
+                container.innerHTML = '';
 
-        function abrirChat(pedidoId) {
-            const msg = prompt("Digite sua mensagem para o artista:");
-            if (msg) {
-                fetch('/api/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ pedidoId, mensagem: msg, remetente: 'cliente' })
+                if (pedidos.length === 0) {
+                    container.innerHTML = `<p style="text-align:center; padding:40px; color:#94a3b8;">Nenhum pedido encontrado com este email.</p>`;
+                    return;
+                }
+
+                pedidos.forEach(p => {
+                    const div = document.createElement('div');
+                    div.className = 'order-card';
+                    div.innerHTML = `
+                        <h3>Pedido #${p.id}</h3>
+                        <p><strong>Tipo:</strong> ${p.tipo}</p>
+                        <p><strong>Status:</strong> <span style="color:#a5b4fc;">${p.status}</span></p>
+                        <p><strong>Data:</strong> ${p.data}</p>
+                        <button class="btn-primary" onclick="abrirChat(${p.id})">💬 Abrir Chat com o Artista</button>
+                    `;
+                    container.appendChild(div);
                 });
-                alert('Mensagem enviada!');
+            } catch (error) {
+                alert("Erro ao carregar pedidos.");
             }
         }
+
+        // ===================== CHAT =====================
+        function abrirChat(pedidoId) {
+            chatPedidoId = pedidoId;
+            document.getElementById('modalPedidoId').textContent = pedidoId;
+            document.getElementById('chatModal').style.display = 'flex';
+            carregarMensagens();
+        }
+
+        function fecharChat() {
+            document.getElementById('chatModal').style.display = 'none';
+        }
+
+        async function carregarMensagens() {
+            if (!chatPedidoId) return;
+            
+            try {
+                const res = await fetch(`/api/mensagens/${chatPedidoId}`);
+                const mensagens = await res.json();
+                
+                const chatBody = document.getElementById('chatBody');
+                chatBody.innerHTML = '';
+
+                mensagens.forEach(m => {
+                    const isAdmin = m.remetente === 'admin';
+                    const msgDiv = document.createElement('div');
+                    msgDiv.style.alignSelf = isAdmin ? 'flex-start' : 'flex-end';
+                    msgDiv.style.maxWidth = '80%';
+                    msgDiv.style.padding = '14px 18px';
+                    msgDiv.style.borderRadius = '18px';
+                    msgDiv.style.backgroundColor = isAdmin ? '#4338ca' : '#334155';
+                    msgDiv.style.color = 'white';
+                    msgDiv.innerHTML = `
+                        <small style="opacity:0.8;">${isAdmin ? 'Artista' : 'Você'} • ${m.data}</small><br>
+                        ${m.mensagem}
+                    `;
+                    chatBody.appendChild(msgDiv);
+                });
+
+                chatBody.scrollTop = chatBody.scrollHeight;
+            } catch (e) {
+                console.error("Erro ao carregar mensagens");
+            }
+        }
+
+        async function enviarMensagem() {
+            const input = document.getElementById('chatInput');
+            const mensagem = input.value.trim();
+            
+            if (!mensagem || !chatPedidoId) return;
+
+            try {
+                await fetch('/api/mensagem', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        pedidoId: chatPedidoId,
+                        remetente: 'cliente',
+                        mensagem: mensagem
+                    })
+                });
+
+                input.value = '';
+                carregarMensagens(); // Atualiza o chat
+            } catch (e) {
+                alert("Erro ao enviar mensagem");
+            }
+        }
+
+        function logout() {
+            if (confirm("Deseja sair da conta?")) {
+                localStorage.removeItem('usuario');
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Fechar modal ao clicar fora
+        document.getElementById('chatModal').addEventListener('click', function(e) {
+            if (e.target === this) fecharChat();
+        });
     </script>
 </body>
 </html>
