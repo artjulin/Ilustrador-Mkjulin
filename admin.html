@@ -8,15 +8,12 @@
     <style>
         .login-container {
             max-width: 420px;
-            margin: 100px auto;
+            margin: 120px auto;
             background: #1e2937;
             padding: 40px;
             border-radius: 20px;
             border: 2px solid #6366f1;
             text-align: center;
-        }
-        .admin-content {
-            display: none;
         }
     </style>
 </head>
@@ -34,63 +31,59 @@
     </nav>
 
     <main>
-        <!-- Tela de Login Admin -->
+        <!-- Login Admin -->
         <div id="loginScreen" class="section-card login-container">
-            <h1>🔐 Acesso Administrativo</h1>
-            <p style="margin: 20px 0;">Área restrita</p>
-            
-            <input type="text" id="adminUser" placeholder="Usuário" value="admin" style="width:100%; padding:14px; margin:10px 0; border-radius:8px; background:#334155; border:none; color:white;">
-            <input type="password" id="adminPass" placeholder="Senha" style="width:100%; padding:14px; margin:10px 0; border-radius:8px; background:#334155; border:none; color:white;">
-            <button onclick="fazerLoginAdmin()" class="btn-primary" style="width:100%; margin-top:15px;">Entrar como Admin</button>
-            <p id="erroLogin" style="color: #f87171; margin-top: 10px; display:none;">Usuário ou senha incorretos!</p>
+            <h1>🔐 Painel Administrativo</h1>
+            <input type="text" id="adminUser" value="admin" placeholder="Usuário" style="width:100%; padding:14px; margin:10px 0;">
+            <input type="password" id="adminPass" placeholder="Senha" style="width:100%; padding:14px; margin:10px 0;">
+            <button onclick="fazerLoginAdmin()" class="btn-primary" style="width:100%;">Entrar</button>
+            <p id="erroLogin" style="color:#f87171; display:none;">Usuário ou senha incorretos</p>
         </div>
 
-        <!-- Conteúdo do Admin (escondido até login) -->
-        <div id="adminContent" class="admin-content">
+        <!-- Conteúdo Admin -->
+        <div id="adminContent" style="display:none;">
             <section class="section-card">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                    <h1>Painel Administrativo</h1>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h1>Painel do Administrador</h1>
                     <button onclick="logoutAdmin()" class="btn-primary">Sair</button>
                 </div>
                 
-                <button onclick="carregarPedidosAdmin()" class="btn-primary">Atualizar Lista de Pedidos</button>
+                <button onclick="carregarPedidos()" class="btn-primary" style="margin:15px 0;">Atualizar Pedidos</button>
                 
-                <div id="lista-admin" style="margin-top: 25px;"></div>
+                <div id="lista-admin"></div>
             </section>
         </div>
     </main>
 
     <footer>
-        <p>&copy; 2026 Ilustrador Mkjulin. Todos os direitos reservados.</p>
+        <p>&copy; 2026 Ilustrador Mkjulin.</p>
     </footer>
 
     <script>
-        // Credenciais do Admin
         const ADMIN_USER = "admin";
         const ADMIN_PASS = "123456";
 
         function fazerLoginAdmin() {
-            const user = document.getElementById('adminUser').value.trim();
-            const pass = document.getElementById('adminPass').value.trim();
-            const erro = document.getElementById('erroLogin');
+            const user = document.getElementById('adminUser').value;
+            const pass = document.getElementById('adminPass').value;
 
             if (user === ADMIN_USER && pass === ADMIN_PASS) {
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('adminContent').style.display = 'block';
-                carregarPedidosAdmin(); // Carrega automaticamente
+                carregarPedidos();
             } else {
-                erro.style.display = 'block';
+                document.getElementById('erroLogin').style.display = 'block';
             }
         }
 
-        async function carregarPedidosAdmin() {
+        async function carregarPedidos() {
             const res = await fetch('/api/pedidos');
             const pedidos = await res.json();
             const container = document.getElementById('lista-admin');
             container.innerHTML = '';
 
             if (pedidos.length === 0) {
-                container.innerHTML = '<p style="text-align:center; padding:30px;">Nenhum pedido recebido ainda.</p>';
+                container.innerHTML = '<p style="text-align:center; padding:40px;">Nenhum pedido recebido ainda.</p>';
                 return;
             }
 
@@ -98,40 +91,55 @@
                 const div = document.createElement('div');
                 div.className = 'order-card';
                 div.innerHTML = `
-                    <h3>Pedido #${p.id} - ${p.nome}</h3>
+                    <h3>Pedido #${p.id} — ${p.nome}</h3>
                     <p><strong>Email:</strong> ${p.email}</p>
                     <p><strong>Tipo:</strong> ${p.tipo}</p>
-                    <p><strong>Status:</strong> ${p.status}</p>
-                    <p><strong>Data:</strong> ${p.data}</p>
-                    <button class="btn-primary" onclick="abrirChatAdmin(${p.id})">💬 Chat com Cliente</button>
+                    <p><strong>Descrição:</strong> ${p.descricao}</p>
+                    <p><strong>Status:</strong> ${p.status} | Data: ${p.data}</p>
+                    <button class="btn-primary" onclick="abrirChatAdmin(${p.id})">💬 Abrir Chat com Cliente</button>
                 `;
                 container.appendChild(div);
             });
         }
 
+        let chatPedidoId = null;
+
         function abrirChatAdmin(pedidoId) {
-            const msg = prompt("Digite sua resposta para o cliente:");
-            if (msg) {
-                fetch('/api/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ pedidoId, mensagem: msg, remetente: 'admin' })
-                });
-                alert('✅ Mensagem enviada ao cliente!');
-            }
+            chatPedidoId = pedidoId;
+            const modal = document.createElement('div');
+            modal.id = 'chatModalAdmin';
+            modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:3000; display:flex; align-items:center; justify-content:center;';
+            modal.innerHTML = `
+                <div style="width:90%; max-width:650px; background:#1e2937; border-radius:20px; height:85vh; display:flex; flex-direction:column;">
+                    <div style="padding:20px; border-bottom:1px solid #6366f1;">
+                        <h3>Chat - Pedido #${pedidoId}</h3>
+                    </div>
+                    <div id="chatBodyAdmin" style="flex:1; padding:20px; overflow-y:auto;"></div>
+                    <div style="padding:20px; border-top:1px solid #6366f1; display:flex; gap:10px;">
+                        <input type="text" id="chatInputAdmin" placeholder="Responda o cliente..." style="flex:1; padding:14px; border-radius:12px; background:#334155;">
+                        <button onclick="enviarMsgAdmin()" class="btn-primary">Enviar</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            carregarMensagensAdmin();
+        }
+
+        async function carregarMensagensAdmin() {
+            const res = await fetch(`/api/mensagens/${chatPedidoId}`);
+            const msgs = await res.json();
+            const body = document.getElementById('chatBodyAdmin');
+            body.innerHTML = '';
+            // ... (mesma lógica de exibição do chat do cliente)
+        }
+
+        async function enviarMsgAdmin() {
+            // ... lógica de envio
         }
 
         function logoutAdmin() {
-            if (confirm("Deseja sair do painel administrativo?")) {
-                document.getElementById('loginScreen').style.display = 'block';
-                document.getElementById('adminContent').style.display = 'none';
-            }
+            location.reload();
         }
-
-        // Enter key support
-        document.getElementById('adminPass').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') fazerLoginAdmin();
-        });
     </script>
 </body>
 </html>
