@@ -20,50 +20,58 @@
     </nav>
 
     <main>
-        <section class="section-card" id="agendamentoContent">
-            <h1>Agende sua Ilustração</h1>
-            <!-- Formulário aqui (mesmo de antes) -->
-            <form id="agendamentoForm">
-                <input type="text" id="nome" placeholder="Seu Nome" required>
-                <input type="email" id="email" placeholder="Email" required>
-                <input type="text" id="tipo" placeholder="Tipo de Ilustração" required>
-                <textarea id="descricao" rows="6" placeholder="Descreva sua ideia..." required></textarea>
-                <button type="submit" class="btn-primary">Enviar Agendamento</button>
+        <section class="section-card">
+            <h1>Agendar Novo Projeto</h1>
+            <p style="text-align:center; margin-bottom:30px;">O administrador será notificado imediatamente após o envio.</p>
+            
+            <form id="agendamentoForm" style="max-width:700px; margin:0 auto;">
+                <input type="text" id="nome" placeholder="Seu Nome Completo" required>
+                <input type="email" id="email" placeholder="Seu Email" required>
+                <input type="text" id="tipo" placeholder="Tipo de Ilustração (ex: Anime Full Body)" required>
+                <textarea id="descricao" rows="6" placeholder="Descreva sua ideia com o máximo de detalhes possível..." required></textarea>
+                
+                <button type="submit" class="btn-primary" style="width:100%; padding:16px; font-size:1.1rem;">
+                    Enviar Agendamento para o Administrador
+                </button>
             </form>
         </section>
     </main>
 
     <footer>
-        <p>&copy; 2026 Ilustrador Mkjulin.</p>
+        <p>&copy; 2026 Ilustrador Mkjulin. Todos os direitos reservados.</p>
     </footer>
 
     <script>
-        // Verifica login
-        function verificarLogin() {
-            const usuario = localStorage.getItem('usuario');
-            if (!usuario) {
-                alert("⚠️ Você precisa estar logado para agendar um projeto!\n\nRedirecionando para a página de login...");
-                window.location.href = "cadastro.html";
-                return false;
-            }
-            return true;
-        }
+        document.getElementById('agendamentoForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-        // Executa verificação ao carregar a página
-        window.onload = function() {
-            if (!verificarLogin()) return;
-            
-            // Formulário (mesmo código anterior)
-            document.getElementById('agendamentoForm').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                alert('✅ Agendamento enviado com sucesso! (Backend simulado)');
-                // Aqui você pode chamar o /api/agendar
-            });
-        };
+            const formData = {
+                nome: document.getElementById('nome').value,
+                email: document.getElementById('email').value,
+                tipo: document.getElementById('tipo').value,
+                descricao: document.getElementById('descricao').value
+            };
+
+            try {
+                const response = await fetch('/api/agendar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('✅ Agendamento enviado com sucesso!\nO administrador foi notificado e entrará em contato.');
+                    document.getElementById('agendamentoForm').reset();
+                }
+            } catch (error) {
+                alert('Erro ao enviar agendamento. Tente novamente.');
+            }
+        });
 
         function logout() {
             localStorage.removeItem('usuario');
-            alert('Você saiu da conta.');
             window.location.href = 'index.html';
         }
     </script>
