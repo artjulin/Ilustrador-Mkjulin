@@ -1,6 +1,5 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const path = require('path');
 
 const app = express();
 const port = 3000;
@@ -8,66 +7,61 @@ const port = 3000;
 app.use(bodyParser.json());
 app.use(express.static(__dirname));
 
-// Banco em memória
 let pedidos = [];
 let mensagens = {};
 
 // ===================== ROTAS =====================
 
-// Agendamento → Salva e fica disponível para o Admin
 app.post('/api/agendar', (req, res) => {
   const { nome, email, tipo, descricao } = req.body;
 
   const novoPedido = {
     id: Date.now(),
-    nome: nome || "Cliente",
-    email: email || "sem@email.com",
-    tipo: tipo || "Ilustração",
-    descricao: descricao || "Sem descrição",
+    nome,
+    email,
+    tipo,
+    descricao,
     status: "Pendente",
     data: new Date().toLocaleDateString('pt-BR'),
-    timestamp: new Date()
+    linkFinal: null   // ← Novo campo para link da arte
   };
 
   pedidos.unshift(novoPedido);
-  console.log("✅ Novo agendamento recebido:", novoPedido);
-
-  res.json({ 
-    success: true, 
-    message: "Agendamento enviado com sucesso! O administrador foi notificado." 
-  });
+  res.json({ success: true, message: "Agendamento recebido!" });
 });
 
-// Listar todos os pedidos (Admin)
-app.get('/api/pedidos', (req, res) => {
-  res.json(pedidos);
-});
-
-// Meus Pedidos (Cliente)
+app.get('/api/pedidos', (req, res) => res.json(pedidos));
 app.get('/api/meus-pedidos', (req, res) => {
   const email = req.query.email;
-  if (email) {
-    const meus = pedidos.filter(p => p.email.toLowerCase() === email.toLowerCase());
-    res.json(meus);
+  const meus = email ? pedidos.filter(p => p.email.toLowerCase() === email.toLowerCase()) : pedidos;
+  res.json(meus);
+});
+
+// Enviar encomenda final (Admin)
+app.post('/api/entregar', (req, res) => {
+  const { pedidoId, linkFinal } = req.body;
+  
+  const pedido = pedidos.find(p => p.id === parseInt(pedidoId));
+  if (pedido) {
+    pedido.linkFinal = linkFinal;
+    pedido.status = "Entregue";
+    res.json({ success: true, message: "Encomenda enviada ao cliente!" });
   } else {
-    res.json(pedidos);
+    res.status(404).json({ success: false });
   }
 });
 
-// ===================== CHAT =====================
+// Chat
 app.post('/api/mensagem', (req, res) => {
   const { pedidoId, remetente, mensagem } = req.body;
-
   if (!mensagens[pedidoId]) mensagens[pedidoId] = [];
-
-  const novaMsg = {
+  
+  mensagens[pedidoId].push({
     id: Date.now(),
     remetente,
     mensagem,
     data: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
-  };
-
-  mensagens[pedidoId].push(novaMsg);
+  });
   res.json({ success: true });
 });
 
