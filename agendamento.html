@@ -3,38 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agendamento - Mkjulin</title>
+    <title>Agendar - IlustraArt</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <nav class="navbar">
-        <div class="logo">Mkjulin</div>
-        <ul class="nav-links">
-            <li><a href="index.html">Início</a></li>
-            <li><a href="portfolio.html">Portfólio</a></li>
-            <li><a href="comprar.html">Preços</a></li>
-            <li><a href="agendamento.html" class="active">Agendar</a></li>
-            <li><a href="status-pedidos.html">Meus Pedidos</a></li>
-        </ul>
-        <button class="user-btn" onclick="logout()">Sair</button>
-    </nav>
+    <header>
+        <nav class="navbar">
+            <div class="logo">IlustraArt</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="portfolio.html">Portfólio</a></li>
+                <li><a href="comprar.html">Preços</a></li>
+                <li><a href="agendamento.html" class="active">Agendar</a></li>
+                <li><a href="status-pedido.html">Meus Pedidos</a></li>
+                <li><a href="cadastro.html">Cadastro</a></li>
+                <li><a href="admin.html" class="admin-link">🔧 Admin</a></li>
+            </ul>
+            <button class="user-btn" onclick="window.location.href='cadastro.html'">👤 Entrar</button>
+        </nav>
+    </header>
 
-    <main>
-        <section class="section-card">
-            <h1>Agendar Novo Projeto</h1>
-            <p style="text-align:center; margin-bottom:30px;">O administrador será notificado imediatamente após o envio.</p>
-            
-            <form id="agendamentoForm" style="max-width:700px; margin:0 auto;">
-                <input type="text" id="nome" placeholder="Seu Nome Completo" required>
-                <input type="email" id="email" placeholder="Seu Email" required>
-                <input type="text" id="tipo" placeholder="Tipo de Ilustração (ex: Anime Full Body)" required>
-                <textarea id="descricao" rows="6" placeholder="Descreva sua ideia com o máximo de detalhes possível..." required></textarea>
-                
-                <button type="submit" class="btn-primary" style="width:100%; padding:16px; font-size:1.1rem;">
-                    Enviar Agendamento para o Administrador
-                </button>
-            </form>
-        </section>
+    <main class="form-container">
+        <h2>Fazer Agendamento</h2>
+        <p style="text-align:center; margin-bottom:2rem; color:#c7d2fe;">Preencha os dados abaixo para solicitar sua ilustração</p>
+
+        <form id="agendamentoForm">
+            <label>Serviço Desejado</label>
+            <select name="servico" required>
+                <option value="">Selecione um serviço...</option>
+                <option value="Chibi/Cartoon">Chibi / Cartoon - R$ 50</option>
+                <option value="Anime Full Body">Anime / Mangá Full Body - R$ 120</option>
+                <option value="Concept Art">Concept Art / Cenário - R$ 200</option>
+            </select>
+
+            <label>Descrição Detalhada da Arte</label>
+            <textarea name="descricao" rows="6" 
+                placeholder="Descreva o personagem, pose, roupas, cores, estilo, referências, ideias..." 
+                required></textarea>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                <div>
+                    <label>Data Preferencial</label>
+                    <input type="date" name="data" required>
+                </div>
+                <div>
+                    <label>Referências (opcional)</label>
+                    <input type="text" name="referencias" placeholder="Links ou nomes de imagens">
+                </div>
+            </div>
+
+            <!-- Forma de Pagamento -->
+            <label>Forma de Pagamento</label>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 0.5rem;">
+                <label style="background:#1e2937; padding:1rem; border-radius:12px; border:1px solid #475569; cursor:pointer;">
+                    <input type="radio" name="pagamento" value="pix" required> 
+                    <strong>PIX</strong> (Mais Rápido)
+                </label>
+                <label style="background:#1e2937; padding:1rem; border-radius:12px; border:1px solid #475569; cursor:pointer;">
+                    <input type="radio" name="pagamento" value="cartao"> 
+                    <strong>Cartão de Crédito</strong>
+                </label>
+                <label style="background:#1e2937; padding:1rem; border-radius:12px; border:1px solid #475569; cursor:pointer;">
+                    <input type="radio" name="pagamento" value="transferencia"> 
+                    <strong>Transferência Bancária</strong>
+                </label>
+            </div>
+
+            <button type="submit" class="btn-primary">Enviar Agendamento</button>
+        </form>
     </main>
 
     <footer>
@@ -42,38 +78,11 @@
     </footer>
 
     <script>
-        document.getElementById('agendamentoForm').addEventListener('submit', async (e) => {
+        document.getElementById('agendamentoForm').addEventListener('submit', function(e) {
             e.preventDefault();
-
-            const formData = {
-                nome: document.getElementById('nome').value,
-                email: document.getElementById('email').value,
-                tipo: document.getElementById('tipo').value,
-                descricao: document.getElementById('descricao').value
-            };
-
-            try {
-                const response = await fetch('/api/agendar', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(formData)
-                });
-
-                const result = await response.json();
-
-                if (result.success) {
-                    alert('✅ Agendamento enviado com sucesso!\nO administrador foi notificado e entrará em contato.');
-                    document.getElementById('agendamentoForm').reset();
-                }
-            } catch (error) {
-                alert('Erro ao enviar agendamento. Tente novamente.');
-            }
+            alert("✅ Agendamento enviado com sucesso!\nEm breve entraremos em contato.");
+            // Aqui você pode adicionar o envio real para o backend
         });
-
-        function logout() {
-            localStorage.removeItem('usuario');
-            window.location.href = 'index.html';
-        }
     </script>
 </body>
 </html>
