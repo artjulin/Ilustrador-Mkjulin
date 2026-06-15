@@ -3,29 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mkjulin - Ilustrações Personalizadas</title>
+    <title>IlustraArt - Mkjulin</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <nav class="navbar">
-        <div class="logo">Mkjulin</div>
-        <ul class="nav-links">
-            <li><a href="index.html" class="active">Início</a></li>
-            <li><a href="portfolio.html">Portfólio</a></li>
-            <li><a href="comprar.html">Preços</a></li>
-            <li><a href="agendamento.html">Agendar</a></li>
-            <li><a href="status-pedidos.html">Meus Pedidos</a></li>
-        </ul>
-        <button class="user-btn" onclick="window.location.href='cadastro.html'">👤 Entrar</button>
-    </nav>
+    <header>
+        <nav class="navbar">
+            <div class="logo">IlustraArt</div>
+            <ul class="nav-links">
+                <li><a href="index.html" class="active">Início</a></li>
+                <li><a href="portfolio.html">Portfólio</a></li>
+                <li><a href="comprar.html">Preços</a></li>
+                <li><a href="agendamento.html">Agendar</a></li>
+                <li><a href="status-pedido.html">Meus Pedidos</a></li>
+                <li><a href="cadastro.html">Cadastro</a></li>
+                <li><a href="admin.html" class="admin-link">🔧 Admin</a></li>
+            </ul>
+            <button class="user-btn" onclick="window.location.href='cadastro.html'">👤 Entrar</button>
+        </nav>
+    </header>
 
     <main>
-        <section class="section-card" style="text-align:center; padding:5rem 2rem;">
-            <h1 style="font-size:3.5rem; margin-bottom:1rem;">Ilustrações Personalizadas</h1>
-            <p style="font-size:1.4rem; max-width:800px; margin:0 auto 3rem;">
-                Transformo suas ideias em artes únicas nos estilos Anime, Mangá, Cartoon, Concept Art e mais.
-            </p>
-            <a href="agendamento.html" class="btn-primary" style="font-size:1.3rem; padding:18px 40px;">Agendar Agora</a>
+        <section class="hero-section">
+            <h1>Ilustrações Personalizadas</h1>
+            <p>Transformo suas ideias em arte única — Anime, Mangá, Chibi, Cartoon, Concept Art e mais.</p>
+            <div style="margin-top: 2rem;">
+                <a href="portfolio.html" class="btn-secondary">Ver Portfólio</a>
+                <a href="agendamento.html" class="btn-primary">Agendar Agora</a>
+            </div>
         </section>
     </main>
 
