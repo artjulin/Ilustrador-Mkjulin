@@ -7,30 +7,71 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Navbar igual -->
     <header>
         <nav class="navbar">
             <div class="logo">IlustraArt</div>
             <ul class="nav-links">
                 <li><a href="index.html">Início</a></li>
-                <li><a href="portfolio.html">Portfólio</a></li>
-                <li><a href="admin.html" class="admin-link active">🔧 Admin</a></li>
+                <li><a href="admin.html">🔧 Admin</a></li>
+                <li><a href="admin-pedidos.html" class="admin-link active">📋 Todos os Pedidos</a></li>
             </ul>
-            <button class="user-btn" onclick="window.location.href='admin.html'">Voltar ao Dashboard</button>
+            <button class="user-btn" onclick="window.location.href='admin.html'">Voltar</button>
         </nav>
     </header>
 
-    <main style="padding: 3rem 5%;">
+    <main>
         <h1>Todos os Pedidos</h1>
-        <!-- Tabela completa de pedidos (como na mensagem anterior) -->
-        <table style="width:100%; margin-top:2rem;">
+        
+        <table>
             <thead>
-                <tr><th>ID</th><th>Cliente</th><th>Serviço</th><th>Data</th><th>Valor</th><th>Status</th><th>Ações</th></tr>
+                <tr>
+                    <th>ID</th>
+                    <th>Cliente</th>
+                    <th>Serviço</th>
+                    <th>Descrição</th>
+                    <th>Data Preferencial</th>
+                    <th>Valor</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
             </thead>
             <tbody>
-                <!-- Adicione mais linhas conforme necessário -->
+                <tr>
+                    <td>#4901</td>
+                    <td>Mariana Silva</td>
+                    <td>Chibi / Cartoon</td>
+                    <td>Foto de perfil com headphones</td>
+                    <td>15/06/2026</td>
+                    <td>R$ 50</td>
+                    <td><span style="color:#fbbf24">● Pendente</span></td>
+                    <td><button style="background:#eab308; color:black; border:none; padding:8px 14px; border-radius:8px;">Alterar Status</button></td>
+                </tr>
+                <tr>
+                    <td>#4897</td>
+                    <td>Carlos Eduardo</td>
+                    <td>Anime Full Body</td>
+                    <td>Guerreiro medieval</td>
+                    <td>12/06/2026</td>
+                    <td>R$ 120</td>
+                    <td><span style="color:#22d3ee">● Em Produção</span></td>
+                    <td><button style="background:#eab308; color:black; border:none; padding:8px 14px; border-radius:8px;">Alterar Status</button></td>
+                </tr>
+                <tr>
+                    <td>#4885</td>
+                    <td>Ana Beatriz</td>
+                    <td>Concept Art</td>
+                    <td>Cenário cyberpunk</td>
+                    <td>10/06/2026</td>
+                    <td>R$ 200</td>
+                    <td><span style="color:#4ade80">● Concluído</span></td>
+                    <td><button style="background:#4ade80; color:black; border:none; padding:8px 14px; border-radius:8px;">Ver Arquivos</button></td>
+                </tr>
             </tbody>
         </table>
     </main>
+
+    <footer>
+        <p>&copy; 2026 IlustraArt - Painel Administrativo</p>
+    </footer>
 </body>
 </html>
