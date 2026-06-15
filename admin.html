@@ -3,143 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Mkjulin</title>
+    <title>Admin - IlustraArt</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        .login-container {
-            max-width: 420px;
-            margin: 120px auto;
-            background: #1e2937;
-            padding: 40px;
-            border-radius: 20px;
-            border: 2px solid #6366f1;
-            text-align: center;
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
         }
+        .sidebar {
+            width: 260px;
+            background: #1e2937;
+            padding: 2rem 1rem;
+            border-right: 1px solid #334155;
+        }
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            background: #0f172a;
+        }
+        .stat-card {
+            background: #1e2937;
+            padding: 1.5rem;
+            border-radius: 16px;
+            border: 1px solid #4f46e5;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2rem;
+            background: #1e2937;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+        th {
+            background: #334155;
+        }
+        .status-pendente { color: #fbbf24; }
+        .status-producao { color: #22d3ee; }
+        .status-concluido { color: #4ade80; }
     </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="logo">Mkjulin</div>
-        <ul class="nav-links">
-            <li><a href="index.html">Início</a></li>
-            <li><a href="portfolio.html">Portfólio</a></li>
-            <li><a href="comprar.html">Preços</a></li>
-            <li><a href="agendamento.html">Agendar</a></li>
-            <li><a href="status-pedidos.html">Pedidos</a></li>
-            <li><a href="admin.html" class="active">Admin</a></li>
-        </ul>
-    </nav>
-
-    <main>
-        <!-- Login Admin -->
-        <div id="loginScreen" class="section-card login-container">
-            <h1>🔐 Painel Administrativo</h1>
-            <input type="text" id="adminUser" value="admin" placeholder="Usuário" style="width:100%; padding:14px; margin:10px 0;">
-            <input type="password" id="adminPass" placeholder="Senha" style="width:100%; padding:14px; margin:10px 0;">
-            <button onclick="fazerLoginAdmin()" class="btn-primary" style="width:100%;">Entrar</button>
-            <p id="erroLogin" style="color:#f87171; display:none;">Usuário ou senha incorretos</p>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h2 style="color: #a5b4fc; margin-bottom: 2rem;">Admin IlustraArt</h2>
+            <ul style="list-style: none; color: #cbd5e1;">
+                <li style="padding: 12px 16px; background: #334155; border-radius: 8px; margin-bottom: 8px;">📊 Dashboard</li>
+                <li style="padding: 12px 16px; margin-bottom: 8px;">📋 Todos os Pedidos</li>
+                <li style="padding: 12px 16px; margin-bottom: 8px;">👥 Clientes</li>
+                <li style="padding: 12px 16px; margin-bottom: 8px;">🖼️ Serviços</li>
+                <li style="padding: 12px 16px;">📈 Relatórios</li>
+            </ul>
+            <button onclick="window.location.href='index.html'" style="margin-top: 3rem; width: 100%; padding: 12px; background: #ef4444; border: none; border-radius: 8px; color: white; cursor: pointer;">
+                Sair do Admin
+            </button>
         </div>
 
-        <!-- Conteúdo Admin -->
-        <div id="adminContent" style="display:none;">
-            <section class="section-card">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <h1>Painel do Administrador</h1>
-                    <button onclick="logoutAdmin()" class="btn-primary">Sair</button>
+        <!-- Conteúdo Principal -->
+        <div class="main-content">
+            <h1 style="color: #e0e7ff; margin-bottom: 2rem;">Dashboard do Administrador</h1>
+
+            <!-- Estatísticas -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+                <div class="stat-card">
+                    <h3>Total de Pedidos</h3>
+                    <h2 style="color: #a5b4fc; font-size: 2.5rem;">47</h2>
                 </div>
-                
-                <button onclick="carregarPedidos()" class="btn-primary" style="margin:15px 0;">Atualizar Pedidos</button>
-                
-                <div id="lista-admin"></div>
-            </section>
-        </div>
-    </main>
+                <div class="stat-card">
+                    <h3>Pendentes</h3>
+                    <h2 style="color: #fbbf24; font-size: 2.5rem;">12</h2>
+                </div>
+                <div class="stat-card">
+                    <h3>Em Produção</h3>
+                    <h2 style="color: #22d3ee; font-size: 2.5rem;">18</h2>
+                </div>
+                <div class="stat-card">
+                    <h3>Concluídos</h3>
+                    <h2 style="color: #4ade80; font-size: 2.5rem;">17</h2>
+                </div>
+            </div>
 
-    <footer>
-        <p>&copy; 2026 Ilustrador Mkjulin.</p>
+            <!-- Tabela de Pedidos Recentes -->
+            <h2 style="margin-bottom: 1rem; color: #c7d2fe;">Pedidos Recentes</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Cliente</th>
+                        <th>Serviço</th>
+                        <th>Data</th>
+                        <th>Valor</th>
+                        <th>Status</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>#4901</td>
+                        <td>Mariana Silva</td>
+                        <td>Chibi / Cartoon</td>
+                        <td>10/06/2026</td>
+                        <td>R$ 50</td>
+                        <td><span class="status-pendente">● Pendente</span></td>
+                        <td><button style="background:#eab308; color:black; border:none; padding:6px 12px; border-radius:6px; cursor:pointer;">Alterar</button></td>
+                    </tr>
+                    <tr>
+                        <td>#4897</td>
+                        <td>Carlos Eduardo</td>
+                        <td>Anime Full Body</td>
+                        <td>08/06/2026</td>
+                        <td>R$ 120</td>
+                        <td><span class="status-producao">● Em Produção</span></td>
+                        <td><button style="background:#22d3ee; color:black; border:none; padding:6px 12px; border-radius:6px; cursor:pointer;">Alterar</button></td>
+                    </tr>
+                    <tr>
+                        <td>#4885</td>
+                        <td>Ana Beatriz</td>
+                        <td>Concept Art</td>
+                        <td>05/06/2026</td>
+                        <td>R$ 200</td>
+                        <td><span class="status-concluido">● Concluído</span></td>
+                        <td><button style="background:#4ade80; color:black; border:none; padding:6px 12px; border-radius:6px; cursor:pointer;">Ver</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer style="text-align: center; padding: 1rem; background: #0f172a; color: #64748b;">
+        &copy; 2026 IlustraArt - Painel Administrativo
     </footer>
-
-    <script>
-        const ADMIN_USER = "admin";
-        const ADMIN_PASS = "123456";
-
-        function fazerLoginAdmin() {
-            const user = document.getElementById('adminUser').value;
-            const pass = document.getElementById('adminPass').value;
-
-            if (user === ADMIN_USER && pass === ADMIN_PASS) {
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('adminContent').style.display = 'block';
-                carregarPedidos();
-            } else {
-                document.getElementById('erroLogin').style.display = 'block';
-            }
-        }
-
-        async function carregarPedidos() {
-            const res = await fetch('/api/pedidos');
-            const pedidos = await res.json();
-            const container = document.getElementById('lista-admin');
-            container.innerHTML = '';
-
-            if (pedidos.length === 0) {
-                container.innerHTML = '<p style="text-align:center; padding:40px;">Nenhum pedido recebido ainda.</p>';
-                return;
-            }
-
-            pedidos.forEach(p => {
-                const div = document.createElement('div');
-                div.className = 'order-card';
-                div.innerHTML = `
-                    <h3>Pedido #${p.id} — ${p.nome}</h3>
-                    <p><strong>Email:</strong> ${p.email}</p>
-                    <p><strong>Tipo:</strong> ${p.tipo}</p>
-                    <p><strong>Descrição:</strong> ${p.descricao}</p>
-                    <p><strong>Status:</strong> ${p.status} | Data: ${p.data}</p>
-                    <button class="btn-primary" onclick="abrirChatAdmin(${p.id})">💬 Abrir Chat com Cliente</button>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        let chatPedidoId = null;
-
-        function abrirChatAdmin(pedidoId) {
-            chatPedidoId = pedidoId;
-            const modal = document.createElement('div');
-            modal.id = 'chatModalAdmin';
-            modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:3000; display:flex; align-items:center; justify-content:center;';
-            modal.innerHTML = `
-                <div style="width:90%; max-width:650px; background:#1e2937; border-radius:20px; height:85vh; display:flex; flex-direction:column;">
-                    <div style="padding:20px; border-bottom:1px solid #6366f1;">
-                        <h3>Chat - Pedido #${pedidoId}</h3>
-                    </div>
-                    <div id="chatBodyAdmin" style="flex:1; padding:20px; overflow-y:auto;"></div>
-                    <div style="padding:20px; border-top:1px solid #6366f1; display:flex; gap:10px;">
-                        <input type="text" id="chatInputAdmin" placeholder="Responda o cliente..." style="flex:1; padding:14px; border-radius:12px; background:#334155;">
-                        <button onclick="enviarMsgAdmin()" class="btn-primary">Enviar</button>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(modal);
-            carregarMensagensAdmin();
-        }
-
-        async function carregarMensagensAdmin() {
-            const res = await fetch(`/api/mensagens/${chatPedidoId}`);
-            const msgs = await res.json();
-            const body = document.getElementById('chatBodyAdmin');
-            body.innerHTML = '';
-            // ... (mesma lógica de exibição do chat do cliente)
-        }
-
-        async function enviarMsgAdmin() {
-            // ... lógica de envio
-        }
-
-        function logoutAdmin() {
-            location.reload();
-        }
-    </script>
 </body>
 </html>
