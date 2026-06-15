@@ -67,17 +67,50 @@ body {
     cursor: pointer;
 }
 
-/* ==================== FORMULÁRIO DE AGENDAMENTO ==================== */
-.form-container {
-    max-width: 800px;
-    margin: 4rem auto;
-    padding: 3.5rem 3rem;
-    background: #1e2937;
-    border-radius: 24px;
-    border: 1px solid #6366f1;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+/* ==================== CONTEÚDO GERAL ==================== */
+main {
+    flex: 1;
+    padding: 3rem 5%;
+    max-width: 1300px;
+    margin: 0 auto;
+    width: 100%;
 }
 
+.hero-section {
+    text-align: center;
+    padding: 5rem 2rem;
+    background: linear-gradient(135deg, #1e2937, #4338ca);
+    border-radius: 20px;
+    margin-bottom: 4rem;
+}
+
+.btn-primary, .btn-secondary {
+    padding: 14px 32px;
+    border-radius: 50px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+    margin: 0 8px;
+    transition: all 0.3s;
+}
+
+.btn-primary { background: #6366f1; color: white; }
+.btn-primary:hover { background: #4f46e5; transform: translateY(-3px); }
+
+.btn-secondary { 
+    background: transparent; 
+    color: #c7d2fe; 
+    border: 2px solid #6366f1; 
+}
+
+.client-section, .form-container {
+    background: #1e2937;
+    padding: 3rem;
+    border-radius: 20px;
+    border: 1px solid #6366f1;
+}
+
+/* ==================== FORMULÁRIO DE AGENDAMENTO (Mantido Bonito) ==================== */
 .form-container h2 {
     text-align: center;
     font-size: 2.4rem;
@@ -90,7 +123,6 @@ form label {
     margin: 1.6rem 0 0.6rem;
     color: #93c5fd;
     font-weight: 600;
-    font-size: 1.05rem;
 }
 
 form input, form select, form textarea {
@@ -110,12 +142,6 @@ form input:focus, form select:focus, form textarea:focus {
     outline: none;
 }
 
-form textarea {
-    resize: vertical;
-    min-height: 140px;
-}
-
-/* Caixas de Pagamento Bonitas */
 .payment-options {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -137,39 +163,7 @@ form textarea {
     transform: translateY(-4px);
 }
 
-.payment-option input[type="radio"] {
-    margin-right: 10px;
-}
-
-.payment-option label {
-    margin: 0;
-    cursor: pointer;
-    font-weight: 500;
-}
-
-/* Botão Principal */
-.btn-primary {
-    width: 100%;
-    margin-top: 2.5rem;
-    padding: 16px;
-    font-size: 1.2rem;
-    font-weight: 600;
-    background: linear-gradient(90deg, #6366f1, #818cf8);
-    color: white;
-    border: none;
-    border-radius: 50px;
-    cursor: pointer;
-    transition: all 0.4s;
-}
-
-.btn-primary:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 15px 30px rgba(99, 102, 241, 0.4);
-}
-
-/* Outros estilos gerais */
-main { flex: 1; }
-
+/* Footer */
 footer {
     text-align: center;
     padding: 2rem;
