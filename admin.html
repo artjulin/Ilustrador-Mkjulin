@@ -6,35 +6,33 @@
     <title>Admin - IlustraArt</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        .admin-container { display: flex; min-height: calc(100vh - 70px); }
-        .sidebar { width: 260px; background: #1e2937; padding: 2rem 1rem; border-right: 1px solid #4f46e5; }
-        .main-content { flex: 1; padding: 2rem; background: #0f172a; }
-        
-        .admin-tabs {
-            display: flex;
+        .admin-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            max-width: 1100px;
+            margin: 4rem auto;
+        }
+        .admin-option {
             background: #1e2937;
-            border-radius: 12px;
-            padding: 6px;
-            margin-bottom: 2rem;
-            width: fit-content;
-        }
-        .tab {
-            padding: 12px 24px;
-            border-radius: 10px;
-            cursor: pointer;
+            padding: 3rem 2rem;
+            border-radius: 20px;
+            text-align: center;
+            border: 1px solid #6366f1;
             transition: all 0.3s;
+            text-decoration: none;
+            color: inherit;
         }
-        .tab.active {
-            background: #6366f1;
-            color: white;
-            font-weight: 600;
+        .admin-option:hover {
+            transform: translateY(-10px);
+            border-color: #a5b4fc;
+            background: #25324a;
         }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-
-        table { width: 100%; border-collapse: collapse; background: #1e2937; border-radius: 12px; overflow: hidden; }
-        th, td { padding: 1rem; text-align: left; border-bottom: 1px solid #334155; }
-        th { background: #334155; }
+        .admin-option h2 {
+            font-size: 2rem;
+            margin: 1rem 0;
+            color: #a5b4fc;
+        }
     </style>
 </head>
 <body>
@@ -54,99 +52,38 @@
         </nav>
     </header>
 
-    <div class="admin-container">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <h2 style="color:#a5b4fc; margin-bottom:2rem;">Painel Administrativo</h2>
-            <ul style="list-style:none; color:#cbd5e1;">
-                <li style="padding:12px 16px; background:#4f46e5; color:white; border-radius:8px; margin:8px 0;">📋 Gerenciar Pedidos</li>
-                <li style="padding:12px 16px; margin:8px 0;">👥 Clientes</li>
-                <li style="padding:12px 16px; margin:8px 0;">🛠️ Serviços</li>
-            </ul>
+    <main>
+        <h1 style="text-align: center; margin: 4rem 0 3rem; color: #e0e7ff;">Área do Administrador</h1>
+
+        <div class="admin-options">
+            <a href="admin-pedidos.html" class="admin-option">
+                <h2>📋</h2>
+                <h3>Todos os Pedidos</h3>
+                <p>Visualizar e gerenciar todos os agendamentos</p>
+            </a>
+
+            <a href="admin-clientes.html" class="admin-option">
+                <h2>👥</h2>
+                <h3>Clientes</h3>
+                <p>Gerenciar clientes cadastrados</p>
+            </a>
+
+            <a href="admin-servicos.html" class="admin-option">
+                <h2>🛠️</h2>
+                <h3>Serviços</h3>
+                <p>Gerenciar preços e pacotes</p>
+            </a>
+
+            <a href="admin-chat.html" class="admin-option">
+                <h2>💬</h2>
+                <h3>Chat com Clientes</h3>
+                <p>Conversas diretas com clientes</p>
+            </a>
         </div>
-
-        <!-- Conteúdo Principal com Abas -->
-        <div class="main-content">
-            <h1 style="color:#e0e7ff; margin-bottom:1.5rem;">Área Administrativa</h1>
-
-            <!-- Abas -->
-            <div class="admin-tabs">
-                <div class="tab active" onclick="showTab(0)">📋 Todos os Pedidos</div>
-                <div class="tab" onclick="showTab(1)">👥 Clientes</div>
-                <div class="tab" onclick="showTab(2)">🛠️ Serviços</div>
-                <div class="tab" onclick="showTab(3)">💬 Chat com Clientes</div>
-            </div>
-
-            <!-- Aba 1: Todos os Pedidos -->
-            <div id="tab0" class="tab-content active">
-                <h2>Todos os Pedidos</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Cliente</th>
-                            <th>Serviço</th>
-                            <th>Data</th>
-                            <th>Valor</th>
-                            <th>Status</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>#4901</td>
-                            <td>Mariana Silva</td>
-                            <td>Chibi / Cartoon</td>
-                            <td>12/06/2026</td>
-                            <td>R$ 50</td>
-                            <td><span style="color:#fbbf24">● Pendente</span></td>
-                            <td><button style="background:#eab308;color:black;border:none;padding:6px 12px;border-radius:6px;">Alterar Status</button></td>
-                        </tr>
-                        <tr>
-                            <td>#4897</td>
-                            <td>Carlos Eduardo</td>
-                            <td>Anime Full Body</td>
-                            <td>10/06/2026</td>
-                            <td>R$ 120</td>
-                            <td><span style="color:#22d3ee">● Em Produção</span></td>
-                            <td><button style="background:#eab308;color:black;border:none;padding:6px 12px;border-radius:6px;">Alterar Status</button></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Aba 2: Clientes -->
-            <div id="tab1" class="tab-content">
-                <h2>Clientes Cadastrados</h2>
-                <p style="color:#94a3b8;">(Lista de clientes em breve...)</p>
-            </div>
-
-            <!-- Aba 3: Serviços -->
-            <div id="tab2" class="tab-content">
-                <h2>Gerenciar Serviços</h2>
-                <p style="color:#94a3b8;">Preços e pacotes de serviços</p>
-            </div>
-
-            <!-- Aba 4: Chat com Clientes -->
-            <div id="tab3" class="tab-content">
-                <h2>💬 Chat com Clientes</h2>
-                <p style="color:#94a3b8;">(Sistema de mensagens em tempo real em breve)</p>
-            </div>
-        </div>
-    </div>
+    </main>
 
     <footer>
-        <p>&copy; 2026 IlustraArt - Painel Administrativo</p>
+        <p>&copy; 2026 IlustraArt - Acesso Administrativo</p>
     </footer>
-
-    <script>
-        function showTab(n) {
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-            
-            document.getElementById('tab' + n).classList.add('active');
-            document.querySelectorAll('.tab')[n].classList.add('active');
-        }
-    </script>
 </body>
 </html>
