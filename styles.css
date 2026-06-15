@@ -14,18 +14,17 @@ body {
     flex-direction: column;
 }
 
-/* ==================== NAVBAR ==================== */
+/* NAVEGAÇÃO */
 .navbar {
     background: #1e2937;
     padding: 1.1rem 5%;
     position: sticky;
     top: 0;
     z-index: 1000;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
 }
 
 .logo {
@@ -36,42 +35,46 @@ body {
 
 .nav-links {
     display: flex;
-    gap: 1.6rem;
+    gap: 1.8rem;
     list-style: none;
-    flex-wrap: wrap;
 }
 
-.nav-links a {
+.nav-links li a {
     color: #cbd5e1;
     text-decoration: none;
+    font-weight: 500;
     padding: 10px 18px;
     border-radius: 50px;
     transition: all 0.3s;
 }
 
-.nav-links a:hover,
-.nav-links a.active {
+.nav-links li a:hover {
+    background: #334155;
+    color: white;
+}
+
+.nav-links li a.active {
     background: #6366f1;
     color: white;
+}
+
+.nav-links li a.admin-link {
+    background: linear-gradient(90deg, #7c3aed, #a855f7);
+    color: white;
+    font-weight: 700;
 }
 
 .user-btn {
     background: #6366f1;
     color: white;
     border: none;
-    padding: 10px 24px;
+    padding: 10px 22px;
     border-radius: 50px;
     font-weight: 600;
     cursor: pointer;
-    transition: 0.3s;
 }
 
-.user-btn:hover {
-    background: #4f46e5;
-    transform: translateY(-2px);
-}
-
-/* ==================== CONTEÚDO PRINCIPAL ==================== */
+/* CONTEÚDO */
 main {
     flex: 1;
     padding: 3rem 5%;
@@ -80,147 +83,50 @@ main {
     width: 100%;
 }
 
-.section-card {
-    background: #1e2937;
-    padding: 3rem;
-    border-radius: 20px;
-    border: 1px solid #4f46e5;
-    margin-bottom: 3rem;
-}
-
-/* Cards de Pedidos */
-.order-card {
-    background: #334155;
-    padding: 1.8rem;
-    border-radius: 16px;
-    margin-bottom: 1.5rem;
-    border: 1px solid #6366f1;
-}
-
-/* ==================== PORTFOLIO - STEPS (4 Caixas) ==================== */
-.steps-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 22px;
-    margin: 35px 0;
-}
-
-.step-card {
-    background: #1e2937;
-    padding: 28px 20px;
-    border-radius: 20px;
-    border: 1px solid #6366f1;
+.hero-section {
     text-align: center;
-    transition: all 0.4s;
-}
-
-.step-card:hover {
-    transform: translateY(-10px);
-    border-color: #a5b4fc;
-    box-shadow: 0 15px 35px rgba(99, 102, 241, 0.25);
-}
-
-.step-emoji {
-    font-size: 3.8rem;
-    margin-bottom: 16px;
-}
-
-.step-card h3 {
-    color: #a5b4fc;
-    margin-bottom: 12px;
-    font-size: 1.35rem;
-}
-
-/* ==================== GALERIA PORTFOLIO ==================== */
-.portfolio-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-    gap: 25px;
-    margin-top: 30px;
-}
-
-.portfolio-box {
-    background: #1e2937;
+    padding: 5rem 2rem;
+    background: linear-gradient(135deg, #1e2937, #4338ca);
     border-radius: 20px;
-    overflow: hidden;
-    border: 1px solid #6366f1;
-    transition: all 0.4s;
+    margin-bottom: 4rem;
 }
 
-.portfolio-box:hover {
-    transform: translateY(-12px);
-    box-shadow: 0 20px 40px rgba(99, 102, 241, 0.3);
+.hero-section h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
 }
 
-.portfolio-box img {
-    width: 100%;
-    height: 320px;
-    object-fit: cover;
-}
-
-.portfolio-box .info {
-    padding: 20px;
-    text-align: center;
-}
-
-/* ==================== TABELA DE PREÇOS ==================== */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 30px 0;
-    background: #1e2937;
-}
-
-table th {
-    background: #334155;
-    padding: 18px;
-    text-align: left;
-    color: #c4d0ff;
-}
-
-table td {
-    padding: 18px;
-    border-bottom: 1px solid #475569;
-}
-
-/* Botões */
-.btn-primary {
-    background: #6366f1;
-    color: white;
+.btn-primary, .btn-secondary {
     padding: 14px 32px;
     border-radius: 50px;
     font-weight: 600;
     text-decoration: none;
     display: inline-block;
+    margin: 0 8px;
     transition: all 0.3s;
-    border: none;
-    cursor: pointer;
 }
 
-.btn-primary:hover {
-    background: #4f46e5;
-    transform: translateY(-3px);
+.btn-primary { background: #6366f1; color: white; }
+.btn-primary:hover { background: #4f46e5; transform: translateY(-3px); }
+
+.btn-secondary { 
+    background: transparent; 
+    color: #c7d2fe; 
+    border: 2px solid #6366f1; 
+}
+
+.form-container, .client-section {
+    background: #1e2937;
+    padding: 3rem;
+    border-radius: 20px;
+    border: 1px solid #6366f1;
 }
 
 /* Footer */
 footer {
     text-align: center;
-    padding: 2.5rem;
+    padding: 2rem;
     background: #0f172a;
     color: #94a3b8;
     margin-top: auto;
-}
-
-/* Responsivo */
-@media (max-width: 768px) {
-    .nav-links {
-        gap: 0.8rem;
-        font-size: 0.95rem;
-    }
-    .navbar {
-        padding: 1rem 4%;
-    }
-    main {
-        padding: 2rem 4%;
-    }
 }
