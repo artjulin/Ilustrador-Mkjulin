@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clientes - Admin IlustraArt</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">IlustraArt</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="admin.html">🔧 Admin</a></li>
+                <li><a href="admin-clientes.html" class="admin-link active">👥 Clientes</a></li>
+            </ul>
+            <button class="user-btn" onclick="window.location.href='admin.html'">Voltar</button>
+        </nav>
+    </header>
+
+    <main style="padding: 3rem 5%;">
+        <h1>Clientes Cadastrados</h1>
+        
+        <table style="width:100%; margin-top:2rem;">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Username</th>
+                    <th>Data Cadastro</th>
+                    <th>Total de Pedidos</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>#C001</td>
+                    <td>Mariana Silva</td>
+                    <td>mariana.s</td>
+                    <td>05/06/2026</td>
+                    <td>3</td>
+                    <td><button style="background:#6366f1;color:white;border:none;padding:8px 14px;border-radius:8px;">Ver Pedidos</button></td>
+                </tr>
+                <tr>
+                    <td>#C002</td>
+                    <td>Carlos Eduardo</td>
+                    <td>carlos.rpg</td>
+                    <td>02/06/2026</td>
+                    <td>2</td>
+                    <td><button style="background:#6366f1;color:white;border:none;padding:8px 14px;border-radius:8px;">Ver Pedidos</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>
