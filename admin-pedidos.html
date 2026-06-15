@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todos os Pedidos - Admin</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navbar igual -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">IlustraArt</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="portfolio.html">Portfólio</a></li>
+                <li><a href="admin.html" class="admin-link active">🔧 Admin</a></li>
+            </ul>
+            <button class="user-btn" onclick="window.location.href='admin.html'">Voltar ao Dashboard</button>
+        </nav>
+    </header>
+
+    <main style="padding: 3rem 5%;">
+        <h1>Todos os Pedidos</h1>
+        <!-- Tabela completa de pedidos (como na mensagem anterior) -->
+        <table style="width:100%; margin-top:2rem;">
+            <thead>
+                <tr><th>ID</th><th>Cliente</th><th>Serviço</th><th>Data</th><th>Valor</th><th>Status</th><th>Ações</th></tr>
+            </thead>
+            <tbody>
+                <!-- Adicione mais linhas conforme necessário -->
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>
