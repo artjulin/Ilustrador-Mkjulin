@@ -14,7 +14,7 @@ body {
     flex-direction: column;
 }
 
-/* NAVEGAÇÃO */
+/* ==================== NAVEGAÇÃO ==================== */
 .navbar {
     background: #1e2937;
     padding: 1.1rem 5%;
@@ -72,9 +72,14 @@ body {
     border-radius: 50px;
     font-weight: 600;
     cursor: pointer;
+    transition: 0.3s;
 }
 
-/* CONTEÚDO */
+.user-btn:hover {
+    background: #4f46e5;
+}
+
+/* ==================== CONTEÚDO GERAL ==================== */
 main {
     flex: 1;
     padding: 3rem 5%;
@@ -115,11 +120,101 @@ main {
     border: 2px solid #6366f1; 
 }
 
+.btn-secondary:hover {
+    background: #6366f1;
+    color: white;
+}
+
 .form-container, .client-section {
     background: #1e2937;
     padding: 3rem;
     border-radius: 20px;
     border: 1px solid #6366f1;
+}
+
+/* ==================== ÁREA ADMIN ==================== */
+.admin-container {
+    display: flex;
+    min-height: calc(100vh - 70px);
+}
+
+.sidebar {
+    width: 260px;
+    background: #1e2937;
+    padding: 2rem 1rem;
+    border-right: 1px solid #4f46e5;
+}
+
+.main-content {
+    flex: 1;
+    padding: 2.5rem;
+    background: #0f172a;
+}
+
+.admin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.admin-card {
+    background: #1e2937;
+    padding: 2.5rem 2rem;
+    border-radius: 16px;
+    text-align: center;
+    border: 1px solid #6366f1;
+    transition: 0.3s;
+    text-decoration: none;
+    color: inherit;
+}
+
+.admin-card:hover {
+    transform: translateY(-10px);
+    border-color: #a5b4fc;
+}
+
+/* Tabs do Admin */
+.admin-tabs {
+    display: flex;
+    background: #1e2937;
+    border-radius: 12px;
+    padding: 6px;
+    margin-bottom: 2rem;
+    width: fit-content;
+}
+
+.tab {
+    padding: 12px 24px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.tab.active {
+    background: #6366f1;
+    color: white;
+    font-weight: 600;
+}
+
+/* Tabelas */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #1e2937;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #334155;
+}
+
+th {
+    background: #334155;
+    color: #c7d2fe;
 }
 
 /* Footer */
