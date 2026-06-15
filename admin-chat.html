@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat - Admin IlustraArt</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">IlustraArt</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="admin.html">🔧 Admin</a></li>
+                <li><a href="admin-chat.html" class="admin-link active">💬 Chat</a></li>
+            </ul>
+            <button class="user-btn" onclick="window.location.href='admin.html'">Voltar</button>
+        </nav>
+    </header>
+
+    <main style="padding: 3rem 5%; display: flex; gap: 2rem;">
+        <!-- Lista de Clientes -->
+        <div style="width: 300px; background:#1e2937; padding:1.5rem; border-radius:16px; height: fit-content;">
+            <h3>Conversas</h3>
+            <div style="margin-top:1rem;">
+                <div style="padding:12px; background:#334155; border-radius:8px; margin-bottom:8px; cursor:pointer;">Mariana Silva (3)</div>
+                <div style="padding:12px; background:#334155; border-radius:8px; margin-bottom:8px; cursor:pointer;">Carlos Eduardo (1)</div>
+            </div>
+        </div>
+
+        <!-- Área de Chat -->
+        <div style="flex:1; background:#1e2937; border-radius:16px; padding:2rem;">
+            <h3>Chat com Mariana Silva</h3>
+            <div style="height:400px; background:#0f172a; border-radius:12px; padding:1rem; margin:1rem 0; overflow-y:auto;">
+                <p><strong>Mariana:</strong> Oi, já tem o rascunho?</p>
+                <p style="text-align:right; color:#a5b4fc;"><strong>Você:</strong> Sim, vou enviar agora.</p>
+            </div>
+            <input type="text" placeholder="Digite sua mensagem..." style="width:100%; padding:14px; border-radius:50px; background:#334155; border:none; color:white;">
+        </div>
+    </main>
+</body>
+</html>
