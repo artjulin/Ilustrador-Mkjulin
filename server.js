@@ -5,19 +5,20 @@ const path = require('path');
 
 const app = express();
 app.use(bodyParser.json());
-app.use(express.static('.')); // Serve HTML, CSS, JS
+app.use(express.static('.'));
 
 const db = new sqlite3.Database('ilustrapro.db');
 
-// ====================== CRIAÇÃO DAS TABELAS ======================
+// ====================== CRIAÇÃO DAS TABELAS (ATUALIZADO) ======================
 db.serialize(() => {
-    // Usuários
+    // Usuários (Clientes + Admin)
     db.run(`CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT UNIQUE NOT NULL,
         password TEXT NOT NULL,
         nome TEXT NOT NULL,
-        role TEXT DEFAULT 'cliente'
+        role TEXT DEFAULT 'cliente',
+        data_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
 
     // Agendamentos
@@ -34,25 +35,29 @@ db.serialize(() => {
         FOREIGN KEY(user_id) REFERENCES users(id)
     )`);
 
-    // Admin padrão
+    // Inserir Admin padrão
     db.run(`INSERT OR IGNORE INTO users (username, password, nome, role) 
             VALUES ('admin', '1234', 'Mkjulin', 'admin')`);
 
-    console.log("✅ Banco de dados carregado com sucesso!");
+    console.log("✅ Banco de dados carregado e atualizado com sucesso!");
 });
 
 // ====================== ROTAS ======================
 
-// Cadastro
+// Cadastro de Cliente
 app.post('/api/register', (req, res) => {
     const { nome, username, password } = req.body;
     
-    db.run("INSERT INTO users (nome, username, password) VALUES (?, ?, ?)",
+    db.run("INSERT INTO users (nome, username, password, role) VALUES (?, ?, ?, 'cliente')",
         [nome, username, password], function(err) {
             if (err) {
-                return res.json({ success: false, message: "Usuário já existe" });
+                return res.json({ success: false, message: "Usuário já existe ou erro no cadastro" });
             }
-            res.json({ success: true, message: "Cadastro realizado!" });
+            res.json({ 
+                success: true, 
+                message: "Cadastro realizado com sucesso!",
+                userId: this.lastID 
+            });
         });
 });
 
@@ -84,18 +89,14 @@ app.post('/api/agendar', (req, res) => {
             VALUES (?, ?, ?, ?, ?, ?)`,
         [user_id, servico, descricao, data_preferencial, pagamento, valor],
         function(err) {
-            if (err) return res.json({ success: false, message: "Erro ao agendar" });
-            res.json({ 
-                success: true, 
-                id: this.lastID, 
-                message: "Agendamento realizado com sucesso!" 
-            });
+            if (err) return res.json({ success: false, message: "Erro ao salvar agendamento" });
+            res.json({ success: true, id: this.lastID });
         });
 });
 
-// Buscar todos os agendamentos (para Admin)
+// Buscar todos os agendamentos (Admin)
 app.get('/api/agendamentos', (req, res) => {
-    db.all(`SELECT a.*, u.nome as cliente_nome 
+    db.all(`SELECT a.*, u.nome as cliente_nome, u.username 
             FROM agendamentos a 
             JOIN users u ON a.user_id = u.id 
             ORDER BY a.created_at DESC`, 
@@ -104,7 +105,18 @@ app.get('/api/agendamentos', (req, res) => {
         });
 });
 
-// Buscar agendamentos de um usuário específico
+// Buscar todos os clientes (Admin)
+app.get('/api/clientes', (req, res) => {
+    db.all(`SELECT id, nome, username, data_cadastro 
+            FROM users 
+            WHERE role = 'cliente' 
+            ORDER BY nome`, 
+        [], (err, rows) => {
+            res.json(rows);
+        });
+});
+
+// Buscar meus pedidos
 app.get('/api/meus-pedidos/:userId', (req, res) => {
     db.all("SELECT * FROM agendamentos WHERE user_id = ? ORDER BY created_at DESC",
         [req.params.userId], (err, rows) => {
@@ -112,16 +124,9 @@ app.get('/api/meus-pedidos/:userId', (req, res) => {
         });
 });
 
-// Buscar todos os usuários (para Admin)
-app.get('/api/clientes', (req, res) => {
-    db.all("SELECT id, nome, username, role FROM users WHERE role = 'cliente' ORDER BY nome",
-        [], (err, rows) => {
-            res.json(rows);
-        });
-});
-
 const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`🚀 Servidor rodando em http://localhost:${PORT}`);
-    console.log(`Acesse: http://localhost:${PORT}/index.html`);
+    console.log(`Admin: http://localhost:${PORT}/admin.html`);
+    console.log(`Login Admin: admin / 1234`);
 });
