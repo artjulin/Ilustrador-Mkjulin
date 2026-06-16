@@ -89,4 +89,26 @@
             const username = document.getElementById('regUsername').value;
             const password = document.getElementById('regPassword').value;
 
-            if (!nome || !username || !password)
+            if (!nome || !username || !password) return alert("Preencha todos os campos");
+
+            try {
+                const res = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({nome, username, password})
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    alert("✅ Cadastro realizado! Agora faça login.");
+                    toggleForm();
+                } else {
+                    alert(data.message);
+                }
+            } catch (e) {
+                alert("Erro ao cadastrar");
+            }
+        }
+    </script>
+</body>
+</html>
