@@ -21,51 +21,21 @@
 
     <main>
         <h1>Todos os Pedidos</h1>
-        
-        <table>
+        <table id="pedidosTable">
             <thead>
                 <tr>
                     <th>ID</th>
                     <th>Cliente</th>
                     <th>Serviço</th>
                     <th>Descrição</th>
-                    <th>Data Preferencial</th>
+                    <th>Data</th>
+                    <th>Pagamento</th>
                     <th>Valor</th>
                     <th>Status</th>
-                    <th>Ações</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td>#4901</td>
-                    <td>Mariana Silva</td>
-                    <td>Chibi / Cartoon</td>
-                    <td>Foto de perfil com headphones</td>
-                    <td>15/06/2026</td>
-                    <td>R$ 50</td>
-                    <td><span style="color:#fbbf24">● Pendente</span></td>
-                    <td><button style="background:#eab308; color:black; border:none; padding:8px 14px; border-radius:8px;">Alterar Status</button></td>
-                </tr>
-                <tr>
-                    <td>#4897</td>
-                    <td>Carlos Eduardo</td>
-                    <td>Anime Full Body</td>
-                    <td>Guerreiro medieval</td>
-                    <td>12/06/2026</td>
-                    <td>R$ 120</td>
-                    <td><span style="color:#22d3ee">● Em Produção</span></td>
-                    <td><button style="background:#eab308; color:black; border:none; padding:8px 14px; border-radius:8px;">Alterar Status</button></td>
-                </tr>
-                <tr>
-                    <td>#4885</td>
-                    <td>Ana Beatriz</td>
-                    <td>Concept Art</td>
-                    <td>Cenário cyberpunk</td>
-                    <td>10/06/2026</td>
-                    <td>R$ 200</td>
-                    <td><span style="color:#4ade80">● Concluído</span></td>
-                    <td><button style="background:#4ade80; color:black; border:none; padding:8px 14px; border-radius:8px;">Ver Arquivos</button></td>
-                </tr>
+            <tbody id="pedidosBody">
+                <!-- Preenchido via JS -->
             </tbody>
         </table>
     </main>
@@ -73,5 +43,38 @@
     <footer>
         <p>&copy; 2026 IlustraArt - Painel Administrativo</p>
     </footer>
+
+    <script>
+        async function loadPedidos() {
+            try {
+                const response = await fetch('/api/agendamentos');
+                const pedidos = await response.json();
+                
+                const tbody = document.getElementById('pedidosBody');
+                tbody.innerHTML = '';
+
+                pedidos.forEach(p => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>#${p.id}</td>
+                        <td>${p.cliente_nome}</td>
+                        <td>${p.servico}</td>
+                        <td>${p.descricao.substring(0, 60)}...</td>
+                        <td>${p.data_preferencial}</td>
+                        <td>${p.pagamento}</td>
+                        <td>R$ ${p.valor}</td>
+                        <td><span style="color: ${p.status === 'Pendente' ? '#fbbf24' : p.status === 'Em Produção' ? '#22d3ee' : '#4ade80'}">
+                            ● ${p.status}
+                        </span></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        window.onload = loadPedidos;
+    </script>
 </body>
 </html>
