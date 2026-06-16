@@ -11,45 +11,51 @@
         <nav class="navbar">
             <div class="logo">IlustraArt</div>
             <ul class="nav-links">
-                 <li><a href="index.html" class="active">Início</a></li>
-                <li><a href="portfolio.html">Portfólio</a></li>
+                <li><a href="index.html">Início</a></li>
+                <li><a href="portfolio.html" class="active">Portfólio</a></li>
                 <li><a href="comprar.html">Preços</a></li>
                 <li><a href="agendamento.html">Agendar</a></li>
-                <li><a href="status-pedidos.html">Meus Pedidos</a></li>
+                <li><a href="status-pedido.html">Meus Pedidos</a></li>
                 <li><a href="cadastro.html">Cadastro</a></li>
-                <li><a href="admin.html" class="admin-link">🔧 Admin</a></li
+                <li><a href="admin.html" class="admin-link">🔧 Admin</a></li>
             </ul>
-            <button class="user-btn" onclick="window.location.href='cadastro.html'">👤 Entrar</button>
         </nav>
     </header>
 
     <main>
         <section class="client-section">
             <h2>Como fazer seu pedido?</h2>
-            <div class="steps-container" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem;">
-                <div class="step-card" style="background:#334155;padding:2rem;border-radius:16px;text-align:center;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                <div style="background:#334155; padding:2.5rem; border-radius:16px; text-align:center;">
                     <h3>1. Escolha o Estilo</h3>
-                    <p>Veja as opções do portfólio abaixo.</p>
+                    <p>Veja as opções no portfólio abaixo.</p>
                 </div>
-                <div class="step-card" style="background:#334155;padding:2rem;border-radius:16px;text-align:center;">
+                <div style="background:#334155; padding:2.5rem; border-radius:16px; text-align:center;">
                     <h3>2. Faça o Agendamento</h3>
-                    <p>Preencha o formulário com detalhes.</p>
+                    <p>Preencha o formulário com os detalhes.</p>
                 </div>
-                <div class="step-card" style="background:#334155;padding:2rem;border-radius:16px;text-align:center;">
+                <div style="background:#334155; padding:2.5rem; border-radius:16px; text-align:center;">
                     <h3>3. Acompanhe</h3>
-                    <p>Veja o status em "Meus Pedidos".</p>
+                    <p>Veja o progresso em "Meus Pedidos".</p>
                 </div>
             </div>
         </section>
 
-        <section style="margin-top:3rem;">
-            <h2 style="text-align:center;margin-bottom:2rem;">Galeria de Portfólio</h2>
-            <div class="gallery-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:2rem;">
-                <div class="gallery-item" style="background:#1e2937;border-radius:16px;overflow:hidden;">
-                    <img src="https://via.placeholder.com/600x400" style="width:100%;">
-                    <h3 style="padding:1rem;text-align:center;">Estilo Anime</h3>
+        <section style="margin-top: 4rem;">
+            <h2 style="text-align:center; margin-bottom:2rem;">Galeria de Portfólio</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem;">
+                <div style="background:#1e2937; border-radius:16px; overflow:hidden;">
+                    <img src="https://via.placeholder.com/600x400/4338ca/ffffff?text=Anime" style="width:100%;">
+                    <h3 style="padding:1rem; text-align:center;">Estilo Anime / Mangá</h3>
                 </div>
-                <!-- Adicione mais itens aqui -->
+                <div style="background:#1e2937; border-radius:16px; overflow:hidden;">
+                    <img src="https://via.placeholder.com/600x400/6366f1/ffffff?text=Chibi" style="width:100%;">
+                    <h3 style="padding:1rem; text-align:center;">Estilo Chibi / Cartoon</h3>
+                </div>
+                <div style="background:#1e2937; border-radius:16px; overflow:hidden;">
+                    <img src="https://via.placeholder.com/600x400/7c3aed/ffffff?text=Concept" style="width:100%;">
+                    <h3 style="padding:1rem; text-align:center;">Concept Art</h3>
+                </div>
             </div>
         </section>
     </main>
