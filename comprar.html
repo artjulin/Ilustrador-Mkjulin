@@ -3,71 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Preços - Mkjulin</title>
+    <title>Preços - IlustraArt</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <nav class="navbar">
-        <div class="logo">Mkjulin</div>
-        <ul class="nav-links">
-              <li><a href="index.html" class="active">Início</a></li>
+    <header>
+        <nav class="navbar">
+            <div class="logo">IlustraArt</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Início</a></li>
                 <li><a href="portfolio.html">Portfólio</a></li>
-                <li><a href="comprar.html">Preços</a></li>
+                <li><a href="comprar.html" class="active">Preços</a></li>
                 <li><a href="agendamento.html">Agendar</a></li>
-                <li><a href="status-pedidos.html">Meus Pedidos</a></li>
+                <li><a href="status-pedido.html">Meus Pedidos</a></li>
                 <li><a href="cadastro.html">Cadastro</a></li>
-                <li><a href="admin.html" class="admin-link">🔧 Admin</a></li
-        </ul>
-        <button class="user-btn">👤 Entrar</button>
-    </nav>
+                <li><a href="admin.html" class="admin-link">🔧 Admin</a></li>
+            </ul>
+        </nav>
+    </header>
 
-    <main>
-        <section class="section-card">
-            <h1>Tabela de Preços</h1>
-            
-            <table style="width: 100%; border-collapse: collapse; margin: 30px 0; background: #1e2937;">
-                <thead>
-                    <tr style="background: #334155;">
-                        <th style="padding: 18px; text-align: left; border: 1px solid #475569;">Estilo de Arte</th>
-                        <th style="padding: 18px; text-align: center; border: 1px solid #475569;">Preço Mínimo</th>
-                        <th style="padding: 18px; text-align: left; border: 1px solid #475569;">Detalhes</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td style="padding: 18px; border: 1px solid #475569;">Anime / Mangá</td>
-                        <td style="padding: 18px; text-align: center; border: 1px solid #475569;"><strong>R$ 75,00</strong></td>
-                        <td style="padding: 18px; border: 1px solid #475569;">Personagem, retrato, full body, cena, etc.</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 18px; border: 1px solid #475569;">Cartoon</td>
-                        <td style="padding: 18px; text-align: center; border: 1px solid #475569;"><strong>R$ 40,00</strong></td>
-                        <td style="padding: 18px; border: 1px solid #475569;">Estilo fofo, caricatura, personagens simples</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 18px; border: 1px solid #475569;">Capa de Livro / Ilustração Editorial</td>
-                        <td style="padding: 18px; text-align: center; border: 1px solid #475569;"><strong>R$ 80,00</strong></td>
-                        <td style="padding: 18px; border: 1px solid #475569;">Capa profissional para livros, e-books, etc.</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 18px; border: 1px solid #475569;">Concept Art</td>
-                        <td style="padding: 18px; text-align: center; border: 1px solid #475569;"><strong>R$ 150,00</strong></td>
-                        <td style="padding: 18px; border: 1px solid #475569;">Arte conceitual, cenários, personagens detalhados</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 18px; border: 1px solid #475569;">Outros Estilos</td>
-                        <td style="padding: 18px; text-align: center; border: 1px solid #475569;"><strong>Consultar</strong></td>
-                        <td style="padding: 18px; border: 1px solid #475569;">Chibi, Realista, Pixel Art, NSFW, etc.</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <div style="text-align: center; margin-top: 40px;">
-                <a href="agendamento.html" class="btn-primary" style="font-size: 1.2rem; padding: 16px 40px;">
-                    AGENDAR AGORA
-                </a>
+    <main class="form-container" style="max-width: 1100px;">
+        <h2>Escolha seu Serviço</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; margin-top: 2rem;">
+            <div style="background:#1e2937; padding:2rem; border-radius:20px; border:1px solid #6366f1;">
+                <h3>Chibi / Cartoon</h3>
+                <h2 style="color:#a5b4fc;">R$ 50</h2>
+                <p>Ideal para ícones, fotos de perfil e presentes.</p>
+                <a href="agendamento.html" class="btn-primary" style="display:block; text-align:center; margin-top:2rem;">Escolher</a>
             </div>
-        </section>
+            <div style="background:#1e2937; padding:2rem; border-radius:20px; border:2px solid #a5b4fc; position:relative;">
+                <span style="position:absolute; top:-12px; right:20px; background:#eab308; color:black; padding:4px 12px; border-radius:20px; font-size:0.9rem;">Mais Popular</span>
+                <h3>Anime / Mangá Full Body</h3>
+                <h2 style="color:#a5b4fc;">R$ 120</h2>
+                <p>Ilustração completa do corpo.</p>
+                <a href="agendamento.html" class="btn-primary" style="display:block; text-align:center; margin-top:2rem;">Escolher</a>
+            </div>
+            <div style="background:#1e2937; padding:2rem; border-radius:20px; border:1px solid #6366f1;">
+                <h3>Concept Art / Cenário</h3>
+                <h2 style="color:#a5b4fc;">R$ 200</h2>
+                <p>Arte detalhada para RPG ou projetos.</p>
+                <a href="agendamento.html" class="btn-primary" style="display:block; text-align:center; margin-top:2rem;">Escolher</a>
+            </div>
+        </div>
     </main>
 
     <footer>
