@@ -11,62 +11,44 @@
         <nav class="navbar">
             <div class="logo">IlustraArt</div>
             <ul class="nav-links">
-                <li><a href="index.html" class="active">Início</a></li>
+                <li><a href="index.html">Início</a></li>
                 <li><a href="portfolio.html">Portfólio</a></li>
                 <li><a href="comprar.html">Preços</a></li>
-                <li><a href="agendamento.html">Agendar</a></li>
-                <li><a href="status-pedidos.html">Meus Pedidos</a></li>
+                <li><a href="agendamento.html" class="active">Agendar</a></li>
+                <li><a href="status-pedido.html">Meus Pedidos</a></li>
                 <li><a href="cadastro.html">Cadastro</a></li>
-                <li><a href="admin.html" class="admin-link">🔧 Admin</a></li
+                <li><a href="admin.html" class="admin-link">🔧 Admin</a></li>
             </ul>
-            <button class="user-btn" onclick="window.location.href='cadastro.html'">👤 Entrar</button>
         </nav>
     </header>
 
     <main class="form-container">
         <h2>Fazer Agendamento</h2>
-        <p style="text-align:center; margin-bottom:2rem; color:#c7d2fe;">Preencha os dados abaixo para solicitar sua ilustração</p>
-
         <form id="agendamentoForm">
             <label>Serviço Desejado</label>
             <select name="servico" required>
-                <option value="">Selecione um serviço...</option>
+                <option value="">Selecione...</option>
                 <option value="Chibi/Cartoon">Chibi / Cartoon - R$ 50</option>
-                <option value="Anime Full Body">Anime / Mangá Full Body - R$ 120</option>
-                <option value="Concept Art">Concept Art / Cenário - R$ 200</option>
+                <option value="Anime Full Body">Anime Full Body - R$ 120</option>
+                <option value="Concept Art">Concept Art - R$ 200</option>
             </select>
 
-            <label>Descrição Detalhada da Arte</label>
-            <textarea name="descricao" rows="6" 
-                placeholder="Descreva o personagem, pose, roupas, cores, estilo, referências, ideias..." 
-                required></textarea>
+            <label>Descrição da Arte</label>
+            <textarea name="descricao" rows="6" placeholder="Descreva com detalhes..." required></textarea>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
                 <div>
                     <label>Data Preferencial</label>
-                    <input type="date" name="data" required>
+                    <input type="date" name="data_preferencial" required>
                 </div>
                 <div>
-                    <label>Referências (opcional)</label>
-                    <input type="text" name="referencias" placeholder="Links ou nomes de imagens">
+                    <label>Forma de Pagamento</label>
+                    <select name="pagamento" required>
+                        <option value="PIX">PIX</option>
+                        <option value="Cartão">Cartão</option>
+                        <option value="Transferência">Transferência</option>
+                    </select>
                 </div>
-            </div>
-
-            <!-- Forma de Pagamento -->
-            <label>Forma de Pagamento</label>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 0.5rem;">
-                <label style="background:#1e2937; padding:1rem; border-radius:12px; border:1px solid #475569; cursor:pointer;">
-                    <input type="radio" name="pagamento" value="pix" required> 
-                    <strong>PIX</strong> (Mais Rápido)
-                </label>
-                <label style="background:#1e2937; padding:1rem; border-radius:12px; border:1px solid #475569; cursor:pointer;">
-                    <input type="radio" name="pagamento" value="cartao"> 
-                    <strong>Cartão de Crédito</strong>
-                </label>
-                <label style="background:#1e2937; padding:1rem; border-radius:12px; border:1px solid #475569; cursor:pointer;">
-                    <input type="radio" name="pagamento" value="transferencia"> 
-                    <strong>Transferência Bancária</strong>
-                </label>
             </div>
 
             <button type="submit" class="btn-primary">Enviar Agendamento</button>
@@ -77,12 +59,6 @@
         <p>&copy; 2026 Ilustrador Mkjulin. Todos os direitos reservados.</p>
     </footer>
 
-    <script>
-        document.getElementById('agendamentoForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert("✅ Agendamento enviado com sucesso!\nEm breve entraremos em contato.");
-            // Aqui você pode adicionar o envio real para o backend
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
