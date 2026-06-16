@@ -3,178 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meus Pedidos - Mkjulin</title>
+    <title>Meus Pedidos - IlustraArt</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <nav class="navbar">
-        <div class="logo">Mkjulin</div>
-        <ul class="nav-links">
-            <li><a href="index.html">Início</a></li>
-            <li><a href="portfolio.html">Portfólio</a></li>
-            <li><a href="comprar.html">Preços</a></li>
-            <li><a href="agendamento.html">Agendar</a></li>
-            <li><a href="status-pedidos.html" class="active">Meus Pedidos</a></li>
-        </ul>
-        <button class="user-btn" onclick="logout()">Sair</button>
-    </nav>
+    <header>
+        <nav class="navbar">
+            <div class="logo">IlustraArt</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="portfolio.html">Portfólio</a></li>
+                <li><a href="comprar.html">Preços</a></li>
+                <li><a href="agendamento.html">Agendar</a></li>
+                <li><a href="status-pedidos.html" class="active">Meus Pedidos</a></li>
+                <li><a href="cadastro.html">Cadastro</a></li>
+                <li><a href="admin.html" class="admin-link">🔧 Admin</a></li>
+            </ul>
+        </nav>
+    </header>
 
-    <main>
-        <section class="section-card">
-            <h1>Meus Pedidos</h1>
-            
-            <div style="margin-bottom: 20px;">
-                <input type="email" id="emailFiltro" placeholder="Digite seu email para ver seus pedidos" style="width:100%; max-width:500px; padding:12px; border-radius:8px; background:#334155; border:none; color:white;">
-                <button onclick="carregarMeusPedidos()" class="btn-primary">Buscar Pedidos</button>
-            </div>
+    <main class="form-container" style="max-width: 1000px;">
+        <h2>Meus Pedidos</h2>
+        <p style="text-align:center; margin-bottom:2rem; color:#94a3b8;" id="userInfo"></p>
 
-            <div id="lista-pedidos"></div>
-        </section>
-    </main>
+        <div id="pedidosContainer">
+            <table id="pedidosTable" style="width:100%; display:none;">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Serviço</th>
+                        <th>Descrição</th>
+                        <th>Data Preferencial</th>
+                        <th>Pagamento</th>
+                        <th>Valor</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="pedidosBody"></tbody>
+            </table>
 
-    <!-- ==================== MODAL DE CHAT ==================== -->
-    <div id="chatModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:2000; align-items:center; justify-content:center;">
-        <div style="width:90%; max-width:650px; background:#1e2937; border-radius:20px; height:85vh; display:flex; flex-direction:column; box-shadow:0 20px 50px rgba(0,0,0,0.6);">
-            
-            <div style="padding:20px; border-bottom:1px solid #6366f1; display:flex; justify-content:space-between; align-items:center;">
-                <h3>💬 Chat - Pedido #<span id="modalPedidoId"></span></h3>
-                <button onclick="fecharChat()" style="background:none; border:none; font-size:28px; color:#94a3b8; cursor:pointer;">✕</button>
-            </div>
-
-            <div id="chatBody" style="flex:1; padding:20px; overflow-y:auto; display:flex; flex-direction:column; gap:12px;"></div>
-
-            <div style="padding:20px; border-top:1px solid #6366f1; display:flex; gap:10px;">
-                <input type="text" id="chatInput" placeholder="Digite sua mensagem..." 
-                       style="flex:1; padding:14px; border-radius:12px; background:#334155; border:none; color:white; font-size:1rem;"
-                       onkeypress="if(event.key === 'Enter') enviarMensagem()">
-                <button onclick="enviarMensagem()" class="btn-primary">Enviar</button>
+            <div id="emptyMessage" style="text-align:center; padding:4rem; color:#94a3b8; display:none;">
+                <h3>Você ainda não tem pedidos.</h3>
+                <a href="agendamento.html" class="btn-primary" style="display:inline-block; margin-top:1rem;">Fazer Primeiro Agendamento</a>
             </div>
         </div>
-    </div>
+    </main>
 
     <footer>
         <p>&copy; 2026 Ilustrador Mkjulin. Todos os direitos reservados.</p>
     </footer>
 
+    <script src="script.js"></script>
     <script>
-        let chatPedidoId = null;
+        const currentUser = getCurrentUser();
 
-        // ===================== CARREGAR PEDIDOS =====================
-        async function carregarMeusPedidos() {
-            const email = document.getElementById('emailFiltro').value.trim();
-            if (!email) {
-                alert("Por favor, digite seu email para ver seus pedidos.");
-                return;
-            }
+        if (!currentUser) {
+            alert("Você precisa estar logado para ver seus pedidos.");
+            window.location.href = "cadastro.html";
+        } else {
+            document.getElementById('userInfo').innerHTML = `
+                Logado como: <strong>${currentUser.nome}</strong> (${currentUser.username})
+            `;
+            loadMeusPedidos(currentUser.id);
+        }
 
+        async function loadMeusPedidos(userId) {
             try {
-                const res = await fetch(`/api/meus-pedidos?email=${encodeURIComponent(email)}`);
-                const pedidos = await res.json();
-                
-                const container = document.getElementById('lista-pedidos');
-                container.innerHTML = '';
+                const response = await fetch(`/api/meus-pedidos/${userId}`);
+                const pedidos = await response.json();
+
+                const tbody = document.getElementById('pedidosBody');
+                tbody.innerHTML = '';
 
                 if (pedidos.length === 0) {
-                    container.innerHTML = `<p style="text-align:center; padding:40px; color:#94a3b8;">Nenhum pedido encontrado com este email.</p>`;
+                    document.getElementById('emptyMessage').style.display = 'block';
+                    document.getElementById('pedidosTable').style.display = 'none';
                     return;
                 }
 
+                document.getElementById('pedidosTable').style.display = 'table';
+                document.getElementById('emptyMessage').style.display = 'none';
+
                 pedidos.forEach(p => {
-                    const div = document.createElement('div');
-                    div.className = 'order-card';
-                    div.innerHTML = `
-                        <h3>Pedido #${p.id}</h3>
-                        <p><strong>Tipo:</strong> ${p.tipo}</p>
-                        <p><strong>Status:</strong> <span style="color:#a5b4fc;">${p.status}</span></p>
-                        <p><strong>Data:</strong> ${p.data}</p>
-                        <button class="btn-primary" onclick="abrirChat(${p.id})">💬 Abrir Chat com o Artista</button>
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><strong>#${p.id}</strong></td>
+                        <td>${p.servico}</td>
+                        <td>${p.descricao.substring(0, 60)}...</td>
+                        <td>${p.data_preferencial}</td>
+                        <td>${p.pagamento}</td>
+                        <td>R$ ${p.valor}</td>
+                        <td>
+                            <span style="color: ${p.status === 'Pendente' ? '#fbbf24' : p.status === 'Em Produção' ? '#22d3ee' : '#4ade80'}">
+                                ● ${p.status}
+                            </span>
+                        </td>
                     `;
-                    container.appendChild(div);
+                    tbody.appendChild(tr);
                 });
             } catch (error) {
-                alert("Erro ao carregar pedidos.");
+                console.error(error);
+                document.getElementById('emptyMessage').innerHTML = `<p style="color:#ef4444;">Erro ao carregar pedidos.</p>`;
+                document.getElementById('emptyMessage').style.display = 'block';
             }
         }
-
-        // ===================== CHAT =====================
-        function abrirChat(pedidoId) {
-            chatPedidoId = pedidoId;
-            document.getElementById('modalPedidoId').textContent = pedidoId;
-            document.getElementById('chatModal').style.display = 'flex';
-            carregarMensagens();
-        }
-
-        function fecharChat() {
-            document.getElementById('chatModal').style.display = 'none';
-        }
-
-        async function carregarMensagens() {
-            if (!chatPedidoId) return;
-            
-            try {
-                const res = await fetch(`/api/mensagens/${chatPedidoId}`);
-                const mensagens = await res.json();
-                
-                const chatBody = document.getElementById('chatBody');
-                chatBody.innerHTML = '';
-
-                mensagens.forEach(m => {
-                    const isAdmin = m.remetente === 'admin';
-                    const msgDiv = document.createElement('div');
-                    msgDiv.style.alignSelf = isAdmin ? 'flex-start' : 'flex-end';
-                    msgDiv.style.maxWidth = '80%';
-                    msgDiv.style.padding = '14px 18px';
-                    msgDiv.style.borderRadius = '18px';
-                    msgDiv.style.backgroundColor = isAdmin ? '#4338ca' : '#334155';
-                    msgDiv.style.color = 'white';
-                    msgDiv.innerHTML = `
-                        <small style="opacity:0.8;">${isAdmin ? 'Artista' : 'Você'} • ${m.data}</small><br>
-                        ${m.mensagem}
-                    `;
-                    chatBody.appendChild(msgDiv);
-                });
-
-                chatBody.scrollTop = chatBody.scrollHeight;
-            } catch (e) {
-                console.error("Erro ao carregar mensagens");
-            }
-        }
-
-        async function enviarMensagem() {
-            const input = document.getElementById('chatInput');
-            const mensagem = input.value.trim();
-            
-            if (!mensagem || !chatPedidoId) return;
-
-            try {
-                await fetch('/api/mensagem', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        pedidoId: chatPedidoId,
-                        remetente: 'cliente',
-                        mensagem: mensagem
-                    })
-                });
-
-                input.value = '';
-                carregarMensagens(); // Atualiza o chat
-            } catch (e) {
-                alert("Erro ao enviar mensagem");
-            }
-        }
-
-        function logout() {
-            if (confirm("Deseja sair da conta?")) {
-                localStorage.removeItem('usuario');
-                window.location.href = 'index.html';
-            }
-        }
-
-        // Fechar modal ao clicar fora
-        document.getElementById('chatModal').addEventListener('click', function(e) {
-            if (e.target === this) fecharChat();
-        });
     </script>
 </body>
 </html>
