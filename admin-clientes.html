@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clientes - Admin</title>
+    <title>Clientes - Admin IlustraArt</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -21,43 +21,21 @@
 
     <main>
         <h1>Clientes Cadastrados</h1>
-        
-        <table>
+        <p style="margin-bottom: 2rem; color: #94a3b8;">Total de clientes: <strong id="totalClientes">0</strong></p>
+
+        <table id="clientesTable">
             <thead>
                 <tr>
                     <th>ID</th>
                     <th>Nome</th>
                     <th>Username</th>
-                    <th>Data de Cadastro</th>
-                    <th>Pedidos Realizados</th>
+                    <th>Data Cadastro</th>
+                    <th>Pedidos</th>
                     <th>Ações</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td>#C001</td>
-                    <td>Mariana Silva</td>
-                    <td>mariana.s</td>
-                    <td>05/06/2026</td>
-                    <td>3</td>
-                    <td><button style="background:#6366f1;color:white;border:none;padding:8px 14px;border-radius:8px;">Ver Pedidos</button></td>
-                </tr>
-                <tr>
-                    <td>#C002</td>
-                    <td>Carlos Eduardo</td>
-                    <td>carlos.rpg</td>
-                    <td>02/06/2026</td>
-                    <td>2</td>
-                    <td><button style="background:#6366f1;color:white;border:none;padding:8px 14px;border-radius:8px;">Ver Pedidos</button></td>
-                </tr>
-                <tr>
-                    <td>#C003</td>
-                    <td>Ana Beatriz</td>
-                    <td>ana.bea</td>
-                    <td>01/06/2026</td>
-                    <td>1</td>
-                    <td><button style="background:#6366f1;color:white;border:none;padding:8px 14px;border-radius:8px;">Ver Pedidos</button></td>
-                </tr>
+            <tbody id="clientesBody">
+                <!-- Preenchido via JavaScript -->
             </tbody>
         </table>
     </main>
@@ -65,5 +43,37 @@
     <footer>
         <p>&copy; 2026 IlustraArt - Painel Administrativo</p>
     </footer>
+
+    <script>
+        function loadClientes() {
+            const clientes = JSON.parse(localStorage.getItem('clientes')) || [];
+            const tbody = document.getElementById('clientesBody');
+            tbody.innerHTML = '';
+            
+            document.getElementById('totalClientes').textContent = clientes.length;
+
+            clientes.forEach(cliente => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${cliente.id}</td>
+                    <td>${cliente.nome}</td>
+                    <td>${cliente.username}</td>
+                    <td>${cliente.dataCadastro}</td>
+                    <td><strong>${cliente.pedidos || 0}</strong></td>
+                    <td>
+                        <button onclick="verPedidos('${cliente.id}')" style="background:#6366f1; color:white; border:none; padding:6px 12px; border-radius:6px;">Ver Pedidos</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function verPedidos(clienteId) {
+            alert(`Mostrando pedidos do cliente ${clienteId} (Funcionalidade em desenvolvimento)`);
+        }
+
+        // Carregar ao abrir a página
+        window.onload = loadClientes;
+    </script>
 </body>
 </html>
