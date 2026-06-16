@@ -3,89 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro / Login - Mkjulin</title>
+    <title>Cadastro / Login - IlustraArt</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <nav class="navbar">
-        <div class="logo">Mkjulin</div>
-        <ul class="nav-links">
-            <li><a href="index.html">Início</a></li>
-            <li><a href="portfolio.html">Portfólio</a></li>
-            <li><a href="comprar.html">Preços</a></li>
-            <li><a href="agendamento.html">Agendar</a></li>
-            <li><a href="status-pedidos.html">Meus Pedidos</a></li>
-        </ul>
-    </nav>
+    <header>
+        <nav class="navbar">
+            <div class="logo">IlustraArt</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="portfolio.html">Portfólio</a></li>
+                <li><a href="agendamento.html">Agendar</a></li>
+            </ul>
+        </nav>
+    </header>
 
-    <main>
-        <section class="section-card" style="max-width: 480px; margin: 4rem auto;">
-            <h1>Entrar na sua Conta</h1>
-            
-            <div id="loginForm">
-                <input type="email" id="emailLogin" placeholder="Email" style="width:100%; padding:12px; margin:10px 0; border-radius:8px;">
-                <input type="password" id="senhaLogin" placeholder="Senha" style="width:100%; padding:12px; margin:10px 0; border-radius:8px;">
-                <button onclick="fazerLogin()" class="btn-primary" style="width:100%;">Entrar</button>
-                <p style="text-align:center; margin-top:15px;">Não tem conta? <a href="#" onclick="mostrarCadastro()">Cadastre-se</a></p>
-            </div>
+    <main class="form-container" style="max-width: 480px;">
+        <h2 id="formTitle">Entrar na Conta</h2>
 
-            <div id="cadastroForm" style="display:none;">
-                <input type="text" id="nomeCadastro" placeholder="Nome Completo">
-                <input type="email" id="emailCadastro" placeholder="Email">
-                <input type="password" id="senhaCadastro" placeholder="Senha">
-                <button onclick="fazerCadastro()" class="btn-primary" style="width:100%;">Cadastrar</button>
-                <p style="text-align:center; margin-top:15px;"><a href="#" onclick="mostrarLogin()">Já tenho conta</a></p>
-            </div>
-        </section>
+        <div id="loginForm">
+            <label>Usuário / E-mail</label>
+            <input type="text" id="username" placeholder="Seu usuário" required>
+
+            <label>Senha</label>
+            <input type="password" id="password" placeholder="Senha" required>
+
+            <button onclick="login()" class="btn-primary" style="width:100%; margin-top:20px;">Entrar</button>
+            <p style="text-align:center; margin-top:15px;">
+                Não tem conta? <a href="#" onclick="toggleForm()">Cadastre-se</a>
+            </p>
+        </div>
+
+        <div id="registerForm" style="display:none;">
+            <label>Nome Completo</label>
+            <input type="text" id="nome" placeholder="Seu nome completo" required>
+
+            <label>Usuário</label>
+            <input type="text" id="regUsername" placeholder="Escolha um usuário" required>
+
+            <label>Senha</label>
+            <input type="password" id="regPassword" placeholder="Crie uma senha" required>
+
+            <button onclick="register()" class="btn-primary" style="width:100%; margin-top:20px;">Cadastrar</button>
+            <p style="text-align:center; margin-top:15px;">
+                Já tem conta? <a href="#" onclick="toggleForm()">Faça Login</a>
+            </p>
+        </div>
     </main>
 
-    <footer>
-        <p>&copy; 2026 Ilustrador Mkjulin.</p>
-    </footer>
-
+    <script src="script.js"></script>
     <script>
-        function mostrarCadastro() {
-            document.getElementById('loginForm').style.display = 'none';
-            document.getElementById('cadastroForm').style.display = 'block';
+        function toggleForm() {
+            document.getElementById('loginForm').style.display = 
+                document.getElementById('loginForm').style.display === 'none' ? 'block' : 'none';
+            document.getElementById('registerForm').style.display = 
+                document.getElementById('registerForm').style.display === 'none' ? 'block' : 'none';
         }
 
-        function mostrarLogin() {
-            document.getElementById('loginForm').style.display = 'block';
-            document.getElementById('cadastroForm').style.display = 'none';
-        }
+        async function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
 
-        function fazerCadastro() {
-            const nome = document.getElementById('nomeCadastro').value;
-            const email = document.getElementById('emailCadastro').value;
-            const senha = document.getElementById('senhaCadastro').value;
+            try {
+                const res = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({username, password})
+                });
+                const data = await res.json();
 
-            if (email && senha) {
-                localStorage.setItem('usuario', JSON.stringify({ nome, email, logado: true }));
-                alert('✅ Conta criada com sucesso!');
-                window.location.href = 'index.html';
-            } else {
-                alert('Preencha todos os campos');
+                if (data.success) {
+                    saveUser(data.user);
+                    alert(`✅ Bem-vindo, ${data.user.nome}!`);
+                    window.location.href = 'index.html';
+                } else {
+                    alert(data.message || "Usuário ou senha incorretos");
+                }
+            } catch (e) {
+                alert("Erro ao conectar com o servidor");
             }
         }
 
-        function fazerLogin() {
-            const email = document.getElementById('emailLogin').value;
-            const senha = document.getElementById('senhaLogin').value;
+        async function register() {
+            const nome = document.getElementById('nome').value;
+            const username = document.getElementById('regUsername').value;
+            const password = document.getElementById('regPassword').value;
 
-            // Simulação (aceita qualquer email + senha para teste)
-            if (email && senha) {
-                localStorage.setItem('usuario', JSON.stringify({ nome: "Usuário", email, logado: true }));
-                alert('✅ Login realizado com sucesso!');
-                window.location.href = 'index.html';
-            } else {
-                alert('Email ou senha incorretos');
-            }
-        }
-
-        // Verifica se já está logado
-        if (localStorage.getItem('usuario')) {
-            console.log('Usuário já logado');
-        }
-    </script>
-</body>
-</html>
+            if (!nome || !username || !password)
