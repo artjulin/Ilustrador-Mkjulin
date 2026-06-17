@@ -24,7 +24,7 @@
 
     <main class="form-container" style="max-width: 1000px;">
         <h2>Meus Pedidos</h2>
-        <p style="text-align:center; margin-bottom:2rem; color:#94a3b8;" id="userInfo"></p>
+        <p style="text-align:center; margin-bottom:1.5rem;" id="userInfo"></p>
 
         <div id="pedidosContainer">
             <table id="pedidosTable" style="width:100%; display:none;">
@@ -33,19 +33,25 @@
                         <th>ID</th>
                         <th>Serviço</th>
                         <th>Descrição</th>
-                        <th>Data Preferencial</th>
-                        <th>Pagamento</th>
-                        <th>Valor</th>
+                        <th>Data</th>
                         <th>Status</th>
+                        <th>Ação</th>
                     </tr>
                 </thead>
                 <tbody id="pedidosBody"></tbody>
             </table>
 
-            <div id="emptyMessage" style="text-align:center; padding:4rem; color:#94a3b8; display:none;">
+            <div id="emptyMessage" style="text-align:center; padding:4rem; color:#94a3b8;">
                 <h3>Você ainda não tem pedidos.</h3>
-                <a href="agendamento.html" class="btn-primary" style="display:inline-block; margin-top:1rem;">Fazer Primeiro Agendamento</a>
+                <a href="agendamento.html" class="btn-primary" style="display:inline-block; margin-top:1rem;">Fazer Agendamento</a>
             </div>
+        </div>
+
+        <!-- Link para o Chat (só aparece se tiver pedidos) -->
+        <div id="chatLink" style="text-align:center; margin-top:2rem; display:none;">
+            <a href="chat-cliente.html" class="btn-primary" style="background:#22c55e;">
+                💬 Abrir Chat com o Artista
+            </a>
         </div>
     </main>
 
@@ -58,54 +64,24 @@
         const currentUser = getCurrentUser();
 
         if (!currentUser) {
-            alert("Você precisa estar logado para ver seus pedidos.");
+            alert("Você precisa estar logado.");
             window.location.href = "cadastro.html";
         } else {
-            document.getElementById('userInfo').innerHTML = `
-                Logado como: <strong>${currentUser.nome}</strong> (${currentUser.username})
-            `;
+            document.getElementById('userInfo').innerHTML = `Logado como: <strong>${currentUser.nome}</strong>`;
             loadMeusPedidos(currentUser.id);
         }
 
         async function loadMeusPedidos(userId) {
             try {
-                const response = await fetch(`/api/meus-pedidos/${userId}`);
-                const pedidos = await response.json();
+                const res = await fetch(`/api/meus-pedidos/${userId}`);
+                const pedidos = await res.json();
 
-                const tbody = document.getElementById('pedidosBody');
-                tbody.innerHTML = '';
-
-                if (pedidos.length === 0) {
-                    document.getElementById('emptyMessage').style.display = 'block';
-                    document.getElementById('pedidosTable').style.display = 'none';
-                    return;
+                if (pedidos.length > 0) {
+                    document.getElementById('pedidosTable').style.display = 'table';
+                    document.getElementById('emptyMessage').style.display = 'none';
+                    document.getElementById('chatLink').style.display = 'block';
                 }
-
-                document.getElementById('pedidosTable').style.display = 'table';
-                document.getElementById('emptyMessage').style.display = 'none';
-
-                pedidos.forEach(p => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td><strong>#${p.id}</strong></td>
-                        <td>${p.servico}</td>
-                        <td>${p.descricao.substring(0, 60)}...</td>
-                        <td>${p.data_preferencial}</td>
-                        <td>${p.pagamento}</td>
-                        <td>R$ ${p.valor}</td>
-                        <td>
-                            <span style="color: ${p.status === 'Pendente' ? '#fbbf24' : p.status === 'Em Produção' ? '#22d3ee' : '#4ade80'}">
-                                ● ${p.status}
-                            </span>
-                        </td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-            } catch (error) {
-                console.error(error);
-                document.getElementById('emptyMessage').innerHTML = `<p style="color:#ef4444;">Erro ao carregar pedidos.</p>`;
-                document.getElementById('emptyMessage').style.display = 'block';
-            }
+            } catch (e) {}
         }
     </script>
 </body>
