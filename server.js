@@ -4,13 +4,13 @@ const bodyParser = require('body-parser');
 
 const app = express();
 app.use(bodyParser.json());
-app.use(express.static('.')); // Serve todos os arquivos HTML, CSS, JS
+app.use(express.static('.')); // Serve HTML, CSS e JS
 
 const db = new sqlite3.Database('ilustrapro.db');
 
-// ====================== CRIAÇÃO DAS TABELAS ======================
+// ====================== BANCO DE DADOS ======================
 db.serialize(() => {
-    // Usuários
+    // Tabela de Usuários
     db.run(`CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT UNIQUE NOT NULL,
@@ -20,7 +20,7 @@ db.serialize(() => {
         data_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
 
-    // Agendamentos
+    // Tabela de Agendamentos
     db.run(`CREATE TABLE IF NOT EXISTS agendamentos (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER,
@@ -46,7 +46,6 @@ db.serialize(() => {
 // Cadastro
 app.post('/api/register', (req, res) => {
     const { nome, username, password } = req.body;
-    
     db.run("INSERT INTO users (nome, username, password, role) VALUES (?, ?, ?, 'cliente')",
         [nome, username, password], function(err) {
             if (err) return res.json({ success: false, message: "Usuário já existe" });
@@ -57,16 +56,14 @@ app.post('/api/register', (req, res) => {
 // Login
 app.post('/api/login', (req, res) => {
     const { username, password } = req.body;
-    
     db.get("SELECT id, nome, username, role FROM users WHERE username = ? AND password = ?",
         [username, password], (err, user) => {
-            if (err) return res.status(500).json({ success: false });
             if (user) res.json({ success: true, user });
             else res.json({ success: false, message: "Usuário ou senha incorretos" });
         });
 });
 
-// Agendar
+// Fazer Agendamento
 app.post('/api/agendar', (req, res) => {
     const { user_id, servico, descricao, data_preferencial, pagamento, valor } = req.body;
     
@@ -81,7 +78,7 @@ app.post('/api/agendar', (req, res) => {
         });
 });
 
-// Todos os agendamentos (Admin)
+// Todos os Agendamentos (para Admin)
 app.get('/api/agendamentos', (req, res) => {
     db.all(`SELECT a.*, u.nome as cliente_nome 
             FROM agendamentos a 
@@ -90,7 +87,7 @@ app.get('/api/agendamentos', (req, res) => {
         [], (err, rows) => res.json(rows));
 });
 
-// Todos os clientes (Admin)
+// Todos os Clientes (para Admin)
 app.get('/api/clientes', (req, res) => {
     db.all(`SELECT id, nome, username, data_cadastro 
             FROM users 
@@ -99,7 +96,7 @@ app.get('/api/clientes', (req, res) => {
         [], (err, rows) => res.json(rows));
 });
 
-// Meus Pedidos (Cliente)
+// Meus Pedidos (para o Cliente)
 app.get('/api/meus-pedidos/:userId', (req, res) => {
     db.all("SELECT * FROM agendamentos WHERE user_id = ? ORDER BY created_at DESC",
         [req.params.userId], (err, rows) => res.json(rows));
@@ -108,6 +105,5 @@ app.get('/api/meus-pedidos/:userId', (req, res) => {
 const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`🚀 Servidor rodando em http://localhost:${PORT}`);
-    console.log(`Admin: http://localhost:${PORT}/admin.html`);
-    console.log(`Login Admin → usuário: admin | senha: 1234`);
+    console.log(`Admin Login → usuário: admin | senha: 1234`);
 });
