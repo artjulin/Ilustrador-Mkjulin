@@ -5,6 +5,147 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro / Login - IlustraArt</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        .auth-container {
+            max-width: 460px;
+            margin: 4rem auto;
+            background: #1e2937;
+            border-radius: 24px;
+            padding: 3rem 2.5rem;
+            border: 1px solid #6366f1;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+        .auth-tabs {
+            display: flex;
+            background: #0f172a;
+            border-radius: 12px;
+            padding: 6px;
+            margin-bottom: 2rem;
+        }
+        .auth-tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .auth-tab.active {
+            background: #6366f1;
+            color: white;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">IlustraArt</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="portfolio.html">Portfólio</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="auth-container">
+            <h2 style="text-align:center; margin-bottom:1.5rem; color:#c4d0ff;">Bem-vindo à IlustraArt</h2>
+
+            <!-- Abas -->
+            <div class="auth-tabs">
+                <div class="auth-tab active" id="tabLogin" onclick="showTab(0)">Entrar</div>
+                <div class="auth-tab" id="tabRegister" onclick="showTab(1)">Cadastrar</div>
+            </div>
+
+            <!-- Formulário Login -->
+            <div id="loginForm">
+                <label>Email</label>
+                <input type="email" id="loginEmail" placeholder="seu@email.com" required>
+
+                <label>Senha</label>
+                <input type="password" id="loginPassword" placeholder="Sua senha" required>
+
+                <button onclick="login()" class="btn-primary" style="width:100%; margin-top:1.5rem;">Entrar</button>
+            </div>
+
+            <!-- Formulário Cadastro -->
+            <div id="registerForm" style="display:none;">
+                <label>Nome Completo</label>
+                <input type="text" id="regNome" placeholder="Seu nome completo" required>
+
+                <label>Email</label>
+                <input type="email" id="regEmail" placeholder="seu@email.com" required>
+
+                <label>CPF</label>
+                <input type="text" id="regCpf" placeholder="000.000.000-00" maxlength="14" required>
+
+                <label>Senha</label>
+                <input type="password" id="regPassword" placeholder="Crie uma senha" required>
+
+                <button onclick="register()" class="btn-primary" style="width:100%; margin-top:1.5rem;">Cadastrar</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Ilustrador Mkjulin. Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        function showTab(tab) {
+            document.getElementById('loginForm').style.display = tab === 0 ? 'block' : 'none';
+            document.getElementById('registerForm').style.display = tab === 1 ? 'block' : 'none';
+            
+            document.getElementById('tabLogin').classList.toggle('active', tab === 0);
+            document.getElementById('tabRegister').classList.toggle('active', tab === 1);
+        }
+
+        // Login
+        async function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            try {
+                const res = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: email, password })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    saveUser(data.user);
+                    alert(`✅ Bem-vindo, ${data.user.nome}!`);
+                    window.location.href = 'index.html';
+                } else {
+                    alert(data.message || "Email ou senha incorretos");
+                }
+            } catch (e) {
+                alert("Erro ao conectar com o servidor");
+            }
+        }
+
+        // Cadastro
+        async function register() {
+            const nome = document.getElementById('regNome').value;
+            const email = document.getElementById('regEmail').value;
+            const cpf = document.getElementById('regCpf').value;
+            const password = document.getElementById('regPassword').value;
+
+            if (!nome || !email || !cpf || !password) {
+                return alert("Preencha todos os campos");
+            }
+
+            try {
+                const res = await fetch('/api/register', {<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro / Login - IlustraArt</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
@@ -60,48 +201,16 @@
                 document.getElementById('registerForm').style.display === 'none' ? 'block' : 'none';
         }
 
-        async function login() {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
 
-            try {
-                const res = await fetch('/api/login', {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({username, password})
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nome, username: email, password })
                 });
                 const data = await res.json();
 
                 if (data.success) {
-                    saveUser(data.user);
-                    alert(`✅ Bem-vindo, ${data.user.nome}!`);
-                    window.location.href = 'index.html';
-                } else {
-                    alert(data.message || "Usuário ou senha incorretos");
-                }
-            } catch (e) {
-                alert("Erro ao conectar com o servidor");
-            }
-        }
-
-        async function register() {
-            const nome = document.getElementById('nome').value;
-            const username = document.getElementById('regUsername').value;
-            const password = document.getElementById('regPassword').value;
-
-            if (!nome || !username || !password) return alert("Preencha todos os campos");
-
-            try {
-                const res = await fetch('/api/register', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({nome, username, password})
-                });
-                const data = await res.json();
-
-                if (data.success) {
-                    alert("✅ Cadastro realizado! Agora faça login.");
-                    toggleForm();
+                    alert("✅ Cadastro realizado com sucesso!\nFaça login agora.");
+                    showTab(0);
                 } else {
                     alert(data.message);
                 }
