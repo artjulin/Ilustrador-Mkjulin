@@ -109,7 +109,7 @@
                 const result = await response.json();
                 if (result.success) {
                     alert(`✅ Agendamento enviado com sucesso! ID: #${result.id}`);
-                    window.location.href = 'status-pedido.html';
+                    window.location.href = 'status-pedidos.html';
                 } else {
                     alert(result.message || "Erro ao enviar agendamento");
                 }
