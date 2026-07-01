@@ -4,23 +4,24 @@ const bodyParser = require('body-parser');
 
 const app = express();
 app.use(bodyParser.json());
-app.use(express.static('.')); // Serve HTML, CSS e JS
+app.use(express.static('.')); // Serve todos os arquivos HTML, CSS, JS
 
 const db = new sqlite3.Database('ilustrapro.db');
 
 // ====================== BANCO DE DADOS ======================
 db.serialize(() => {
-    // Tabela de Usuários
+    // Usuários
     db.run(`CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT UNIQUE NOT NULL,
+        username TEXT UNIQUE NOT NULL,   -- Usado como email
         password TEXT NOT NULL,
         nome TEXT NOT NULL,
+        cpf TEXT,
         role TEXT DEFAULT 'cliente',
         data_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
 
-    // Tabela de Agendamentos
+    // Agendamentos
     db.run(`CREATE TABLE IF NOT EXISTS agendamentos (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER,
@@ -45,10 +46,13 @@ db.serialize(() => {
 
 // Cadastro
 app.post('/api/register', (req, res) => {
-    const { nome, username, password } = req.body;
-    db.run("INSERT INTO users (nome, username, password, role) VALUES (?, ?, ?, 'cliente')",
-        [nome, username, password], function(err) {
-            if (err) return res.json({ success: false, message: "Usuário já existe" });
+    const { nome, username, password, cpf } = req.body;
+    
+    db.run("INSERT INTO users (nome, username, password, cpf, role) VALUES (?, ?, ?, ?, 'cliente')",
+        [nome, username, password, cpf], function(err) {
+            if (err) {
+                return res.json({ success: false, message: "E-mail já cadastrado" });
+            }
             res.json({ success: true, message: "Cadastro realizado com sucesso!" });
         });
 });
@@ -56,14 +60,20 @@ app.post('/api/register', (req, res) => {
 // Login
 app.post('/api/login', (req, res) => {
     const { username, password } = req.body;
+    
     db.get("SELECT id, nome, username, role FROM users WHERE username = ? AND password = ?",
         [username, password], (err, user) => {
-            if (user) res.json({ success: true, user });
-            else res.json({ success: false, message: "Usuário ou senha incorretos" });
+            if (err) return res.status(500).json({ success: false });
+            
+            if (user) {
+                res.json({ success: true, user });
+            } else {
+                res.json({ success: false, message: "Email ou senha incorretos" });
+            }
         });
 });
 
-// Fazer Agendamento
+// Agendar
 app.post('/api/agendar', (req, res) => {
     const { user_id, servico, descricao, data_preferencial, pagamento, valor } = req.body;
     
@@ -78,7 +88,7 @@ app.post('/api/agendar', (req, res) => {
         });
 });
 
-// Todos os Agendamentos (para Admin)
+// Todos os agendamentos (Admin)
 app.get('/api/agendamentos', (req, res) => {
     db.all(`SELECT a.*, u.nome as cliente_nome 
             FROM agendamentos a 
@@ -87,16 +97,16 @@ app.get('/api/agendamentos', (req, res) => {
         [], (err, rows) => res.json(rows));
 });
 
-// Todos os Clientes (para Admin)
+// Todos os clientes (Admin)
 app.get('/api/clientes', (req, res) => {
-    db.all(`SELECT id, nome, username, data_cadastro 
+    db.all(`SELECT id, nome, username, cpf, data_cadastro 
             FROM users 
             WHERE role = 'cliente' 
             ORDER BY nome`, 
         [], (err, rows) => res.json(rows));
 });
 
-// Meus Pedidos (para o Cliente)
+// Meus Pedidos
 app.get('/api/meus-pedidos/:userId', (req, res) => {
     db.all("SELECT * FROM agendamentos WHERE user_id = ? ORDER BY created_at DESC",
         [req.params.userId], (err, rows) => res.json(rows));
@@ -105,5 +115,5 @@ app.get('/api/meus-pedidos/:userId', (req, res) => {
 const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`🚀 Servidor rodando em http://localhost:${PORT}`);
-    console.log(`Admin Login → usuário: admin | senha: 1234`);
+    console.log(`Admin → usuário: admin | senha: 1234`);
 });
