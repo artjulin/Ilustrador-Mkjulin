@@ -33,16 +33,32 @@
 
             <label>Serviço Desejado</label>
             <select name="servico" required>
-                <option value="">Selecione...</option>
+                <option value="">Selecione um serviço...</option>
                 <option value="Chibi/Cartoon">Chibi / Cartoon - R$ 50</option>
-                <option value="Anime Full Body">Anime Full Body - R$ 120</option>
-                <option value="Concept Art">Concept Art - R$ 200</option>
+                <option value="Anime Full Body">Anime / Mangá Full Body - R$ 120</option>
+                <option value="Concept Art">Concept Art / Cenário - R$ 200</option>
                 <option value="Ilustração Infantil">Ilustração Infantil - R$ 50</option>
                 <option value="Capa de Livro / Thumbnail">Capa de Livro / Thumbnail - R$ 150</option>
             </select>
 
-            <label>Descrição da Arte</label>
-            <textarea name="descricao" rows="6" placeholder="Descreva com detalhes..." required></textarea>
+            <label>Descrição Detalhada da Arte</label>
+            <textarea name="descricao" rows="6" placeholder="Descreva personagem, pose, cores, referências..." required></textarea>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                <div>
+                    <label>Data de Entrega Desejada (mínimo 7 dias)</label>
+                    <input type="date" id="dataEntrega" name="data_preferencial" required>
+                </div>
+                <div>
+                    <label>Forma de Pagamento</label>
+                    <select name="pagamento" required>
+                        <option value="">Selecione...</option>
+                        <option value="PIX">PIX (Recomendado)</option>
+                        <option value="Cartão">Cartão de Crédito</option>
+                        <option value="Transferência">Transferência Bancária</option>
+                    </select>
+                </div>
+            </div>
 
             <button type="submit" class="btn-primary">Enviar Agendamento</button>
         </form>
@@ -64,16 +80,11 @@
             document.getElementById('userInfo').innerHTML = `Logado como: <strong>${currentUser.nome}</strong>`;
         }
 
-        const cadastroLink = document.getElementById('cadastroLink');
-        const userBtn = document.getElementById('userBtn');
-
-        if (currentUser) {
-            cadastroLink.style.display = 'none';
-            userBtn.innerHTML = `👤 ${currentUser.nome.split(" ")[0]} ▼`;
-            userBtn.onclick = () => {
-                if (confirm("Deseja sair da conta?")) logout();
-            };
-        }
+        // Define data mínima = hoje + 7 dias
+        const hoje = new Date();
+        hoje.setDate(hoje.getDate() + 7);
+        const minDate = hoje.toISOString().split('T')[0];
+        document.getElementById('dataEntrega').setAttribute('min', minDate);
 
         document.getElementById('agendamentoForm').addEventListener('submit', function(e) {
             e.preventDefault();
