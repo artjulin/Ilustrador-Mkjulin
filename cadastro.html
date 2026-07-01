@@ -10,54 +10,43 @@
     <header>
         <nav class="navbar">
             <div class="logo">IlustraArt</div>
-            <ul class="nav-links">
+            <ul class="nav-links" id="navLinks">
                 <li><a href="index.html">Início</a></li>
                 <li><a href="portfolio.html">Portfólio</a></li>
+                <li><a href="comprar.html">Preços</a></li>
+                <li><a href="agendamento.html">Agendar</a></li>
+                <li><a href="status-pedidos.html">Meus Pedidos</a></li>
             </ul>
+            <button class="user-btn" id="userBtn">👤 Entrar</button>
         </nav>
     </header>
 
     <main class="form-container" style="max-width: 520px;">
-        <h2 id="formTitle" style="text-align:center; margin-bottom:1.5rem;">Entrar na Conta</h2>
+        <h2 id="formTitle" style="text-align:center;">Entrar na Conta</h2>
 
-        <!-- Alternador Login / Cadastro -->
         <div style="display:flex; background:#0f172a; border-radius:12px; padding:5px; margin-bottom:2rem;">
-            <button onclick="showLogin()" id="btnLogin" 
-                    style="flex:1; padding:12px; border:none; border-radius:10px; background:#6366f1; color:white; font-weight:600;">
-                Entrar
-            </button>
-            <button onclick="showRegister()" id="btnRegister" 
-                    style="flex:1; padding:12px; border:none; border-radius:10px; background:transparent; color:#c7d2fe;">
-                Cadastrar
-            </button>
+            <button onclick="showLogin()" id="btnLogin" style="flex:1; padding:12px; border:none; border-radius:10px; background:#6366f1; color:white;">Entrar</button>
+            <button onclick="showRegister()" id="btnRegister" style="flex:1; padding:12px; border:none; border-radius:10px; background:transparent;">Cadastrar</button>
         </div>
 
-        <!-- FORMULÁRIO LOGIN -->
         <div id="loginForm">
             <label>Email</label>
             <input type="email" id="loginEmail" placeholder="seu@email.com" required>
-
             <label>Senha</label>
             <input type="password" id="loginPassword" placeholder="Sua senha" required>
-
-            <button onclick="login()" class="btn-primary" style="margin-top:2rem;">Entrar</button>
+            <button onclick="login()" class="btn-primary" style="width:100%; margin-top:1.5rem;">Entrar</button>
         </div>
 
-        <!-- FORMULÁRIO CADASTRO -->
         <div id="registerForm" style="display:none;">
             <label>Nome Completo</label>
-            <input type="text" id="regNome" placeholder="Seu nome completo" required>
-
+            <input type="text" id="regNome" placeholder="Seu nome" required>
             <label>Email</label>
             <input type="email" id="regEmail" placeholder="seu@email.com" required>
-
             <label>CPF</label>
             <input type="text" id="regCpf" placeholder="000.000.000-00" maxlength="14" required>
-
             <label>Senha</label>
-            <input type="password" id="regPassword" placeholder="Crie uma senha forte" required>
-
-            <button onclick="register()" class="btn-primary" style="margin-top:2rem;">Cadastrar-se</button>
+            <input type="password" id="regPassword" placeholder="Senha" required>
+            <button onclick="register()" class="btn-primary" style="width:100%; margin-top:1.5rem;">Cadastrar</button>
         </div>
     </main>
 
@@ -67,75 +56,30 @@
 
     <script src="script.js"></script>
     <script>
+        const currentUser = getCurrentUser();
+        const cadastroLink = document.getElementById('cadastroLink');
+        const userBtn = document.getElementById('userBtn');
+
+        if (currentUser) {
+            cadastroLink.style.display = 'none';
+            userBtn.innerHTML = `👤 ${currentUser.nome.split(" ")[0]} ▼`;
+            userBtn.onclick = () => {
+                if (confirm("Deseja sair?")) logout();
+            };
+        } else {
+            cadastroLink.style.display = 'list-item';
+            userBtn.textContent = "👤 Entrar";
+            userBtn.onclick = () => window.location.href = 'cadastro.html';
+        }
+
         function showLogin() {
             document.getElementById('loginForm').style.display = 'block';
             document.getElementById('registerForm').style.display = 'none';
-            document.getElementById('btnLogin').style.background = '#6366f1';
-            document.getElementById('btnRegister').style.background = 'transparent';
-            document.getElementById('formTitle').textContent = 'Entrar na Conta';
         }
 
         function showRegister() {
             document.getElementById('loginForm').style.display = 'none';
             document.getElementById('registerForm').style.display = 'block';
-            document.getElementById('btnLogin').style.background = 'transparent';
-            document.getElementById('btnRegister').style.background = '#6366f1';
-            document.getElementById('formTitle').textContent = 'Criar Nova Conta';
-        }
-
-        // Login
-        async function login() {
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-
-            if (!email || !password) return alert("Preencha email e senha");
-
-            try {
-                const res = await fetch('/api/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username: email, password })
-                });
-                const data = await res.json();
-
-                if (data.success) {
-                    saveUser(data.user);
-                    alert(`✅ Bem-vindo, ${data.user.nome}!`);
-                    window.location.href = 'index.html';
-                } else {
-                    alert(data.message || "Email ou senha incorretos");
-                }
-            } catch (e) {
-                alert("Erro de conexão");
-            }
-        }
-
-        // Cadastro
-        async function register() {
-            const nome = document.getElementById('regNome').value;
-            const email = document.getElementById('regEmail').value;
-            const cpf = document.getElementById('regCpf').value;
-            const password = document.getElementById('regPassword').value;
-
-            if (!nome || !email || !cpf || !password) return alert("Preencha todos os campos");
-
-            try {
-                const res = await fetch('/api/register', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ nome, username: email, password })
-                });
-                const data = await res.json();
-
-                if (data.success) {
-                    alert("✅ Cadastro realizado com sucesso!\nAgora faça login.");
-                    showLogin();
-                } else {
-                    alert(data.message);
-                }
-            } catch (e) {
-                alert("Erro ao cadastrar");
-            }
         }
     </script>
 </body>
