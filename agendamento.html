@@ -25,15 +25,20 @@
 
     <main class="form-container">
         <h2>Fazer Agendamento</h2>
+        <p style="text-align:center; margin-bottom:2rem; color:#c7d2fe;" id="userInfo"></p>
+
         <form id="agendamentoForm">
+            <label>Seu Usuário / Email</label>
+            <input type="text" id="userField" readonly required>
+
             <label>Serviço Desejado</label>
             <select name="servico" required>
                 <option value="">Selecione...</option>
                 <option value="Chibi/Cartoon">Chibi / Cartoon - R$ 50</option>
                 <option value="Anime Full Body">Anime Full Body - R$ 120</option>
                 <option value="Concept Art">Concept Art - R$ 200</option>
-                <option value="Capa para Livro">Anime Full Body - R$ 150</option>
-                <option value="Illustração Infantil">Anime Full Body - R$ 80</option>
+                <option value="Ilustração Infantil">Ilustração Infantil - R$ 50</option>
+                <option value="Capa de Livro / Thumbnail">Capa de Livro / Thumbnail - R$ 150</option>
             </select>
 
             <label>Descrição da Arte</label>
@@ -50,6 +55,15 @@
     <script src="script.js"></script>
     <script>
         const currentUser = getCurrentUser();
+
+        if (!currentUser) {
+            alert("Você precisa estar logado para fazer um agendamento.");
+            window.location.href = "cadastro.html";
+        } else {
+            document.getElementById('userField').value = currentUser.username || currentUser.nome;
+            document.getElementById('userInfo').innerHTML = `Logado como: <strong>${currentUser.nome}</strong>`;
+        }
+
         const cadastroLink = document.getElementById('cadastroLink');
         const userBtn = document.getElementById('userBtn');
 
@@ -59,20 +73,12 @@
             userBtn.onclick = () => {
                 if (confirm("Deseja sair da conta?")) logout();
             };
-        } else {
-            cadastroLink.style.display = 'list-item';
-            userBtn.textContent = "👤 Entrar";
-            userBtn.onclick = () => window.location.href = 'cadastro.html';
         }
 
-        // Formulário de agendamento
         document.getElementById('agendamentoForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            if (!currentUser) {
-                alert("Você precisa estar logado.");
-                return;
-            }
             alert("✅ Agendamento enviado com sucesso!");
+            window.location.href = 'status-pedido.html';
         });
     </script>
 </body>
