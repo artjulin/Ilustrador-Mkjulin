@@ -10,94 +10,65 @@
     <header>
         <nav class="navbar">
             <div class="logo">IlustraArt</div>
-            <ul class="nav-links">
+            <ul class="nav-links" id="navLinks">
                 <li><a href="index.html">Início</a></li>
                 <li><a href="portfolio.html">Portfólio</a></li>
                 <li><a href="comprar.html" class="active">Preços</a></li>
                 <li><a href="agendamento.html">Agendar</a></li>
                 <li><a href="status-pedidos.html">Meus Pedidos</a></li>
-                <li><a href="cadastro.html">Cadastro</a></li>
+                <li><a href="cadastro.html" id="cadastroLink">Cadastro</a></li>
                 <li><a href="admin.html" class="admin-link">🔧 Admin</a></li>
             </ul>
+            <button class="user-btn" id="userBtn">👤 Entrar</button>
         </nav>
     </header>
 
     <main class="form-container" style="max-width: 1200px;">
         <h2>Escolha seu Serviço</h2>
-        <p style="text-align:center; margin-bottom:3rem; color:#c7d2fe;">Todos os serviços incluem feedback e revisões</p>
-
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem;">
-            
-            <!-- Serviço 1 -->
-            <div style="background:#1e2937; padding:2.2rem; border-radius:20px; border:1px solid #6366f1;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; margin-top: 2rem;">
+            <div style="background:#1e2937; padding:2rem; border-radius:20px; border:1px solid #6366f1;">
                 <h3>Chibi / Cartoon</h3>
-                <h2 style="color:#a5b4fc; margin:1rem 0;">R$ 50</h2>
-                <p>Ideal para fotos de perfil, ícones e presentes fofos.</p>
-                <ul style="margin:1.5rem 0; line-height:1.8;">
-                    <li>1 Personagem</li>
-                    <li>Fundo simples ou transparente</li>
-                </ul>
-                <a href="agendamento.html" class="btn-primary" style="display:block; text-align:center;">Escolher Este</a>
+                <h2 style="color:#a5b4fc;">R$ 50</h2>
+                <p>Ideal para fotos de perfil e presentes.</p>
+                <a href="agendamento.html" class="btn-primary" style="display:block; text-align:center; margin-top:2rem;">Escolher</a>
             </div>
-
-            <!-- Serviço 2 -->
-            <div style="background:#1e2937; padding:2.2rem; border-radius:20px; border:2px solid #a5b4fc; position:relative;">
-                <span style="position:absolute; top:-14px; right:20px; background:#eab308; color:#0f172a; padding:5px 14px; border-radius:30px; font-size:0.9rem; font-weight:700;">Mais Pedido</span>
-                <h3>Anime / Mangá Full Body</h3>
-                <h2 style="color:#a5b4fc; margin:1rem 0;">R$ 120</h2>
-                <p>Ilustração completa do corpo do personagem.</p>
-                <ul style="margin:1.5rem 0; line-height:1.8;">
-                    <li>Corpo inteiro + detalhes</li>
-                    <li>Colorização avançada</li>
-                    <li>Fundo colorido</li>
-                </ul>
-                <a href="agendamento.html" class="btn-primary" style="display:block; text-align:center;">Escolher Este</a>
+            <div style="background:#1e2937; padding:2rem; border-radius:20px; border:2px solid #a5b4fc; position:relative;">
+                <span style="position:absolute; top:-14px; right:20px; background:#eab308; color:black; padding:5px 14px; border-radius:30px;">Mais Popular</span>
+                <h3>Anime Full Body</h3>
+                <h2 style="color:#a5b4fc;">R$ 120</h2>
+                <p>Ilustração completa do corpo.</p>
+                <a href="agendamento.html" class="btn-primary" style="display:block; text-align:center; margin-top:2rem;">Escolher</a>
             </div>
-
-            <!-- Serviço 3 -->
-            <div style="background:#1e2937; padding:2.2rem; border-radius:20px; border:1px solid #6366f1;">
-                <h3>Concept Art / Cenário</h3>
-                <h2 style="color:#a5b4fc; margin:1rem 0;">R$ 200</h2>
-                <p>Arte conceitual detalhada para RPG, jogos ou livros.</p>
-                <ul style="margin:1.5rem 0; line-height:1.8;">
-                    <li>Alta complexidade</li>
-                    <li>Fundo elaborado</li>
-                    <li>Arquivos em camadas</li>
-                </ul>
-                <a href="agendamento.html" class="btn-primary" style="display:block; text-align:center;">Escolher Este</a>
+            <div style="background:#1e2937; padding:2rem; border-radius:20px; border:1px solid #6366f1;">
+                <h3>Concept Art</h3>
+                <h2 style="color:#a5b4fc;">R$ 200</h2>
+                <p>Arte conceitual detalhada.</p>
+                <a href="agendamento.html" class="btn-primary" style="display:block; text-align:center; margin-top:2rem;">Escolher</a>
             </div>
-
-            <!-- Novo Serviço 4 -->
-            <div style="background:#1e2937; padding:2.2rem; border-radius:20px; border:1px solid #6366f1;">
-                <h3>Ilustração Infantil</h3>
-                <h2 style="color:#a5b4fc; margin:1rem 0;">R$ 80</h2>
-                <p>Estilo fofinho para crianças, livros infantis ou decoração.</p>
-                <ul style="margin:1.5rem 0; line-height:1.8;">
-                    <li>Personagem infantil</li>
-                    <li>Cores vibrantes</li>
-                    <li>Estilo cartoon premium</li>
-                </ul>
-                <a href="agendamento.html" class="btn-primary" style="display:block; text-align:center;">Escolher Este</a>
-            </div>
-
-            <!-- Novo Serviço 5 -->
-            <div style="background:#1e2937; padding:2.2rem; border-radius:20px; border:1px solid #6366f1;">
-                <h3>Capa para Livro / Thumbnail</h3>
-                <h2 style="color:#a5b4fc; margin:1rem 0;">R$ 150</h2>
-                <p>Capa profissional para livros, e-books ou thumbnails para YouTube.</p>
-                <ul style="margin:1.5rem 0; line-height:1.8;">
-                    <li>Alta resolução</li>
-                    <li>Composição profissional</li>
-                    <li>Versões alternativas</li>
-                </ul>
-                <a href="agendamento.html" class="btn-primary" style="display:block; text-align:center;">Escolher Este</a>
-            </div>
-
         </div>
     </main>
 
     <footer>
         <p>&copy; 2026 Ilustrador Mkjulin. Todos os direitos reservados.</p>
     </footer>
+
+    <script src="script.js"></script>
+    <script>
+        const currentUser = getCurrentUser();
+        const cadastroLink = document.getElementById('cadastroLink');
+        const userBtn = document.getElementById('userBtn');
+
+        if (currentUser) {
+            cadastroLink.style.display = 'none';
+            userBtn.innerHTML = `👤 ${currentUser.nome.split(" ")[0]} ▼`;
+            userBtn.onclick = () => {
+                if (confirm("Deseja sair da conta?")) logout();
+            };
+        } else {
+            cadastroLink.style.display = 'list-item';
+            userBtn.textContent = "👤 Entrar";
+            userBtn.onclick = () => window.location.href = 'cadastro.html';
+        }
+    </script>
 </body>
 </html>
