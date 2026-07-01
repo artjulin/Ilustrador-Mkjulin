@@ -10,15 +10,16 @@
     <header>
         <nav class="navbar">
             <div class="logo">IlustraArt</div>
-            <ul class="nav-links">
+            <ul class="nav-links" id="navLinks">
                 <li><a href="index.html">Início</a></li>
                 <li><a href="portfolio.html" class="active">Portfólio</a></li>
                 <li><a href="comprar.html">Preços</a></li>
                 <li><a href="agendamento.html">Agendar</a></li>
                 <li><a href="status-pedidos.html">Meus Pedidos</a></li>
-                <li><a href="cadastro.html">Cadastro</a></li>
+                <li><a href="cadastro.html" id="cadastroLink">Cadastro</a></li>
                 <li><a href="admin.html" class="admin-link">🔧 Admin</a></li>
             </ul>
+            <button class="user-btn" id="userBtn">👤 Entrar</button>
         </nav>
     </header>
 
@@ -28,33 +29,15 @@
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
                 <div style="background:#334155; padding:2.5rem; border-radius:16px; text-align:center;">
                     <h3>1. Escolha o Estilo</h3>
-                    <p>Veja as opções no portfólio abaixo.</p>
+                    <p>Veja as opções abaixo.</p>
                 </div>
                 <div style="background:#334155; padding:2.5rem; border-radius:16px; text-align:center;">
-                    <h3>2. Faça o Agendamento</h3>
-                    <p>Preencha o formulário com os detalhes.</p>
+                    <h3>2. Agende</h3>
+                    <p>Preencha o formulário.</p>
                 </div>
                 <div style="background:#334155; padding:2.5rem; border-radius:16px; text-align:center;">
                     <h3>3. Acompanhe</h3>
-                    <p>Veja o progresso em "Meus Pedidos".</p>
-                </div>
-            </div>
-        </section>
-
-        <section style="margin-top: 4rem;">
-            <h2 style="text-align:center; margin-bottom:2rem;">Galeria de Portfólio</h2>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem;">
-                <div style="background:#1e2937; border-radius:16px; overflow:hidden;">
-                    <img src="cacadora.jpg" style="width:100%;">
-                    <h3 style="padding:1rem; text-align:center;">Estilo Anime / Mangá</h3>
-                </div>
-                <div style="background:#1e2937; border-radius:16px; overflow:hidden;">
-                    <img src="hornet.jpg" style="width:100%;">
-                    <h3 style="padding:1rem; text-align:center;">Estilo Chibi / Cartoon</h3>
-                </div>
-                <div style="background:#1e2937; border-radius:16px; overflow:hidden;">
-                    <img src="https://via.placeholder.com/600x400/7c3aed/ffffff?text=Concept" style="width:100%;">
-                    <h3 style="padding:1rem; text-align:center;">Concept Art</h3>
+                    <p>Veja o status em "Meus Pedidos".</p>
                 </div>
             </div>
         </section>
@@ -63,5 +46,24 @@
     <footer>
         <p>&copy; 2026 Ilustrador Mkjulin. Todos os direitos reservados.</p>
     </footer>
+
+    <script src="script.js"></script>
+    <script>
+        const currentUser = getCurrentUser();
+        const cadastroLink = document.getElementById('cadastroLink');
+        const userBtn = document.getElementById('userBtn');
+
+        if (currentUser) {
+            cadastroLink.style.display = 'none';
+            userBtn.innerHTML = `👤 ${currentUser.nome.split(" ")[0]} ▼`;
+            userBtn.onclick = () => {
+                if (confirm("Deseja sair da conta?")) logout();
+            };
+        } else {
+            cadastroLink.style.display = 'list-item';
+            userBtn.textContent = "👤 Entrar";
+            userBtn.onclick = () => window.location.href = 'cadastro.html';
+        }
+    </script>
 </body>
 </html>
