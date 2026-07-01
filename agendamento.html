@@ -10,54 +10,34 @@
     <header>
         <nav class="navbar">
             <div class="logo">IlustraArt</div>
-            <ul class="nav-links">
+            <ul class="nav-links" id="navLinks">
                 <li><a href="index.html">Início</a></li>
                 <li><a href="portfolio.html">Portfólio</a></li>
                 <li><a href="comprar.html">Preços</a></li>
                 <li><a href="agendamento.html" class="active">Agendar</a></li>
                 <li><a href="status-pedidos.html">Meus Pedidos</a></li>
-                <li><a href="cadastro.html">Cadastro</a></li>
+                <li><a href="cadastro.html" id="cadastroLink">Cadastro</a></li>
                 <li><a href="admin.html" class="admin-link">🔧 Admin</a></li>
             </ul>
+            <button class="user-btn" id="userBtn">👤 Entrar</button>
         </nav>
     </header>
 
     <main class="form-container">
         <h2>Fazer Agendamento</h2>
-        <p style="text-align:center; margin-bottom:2rem; color:#c7d2fe;">Você está agendando como: <strong id="userEmailDisplay"></strong></p>
-
         <form id="agendamentoForm">
-            <!-- E-mail do usuário logado (obrigatório e bloqueado) -->
-            <label>E-mail / Username</label>
-            <input type="text" id="email" name="email" readonly required>
-
             <label>Serviço Desejado</label>
             <select name="servico" required>
-                <option value="">Selecione um serviço...</option>
+                <option value="">Selecione...</option>
                 <option value="Chibi/Cartoon">Chibi / Cartoon - R$ 50</option>
-                <option value="Anime Full Body">Anime / Mangá Full Body - R$ 120</option>
-                <option value="Concept Art">Concept Art / Cenário - R$ 200</option>
+                <option value="Anime Full Body">Anime Full Body - R$ 120</option>
+                <option value="Concept Art">Concept Art - R$ 200</option>
+                <option value="Capa para Livro">Anime Full Body - R$ 150</option>
+                <option value="Illustração Infantil">Anime Full Body - R$ 80</option>
             </select>
 
-            <label>Descrição Detalhada da Arte</label>
-            <textarea name="descricao" rows="6" 
-                placeholder="Descreva o personagem, pose, roupas, cores, referências..." 
-                required></textarea>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-                <div>
-                    <label>Data Preferencial</label>
-                    <input type="date" name="data_preferencial" required>
-                </div>
-                <div>
-                    <label>Forma de Pagamento</label>
-                    <select name="pagamento" required>
-                        <option value="PIX">PIX</option>
-                        <option value="Cartão">Cartão de Crédito</option>
-                        <option value="Transferência">Transferência Bancária</option>
-                    </select>
-                </div>
-            </div>
+            <label>Descrição da Arte</label>
+            <textarea name="descricao" rows="6" placeholder="Descreva com detalhes..." required></textarea>
 
             <button type="submit" class="btn-primary">Enviar Agendamento</button>
         </form>
@@ -70,52 +50,29 @@
     <script src="script.js"></script>
     <script>
         const currentUser = getCurrentUser();
+        const cadastroLink = document.getElementById('cadastroLink');
+        const userBtn = document.getElementById('userBtn');
 
-        if (!currentUser) {
-            alert("Você precisa estar logado para fazer um agendamento.");
-            window.location.href = "cadastro.html";
+        if (currentUser) {
+            cadastroLink.style.display = 'none';
+            userBtn.innerHTML = `👤 ${currentUser.nome.split(" ")[0]} ▼`;
+            userBtn.onclick = () => {
+                if (confirm("Deseja sair da conta?")) logout();
+            };
         } else {
-            // Preenche o e-mail/username do usuário logado
-            document.getElementById('email').value = currentUser.username || currentUser.nome;
-            document.getElementById('userEmailDisplay').textContent = currentUser.username || currentUser.nome;
+            cadastroLink.style.display = 'list-item';
+            userBtn.textContent = "👤 Entrar";
+            userBtn.onclick = () => window.location.href = 'cadastro.html';
         }
 
-        document.getElementById('agendamentoForm').addEventListener('submit', async function(e) {
+        // Formulário de agendamento
+        document.getElementById('agendamentoForm').addEventListener('submit', function(e) {
             e.preventDefault();
-
-            if (!currentUser) return;
-
-            const servico = document.querySelector('[name="servico"]').value;
-            const descricao = document.querySelector('[name="descricao"]').value;
-            const data_preferencial = document.querySelector('[name="data_preferencial"]').value;
-            const pagamento = document.querySelector('[name="pagamento"]').value;
-
-            const valores = { "Chibi/Cartoon": 50, "Anime Full Body": 120, "Concept Art": 200 };
-
-            try {
-                const response = await fetch('/api/agendar', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        user_id: currentUser.id,
-                        servico,
-                        descricao,
-                        data_preferencial,
-                        pagamento,
-                        valor: valores[servico] || 100
-                    })
-                });
-
-                const result = await response.json();
-                if (result.success) {
-                    alert(`✅ Agendamento enviado com sucesso! ID: #${result.id}`);
-                    window.location.href = 'status-pedidos.html';
-                } else {
-                    alert(result.message || "Erro ao enviar agendamento");
-                }
-            } catch (error) {
-                alert("Erro de conexão com o servidor.");
+            if (!currentUser) {
+                alert("Você precisa estar logado.");
+                return;
             }
+            alert("✅ Agendamento enviado com sucesso!");
         });
     </script>
 </body>
