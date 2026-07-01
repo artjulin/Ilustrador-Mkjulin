@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agendar - IlustraArt</title>
+    <title>Preços - IlustraArt</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -13,8 +13,8 @@
             <ul class="nav-links" id="navLinks">
                 <li><a href="index.html">Início</a></li>
                 <li><a href="portfolio.html">Portfólio</a></li>
-                <li><a href="comprar.html">Preços</a></li>
-                <li><a href="agendamento.html" class="active">Agendar</a></li>
+                <li><a href="comprar.html" class="active">Preços</a></li>
+                <li><a href="agendamento.html">Agendar</a></li>
                 <li><a href="status-pedidos.html">Meus Pedidos</a></li>
                 <li><a href="cadastro.html" id="cadastroLink">Cadastro</a></li>
                 <li><a href="admin.html" class="admin-link">🔧 Admin</a></li>
@@ -23,29 +23,43 @@
         </nav>
     </header>
 
-    <main class="form-container">
-        <h2>Fazer Agendamento</h2>
-        <p style="text-align:center; margin-bottom:2rem; color:#c7d2fe;" id="userInfo"></p>
+    <main class="form-container" style="max-width: 1200px;">
+        <h2>Escolha seu Serviço</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; margin-top: 2rem;">
 
-        <form id="agendamentoForm">
-            <label>Seu Usuário / Email</label>
-            <input type="text" id="userField" readonly required>
+            <div style="background:#1e2937; padding:2rem; border-radius:20px; border:1px solid #6366f1;">
+                <h3>Chibi / Cartoon</h3>
+                <h2 style="color:#a5b4fc;">R$ 50</h2>
+                <a href="agendamento.html" class="btn-primary" style="display:block; text-align:center; margin-top:2rem;">Escolher</a>
+            </div>
 
-            <label>Serviço Desejado</label>
-            <select name="servico" required>
-                <option value="">Selecione...</option>
-                <option value="Chibi/Cartoon">Chibi / Cartoon - R$ 50</option>
-                <option value="Anime Full Body">Anime Full Body - R$ 120</option>
-                <option value="Concept Art">Concept Art - R$ 200</option>
-                <option value="Ilustração Infantil">Ilustração Infantil - R$ 50</option>
-                <option value="Capa de Livro / Thumbnail">Capa de Livro / Thumbnail - R$ 150</option>
-            </select>
+            <div style="background:#1e2937; padding:2rem; border-radius:20px; border:2px solid #a5b4fc; position:relative;">
+                <span style="position:absolute; top:-14px; right:20px; background:#eab308; color:black; padding:5px 14px; border-radius:30px;">Mais Popular</span>
+                <h3>Anime Full Body</h3>
+                <h2 style="color:#a5b4fc;">R$ 120</h2>
+                <a href="agendamento.html" class="btn-primary" style="display:block; text-align:center; margin-top:2rem;">Escolher</a>
+            </div>
 
-            <label>Descrição da Arte</label>
-            <textarea name="descricao" rows="6" placeholder="Descreva com detalhes..." required></textarea>
+            <div style="background:#1e2937; padding:2rem; border-radius:20px; border:1px solid #6366f1;">
+                <h3>Concept Art</h3>
+                <h2 style="color:#a5b4fc;">R$ 200</h2>
+                <a href="agendamento.html" class="btn-primary" style="display:block; text-align:center; margin-top:2rem;">Escolher</a>
+            </div>
 
-            <button type="submit" class="btn-primary">Enviar Agendamento</button>
-        </form>
+            <!-- Novos serviços -->
+            <div style="background:#1e2937; padding:2rem; border-radius:20px; border:1px solid #6366f1;">
+                <h3>Ilustrações Infantis</h3>
+                <h2 style="color:#a5b4fc;">R$ 50</h2>
+                <a href="agendamento.html" class="btn-primary" style="display:block; text-align:center; margin-top:2rem;">Escolher</a>
+            </div>
+
+            <div style="background:#1e2937; padding:2rem; border-radius:20px; border:1px solid #6366f1;">
+                <h3>Capa de Livro / Thumbnail</h3>
+                <h2 style="color:#a5b4fc;">R$ 150</h2>
+                <a href="agendamento.html" class="btn-primary" style="display:block; text-align:center; margin-top:2rem;">Escolher</a>
+            </div>
+
+        </div>
     </main>
 
     <footer>
@@ -55,15 +69,6 @@
     <script src="script.js"></script>
     <script>
         const currentUser = getCurrentUser();
-
-        if (!currentUser) {
-            alert("Você precisa estar logado para fazer um agendamento.");
-            window.location.href = "cadastro.html";
-        } else {
-            document.getElementById('userField').value = currentUser.username || currentUser.nome;
-            document.getElementById('userInfo').innerHTML = `Logado como: <strong>${currentUser.nome}</strong>`;
-        }
-
         const cadastroLink = document.getElementById('cadastroLink');
         const userBtn = document.getElementById('userBtn');
 
@@ -73,13 +78,11 @@
             userBtn.onclick = () => {
                 if (confirm("Deseja sair da conta?")) logout();
             };
+        } else {
+            cadastroLink.style.display = 'list-item';
+            userBtn.textContent = "👤 Entrar";
+            userBtn.onclick = () => window.location.href = 'cadastro.html';
         }
-
-        document.getElementById('agendamentoForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert("✅ Agendamento enviado com sucesso!");
-            window.location.href = 'status-pedido.html';
-        });
     </script>
 </body>
 </html>
