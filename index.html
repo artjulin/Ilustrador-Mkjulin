@@ -10,15 +10,16 @@
     <header>
         <nav class="navbar">
             <div class="logo">IlustraArt</div>
-            <ul class="nav-links">
+            <ul class="nav-links" id="navLinks">
                 <li><a href="index.html" class="active">Início</a></li>
                 <li><a href="portfolio.html">Portfólio</a></li>
                 <li><a href="comprar.html">Preços</a></li>
                 <li><a href="agendamento.html">Agendar</a></li>
                 <li><a href="status-pedidos.html">Meus Pedidos</a></li>
-                <li><a href="cadastro.html">Cadastro</a></li>
+                <li><a href="cadastro.html" id="cadastroLink">Cadastro</a></li>
                 <li><a href="admin.html" class="admin-link">🔧 Admin</a></li>
             </ul>
+            <button class="user-btn" id="userBtn">👤 Entrar</button>
         </nav>
     </header>
 
@@ -38,5 +39,26 @@
     </footer>
 
     <script src="script.js"></script>
+    <script>
+        const currentUser = getCurrentUser();
+        const cadastroLink = document.getElementById('cadastroLink');
+        const userBtn = document.getElementById('userBtn');
+
+        if (currentUser) {
+            // Usuário logado
+            cadastroLink.style.display = 'none';           // Esconde "Cadastro"
+            userBtn.innerHTML = `👤 ${currentUser.nome.split(" ")[0]} ▼`;
+            userBtn.onclick = () => {
+                if (confirm("Deseja sair da conta?")) {
+                    logout();
+                }
+            };
+        } else {
+            // Usuário não logado
+            cadastroLink.style.display = 'list-item';
+            userBtn.textContent = "👤 Entrar";
+            userBtn.onclick = () => window.location.href = 'cadastro.html';
+        }
+    </script>
 </body>
 </html>
