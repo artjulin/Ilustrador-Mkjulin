@@ -10,21 +10,22 @@
     <header>
         <nav class="navbar">
             <div class="logo">IlustraArt</div>
-            <ul class="nav-links">
+            <ul class="nav-links" id="navLinks">
                 <li><a href="index.html">Início</a></li>
                 <li><a href="portfolio.html">Portfólio</a></li>
                 <li><a href="comprar.html">Preços</a></li>
                 <li><a href="agendamento.html">Agendar</a></li>
                 <li><a href="status-pedidos.html" class="active">Meus Pedidos</a></li>
-                <li><a href="cadastro.html">Cadastro</a></li>
+                <li><a href="cadastro.html" id="cadastroLink">Cadastro</a></li>
                 <li><a href="admin.html" class="admin-link">🔧 Admin</a></li>
             </ul>
+            <button class="user-btn" id="userBtn">👤 Entrar</button>
         </nav>
     </header>
 
     <main class="form-container" style="max-width: 1000px;">
         <h2>Meus Pedidos</h2>
-        <p style="text-align:center; margin-bottom:1.5rem;" id="userInfo"></p>
+        <p id="userInfo" style="text-align:center; margin-bottom:2rem;"></p>
 
         <div id="pedidosContainer">
             <table id="pedidosTable" style="width:100%; display:none;">
@@ -35,7 +36,6 @@
                         <th>Descrição</th>
                         <th>Data</th>
                         <th>Status</th>
-                        <th>Ação</th>
                     </tr>
                 </thead>
                 <tbody id="pedidosBody"></tbody>
@@ -46,13 +46,6 @@
                 <a href="agendamento.html" class="btn-primary" style="display:inline-block; margin-top:1rem;">Fazer Agendamento</a>
             </div>
         </div>
-
-        <!-- Link para o Chat (só aparece se tiver pedidos) -->
-        <div id="chatLink" style="text-align:center; margin-top:2rem; display:none;">
-            <a href="chat-cliente.html" class="btn-primary" style="background:#22c55e;">
-                💬 Abrir Chat com o Artista
-            </a>
-        </div>
     </main>
 
     <footer>
@@ -62,26 +55,20 @@
     <script src="script.js"></script>
     <script>
         const currentUser = getCurrentUser();
+        const cadastroLink = document.getElementById('cadastroLink');
+        const userBtn = document.getElementById('userBtn');
 
-        if (!currentUser) {
-            alert("Você precisa estar logado.");
-            window.location.href = "cadastro.html";
-        } else {
+        if (currentUser) {
+            cadastroLink.style.display = 'none';
+            userBtn.innerHTML = `👤 ${currentUser.nome.split(" ")[0]} ▼`;
+            userBtn.onclick = () => {
+                if (confirm("Deseja sair da conta?")) logout();
+            };
             document.getElementById('userInfo').innerHTML = `Logado como: <strong>${currentUser.nome}</strong>`;
-            loadMeusPedidos(currentUser.id);
-        }
-
-        async function loadMeusPedidos(userId) {
-            try {
-                const res = await fetch(`/api/meus-pedidos/${userId}`);
-                const pedidos = await res.json();
-
-                if (pedidos.length > 0) {
-                    document.getElementById('pedidosTable').style.display = 'table';
-                    document.getElementById('emptyMessage').style.display = 'none';
-                    document.getElementById('chatLink').style.display = 'block';
-                }
-            } catch (e) {}
+        } else {
+            cadastroLink.style.display = 'list-item';
+            userBtn.textContent = "👤 Entrar";
+            userBtn.onclick = () => window.location.href = 'cadastro.html';
         }
     </script>
 </body>
