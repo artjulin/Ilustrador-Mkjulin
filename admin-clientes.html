@@ -3,20 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clientes - Admin IlustraArt</title>
+    <title>Clientes - Admin</title>
     <link rel="stylesheet" href="styles.css">
-    <style>
-        .search-box {
-            width: 100%;
-            max-width: 400px;
-            padding: 12px;
-            margin-bottom: 2rem;
-            border-radius: 12px;
-            border: 1px solid #475569;
-            background: #0f172a;
-            color: white;
-        }
-    </style>
 </head>
 <body>
     <header>
@@ -27,29 +15,22 @@
                 <li><a href="admin.html">🔧 Admin</a></li>
                 <li><a href="admin-clientes.html" class="admin-link active">👥 Clientes</a></li>
             </ul>
-            <button class="user-btn" onclick="window.location.href='admin.html'">Voltar ao Dashboard</button>
+            <button class="user-btn" onclick="window.location.href='admin.html'">Voltar</button>
         </nav>
     </header>
 
-    <main>
-        <h1>Clientes Cadastrados</h1>
-        
-        <input type="text" id="searchInput" class="search-box" 
-               placeholder="🔍 Buscar por nome ou username..." onkeyup="filterClientes()">
+    <main class="form-container" style="max-width: 1100px;">
+        <h2>Clientes Cadastrados</h2>
+        <p style="margin-bottom: 1.5rem; color: #94a3b8;">Total de clientes: <strong id="totalClientes">0</strong></p>
 
-        <p style="margin-bottom: 1rem; color: #94a3b8;">
-            Total de clientes: <strong id="totalClientes">0</strong>
-        </p>
-
-        <table id="clientesTable">
+        <table>
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Nome Completo</th>
-                    <th>Username</th>
+                    <th>Nome</th>
+                    <th>Email</th>
+                    <th>CPF</th>
                     <th>Data de Cadastro</th>
-                    <th>Pedidos</th>
-                    <th>Ações</th>
                 </tr>
             </thead>
             <tbody id="clientesBody"></tbody>
@@ -61,66 +42,31 @@
     </footer>
 
     <script>
-        let allClientes = [];
-
         async function loadClientes() {
             try {
-                const response = await fetch('/api/clientes');
-                allClientes = await response.json();
-                
-                document.getElementById('totalClientes').textContent = allClientes.length;
-                renderClientes(allClientes);
-            } catch (error) {
-                console.error("Erro ao carregar clientes:", error);
-                document.getElementById('clientesBody').innerHTML = `
-                    <tr><td colspan="6" style="text-align:center; padding:2rem; color:#ef4444;">
-                        Erro ao carregar clientes. Verifique se o servidor está rodando.
-                    </td></tr>`;
+                const res = await fetch('/api/clientes');
+                const clientes = await res.json();
+
+                document.getElementById('totalClientes').textContent = clientes.length;
+                const tbody = document.getElementById('clientesBody');
+                tbody.innerHTML = '';
+
+                clientes.forEach(c => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>#${c.id}</td>
+                        <td>${c.nome}</td>
+                        <td>${c.username}</td>
+                        <td>${c.cpf || '-'}</td>
+                        <td>${c.data_cadastro ? new Date(c.data_cadastro).toLocaleDateString('pt-BR') : '-'}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (e) {
+                console.error(e);
             }
         }
 
-        function renderClientes(clientes) {
-            const tbody = document.getElementById('clientesBody');
-            tbody.innerHTML = '';
-
-            if (clientes.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:2rem;">Nenhum cliente encontrado.</td></tr>`;
-                return;
-            }
-
-            clientes.forEach(cliente => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>#${cliente.id}</td>
-                    <td>${cliente.nome}</td>
-                    <td>${cliente.username}</td>
-                    <td>${cliente.data_cadastro ? new Date(cliente.data_cadastro).toLocaleDateString('pt-BR') : 'N/A'}</td>
-                    <td><strong>0</strong></td>
-                    <td>
-                        <button onclick="verDetalhes(${cliente.id}, '${cliente.nome}')" 
-                                style="background:#6366f1; color:white; border:none; padding:6px 12px; border-radius:6px; margin-right:5px;">
-                            Ver Detalhes
-                        </button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function filterClientes() {
-            const term = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = allClientes.filter(c => 
-                c.nome.toLowerCase().includes(term) || 
-                c.username.toLowerCase().includes(term)
-            );
-            renderClientes(filtered);
-        }
-
-        function verDetalhes(id, nome) {
-            alert(`📋 Detalhes do cliente:\n\nID: #${id}\nNome: ${nome}\n\nFuncionalidade completa em breve.`);
-        }
-
-        // Carregar clientes ao abrir a página
         window.onload = loadClientes;
     </script>
 </body>
