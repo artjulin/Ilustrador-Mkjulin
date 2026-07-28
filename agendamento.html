@@ -80,16 +80,64 @@
             document.getElementById('userInfo').innerHTML = `Logado como: <strong>${currentUser.nome}</strong>`;
         }
 
-        // Define data mínima = hoje + 7 dias
+        // Data mínima = hoje + 7 dias
         const hoje = new Date();
         hoje.setDate(hoje.getDate() + 7);
-        const minDate = hoje.toISOString().split('T')[0];
-        document.getElementById('dataEntrega').setAttribute('min', minDate);
+        document.getElementById('dataEntrega').setAttribute('min', hoje.toISOString().split('T')[0]);
 
-        document.getElementById('agendamentoForm').addEventListener('submit', function(e) {
+        // Sistema de login no botão
+        const cadastroLink = document.getElementById('cadastroLink');
+        const userBtn = document.getElementById('userBtn');
+        if (currentUser) {
+            cadastroLink.style.display = 'none';
+            userBtn.innerHTML = `👤 ${currentUser.nome.split(" ")[0]} ▼`;
+            userBtn.onclick = () => {
+                if (confirm("Deseja sair da conta?")) logout();
+            };
+        }
+
+        // Enviar agendamento para o banco
+        document.getElementById('agendamentoForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            alert("✅ Agendamento enviado com sucesso!");
-            window.location.href = 'status-pedidos.html';
+
+            const servico = document.querySelector('[name="servico"]').value;
+            const descricao = document.querySelector('[name="descricao"]').value;
+            const data_preferencial = document.querySelector('[name="data_preferencial"]').value;
+            const pagamento = document.querySelector('[name="pagamento"]').value;
+
+            const valores = {
+                "Chibi/Cartoon": 50,
+                "Anime Full Body": 120,
+                "Concept Art": 200,
+                "Ilustração Infantil": 50,
+                "Capa de Livro / Thumbnail": 150
+            };
+
+            try {
+                const response = await fetch('/api/agendar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: currentUser.id,
+                        servico,
+                        descricao,
+                        data_preferencial,
+                        pagamento,
+                        valor: valores[servico] || 100
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert(`✅ Agendamento #${result.id} enviado com sucesso!`);
+                    window.location.href = 'status-pedidos.html';
+                } else {
+                    alert(result.message || "Erro ao enviar agendamento");
+                }
+            } catch (error) {
+                alert("Erro de conexão com o servidor. Verifique se o server.js está rodando.");
+            }
         });
     </script>
 </body>
