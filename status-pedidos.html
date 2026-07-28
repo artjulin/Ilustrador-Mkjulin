@@ -23,9 +23,21 @@
         </nav>
     </header>
 
-    <main class="form-container" style="max-width: 1000px;">
+    <main class="form-container" style="max-width: 1100px;">
         <h2>Meus Pedidos</h2>
-        <p id="userInfo" style="text-align:center; margin-bottom:2rem;"></p>
+        <p id="userInfo" style="text-align:center; margin-bottom:1.5rem;"></p>
+
+        <!-- BOTÃO WHATSAPP -->
+        <div style="text-align: center; margin-bottom: 2.5rem;">
+            <a href="https://wa.me/55SEUNUMEROAQUI?text=Olá%20Mkjulin!%20Quero%20falar%20sobre%20meu%20pedido%20de%20ilustração." 
+               target="_blank"
+               style="display: inline-flex; align-items: center; gap: 10px; background: #25D366; color: white; padding: 14px 28px; border-radius: 50px; text-decoration: none; font-weight: 600; font-size: 1.1rem; box-shadow: 0 8px 20px rgba(37, 211, 102, 0.3);">
+                💬 Conversar no WhatsApp
+            </a>
+            <p style="margin-top: 10px; color: #94a3b8; font-size: 0.95rem;">
+                Clique para falar diretamente comigo sobre seu pedido, envio de desenho e dúvidas.
+            </p>
+        </div>
 
         <div id="pedidosContainer">
             <table id="pedidosTable" style="width:100%; display:none;">
@@ -34,14 +46,16 @@
                         <th>ID</th>
                         <th>Serviço</th>
                         <th>Descrição</th>
-                        <th>Data</th>
+                        <th>Data Entrega</th>
+                        <th>Pagamento</th>
+                        <th>Valor</th>
                         <th>Status</th>
                     </tr>
                 </thead>
                 <tbody id="pedidosBody"></tbody>
             </table>
 
-            <div id="emptyMessage" style="text-align:center; padding:4rem; color:#94a3b8;">
+            <div id="emptyMessage" style="text-align:center; padding:4rem; color:#94a3b8; display:none;">
                 <h3>Você ainda não tem pedidos.</h3>
                 <a href="agendamento.html" class="btn-primary" style="display:inline-block; margin-top:1rem;">Fazer Agendamento</a>
             </div>
@@ -58,17 +72,59 @@
         const cadastroLink = document.getElementById('cadastroLink');
         const userBtn = document.getElementById('userBtn');
 
-        if (currentUser) {
+        if (!currentUser) {
+            alert("Você precisa estar logado para ver seus pedidos.");
+            window.location.href = "cadastro.html";
+        } else {
+            document.getElementById('userInfo').innerHTML = `Logado como: <strong>${currentUser.nome}</strong>`;
             cadastroLink.style.display = 'none';
             userBtn.innerHTML = `👤 ${currentUser.nome.split(" ")[0]} ▼`;
             userBtn.onclick = () => {
                 if (confirm("Deseja sair da conta?")) logout();
             };
-            document.getElementById('userInfo').innerHTML = `Logado como: <strong>${currentUser.nome}</strong>`;
-        } else {
-            cadastroLink.style.display = 'list-item';
-            userBtn.textContent = "👤 Entrar";
-            userBtn.onclick = () => window.location.href = 'cadastro.html';
+
+            loadMeusPedidos(currentUser.id);
+        }
+
+        async function loadMeusPedidos(userId) {
+            try {
+                const response = await fetch(`/api/meus-pedidos/${userId}`);
+                const pedidos = await response.json();
+
+                const tbody = document.getElementById('pedidosBody');
+                tbody.innerHTML = '';
+
+                if (pedidos.length === 0) {
+                    document.getElementById('emptyMessage').style.display = 'block';
+                    document.getElementById('pedidosTable').style.display = 'none';
+                    return;
+                }
+
+                document.getElementById('pedidosTable').style.display = 'table';
+                document.getElementById('emptyMessage').style.display = 'none';
+
+                pedidos.forEach(p => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><strong>#${p.id}</strong></td>
+                        <td>${p.servico}</td>
+                        <td>${p.descricao ? p.descricao.substring(0, 50) + '...' : '-'}</td>
+                        <td>${p.data_preferencial || '-'}</td>
+                        <td>${p.pagamento || '-'}</td>
+                        <td>R$ ${p.valor || 0}</td>
+                        <td>
+                            <span style="color: ${p.status === 'Pendente' ? '#fbbf24' : p.status === 'Em Produção' ? '#22d3ee' : '#4ade80'}">
+                                ● ${p.status}
+                            </span>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (error) {
+                console.error(error);
+                document.getElementById('emptyMessage').innerHTML = `<p style="color:#ef4444;">Erro ao carregar pedidos. Verifique se o servidor está rodando.</p>`;
+                document.getElementById('emptyMessage').style.display = 'block';
+            }
         }
     </script>
 </body>
