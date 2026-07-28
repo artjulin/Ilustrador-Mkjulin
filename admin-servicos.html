@@ -19,30 +19,66 @@
         </nav>
     </header>
 
-    <main>
-        <h1>Gerenciar Serviços</h1>
-        
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem;">
-            <div style="background:#1e2937; padding:2.5rem; border-radius:16px;">
-                <h3>Chibi / Cartoon</h3>
-                <p><strong>R$ 50</strong> por arte</p>
-                <button style="margin-top:1.5rem; padding:10px 20px; background:#22c55e; border:none; border-radius:8px;">Editar</button>
-            </div>
-            <div style="background:#1e2937; padding:2.5rem; border-radius:16px;">
-                <h3>Anime / Mangá Full Body</h3>
-                <p><strong>R$ 120</strong> por arte</p>
-                <button style="margin-top:1.5rem; padding:10px 20px; background:#22c55e; border:none; border-radius:8px;">Editar</button>
-            </div>
-            <div style="background:#1e2937; padding:2.5rem; border-radius:16px;">
-                <h3>Concept Art / Cenário</h3>
-                <p><strong>R$ 200</strong> por arte</p>
-                <button style="margin-top:1.5rem; padding:10px 20px; background:#22c55e; border:none; border-radius:8px;">Editar</button>
-            </div>
-        </div>
+    <main class="form-container" style="max-width: 1100px;">
+        <h2>Gerenciar Serviços e Preços</h2>
+        <p style="margin-bottom: 2rem; color: #94a3b8;">Clique em "Editar" para alterar nome, descrição ou preço.</p>
+
+        <div id="servicosContainer" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;"></div>
     </main>
 
     <footer>
         <p>&copy; 2026 IlustraArt - Painel Administrativo</p>
     </footer>
+
+    <script>
+        async function loadServicos() {
+            const res = await fetch('/api/servicos');
+            const servicos = await res.json();
+            const container = document.getElementById('servicosContainer');
+            container.innerHTML = '';
+
+            servicos.forEach(s => {
+                const div = document.createElement('div');
+                div.style = "background:#1e2937; padding:2rem; border-radius:16px; border:1px solid #6366f1;";
+                div.innerHTML = `
+                    <h3 id="nome-${s.id}">${s.nome}</h3>
+                    <p id="desc-${s.id}" style="color:#94a3b8; margin:0.8rem 0;">${s.descricao || ''}</p>
+                    <h2 id="preco-${s.id}" style="color:#a5b4fc;">R$ ${s.preco}</h2>
+                    <button onclick="editarServico(${s.id})" style="margin-top:1rem; padding:10px 20px; background:#6366f1; color:white; border:none; border-radius:8px; cursor:pointer;">
+                        Editar
+                    </button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function editarServico(id) {
+            const nome = prompt("Novo nome do serviço:", document.getElementById(`nome-${id}`).textContent);
+            if (nome === null) return;
+
+            const descricao = prompt("Nova descrição:", document.getElementById(`desc-${id}`).textContent);
+            if (descricao === null) return;
+
+            const preco = prompt("Novo preço (apenas número):", document.getElementById(`preco-${id}`).textContent.replace('R$ ', ''));
+            if (preco === null) return;
+
+            fetch(`/api/servicos/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nome, descricao, preco: parseFloat(preco) })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert("✅ Serviço atualizado!");
+                    loadServicos();
+                } else {
+                    alert("Erro ao atualizar");
+                }
+            });
+        }
+
+        window.onload = loadServicos;
+    </script>
 </body>
 </html>
