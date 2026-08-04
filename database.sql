@@ -1,5 +1,4 @@
 CREATE DATABASE ilustrapro CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
 USE ilustrapro;
 
 CREATE TABLE users (
@@ -33,11 +32,9 @@ CREATE TABLE servicos (
     ativo TINYINT DEFAULT 1
 );
 
--- Inserir Admin padrão
 INSERT INTO users (username, password, nome, role) 
 VALUES ('admin', '1234', 'Mkjulin', 'admin');
 
--- Serviços iniciais
 INSERT INTO servicos (nome, descricao, preco) VALUES
 ('Chibi / Cartoon', 'Ideal para fotos de perfil e presentes fofos', 50),
 ('Anime Full Body', 'Ilustração completa do corpo', 120),
