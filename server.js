@@ -34,7 +34,7 @@ db.serialize(() => {
         FOREIGN KEY(user_id) REFERENCES users(id)
     )`);
 
-    // Serviços (NOVO)
+    // Serviços
     db.run(`CREATE TABLE IF NOT EXISTS servicos (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nome TEXT NOT NULL,
@@ -44,7 +44,7 @@ db.serialize(() => {
     )`);
 
     // Serviços iniciais
-    db.run(`INSERT OR IGNORE INTO servicos (id, nome, descricao, preco) VALUES 
+    db.run(`INSERT OR IGNORE INTO servicos (id, nome, descricao, preco) VALUES
         (1, 'Chibi / Cartoon', 'Ideal para fotos de perfil e presentes fofos', 50),
         (2, 'Anime Full Body', 'Ilustração completa do corpo', 120),
         (3, 'Concept Art', 'Arte conceitual detalhada', 200),
@@ -52,7 +52,7 @@ db.serialize(() => {
         (5, 'Capa de Livro / Thumbnail', 'Capa profissional ou thumbnail', 150)`);
 
     // Admin padrão
-    db.run(`INSERT OR IGNORE INTO users (username, password, nome, role) 
+    db.run(`INSERT OR IGNORE INTO users (username, password, nome, role)
             VALUES ('admin', '1234', 'Mkjulin', 'admin')`);
 
     console.log("✅ Banco de dados atualizado!");
@@ -60,7 +60,7 @@ db.serialize(() => {
 
 // ====================== ROTAS ======================
 
-// Login e Cadastro (já existentes)
+// Cadastro
 app.post('/api/register', (req, res) => {
     const { nome, username, password, cpf } = req.body;
     db.run("INSERT INTO users (nome, username, password, cpf, role) VALUES (?, ?, ?, ?, 'cliente')",
@@ -70,6 +70,7 @@ app.post('/api/register', (req, res) => {
         });
 });
 
+// Login
 app.post('/api/login', (req, res) => {
     const { username, password } = req.body;
     db.get("SELECT id, nome, username, role FROM users WHERE username = ? AND password = ?",
@@ -84,7 +85,7 @@ app.post('/api/agendar', (req, res) => {
     const { user_id, servico, descricao, data_preferencial, pagamento, valor } = req.body;
     if (!user_id) return res.json({ success: false, message: "Você precisa estar logado" });
 
-    db.run(`INSERT INTO agendamentos (user_id, servico, descricao, data_preferencial, pagamento, valor) 
+    db.run(`INSERT INTO agendamentos (user_id, servico, descricao, data_preferencial, pagamento, valor)
             VALUES (?, ?, ?, ?, ?, ?)`,
         [user_id, servico, descricao, data_preferencial, pagamento, valor],
         function(err) {
@@ -93,23 +94,36 @@ app.post('/api/agendar', (req, res) => {
         });
 });
 
-// Agendamentos e Clientes
+// Todos os agendamentos (Admin)
 app.get('/api/agendamentos', (req, res) => {
-    db.all(`SELECT a.*, u.nome as cliente_nome FROM agendamentos a 
-            JOIN users u ON a.user_id = u.id ORDER BY a.created_at DESC`, [], (err, rows) => res.json(rows));
-});
-
-app.get('/api/clientes', (req, res) => {
-    db.all(`SELECT id, nome, username, cpf, data_cadastro FROM users WHERE role = 'cliente' ORDER BY nome`, 
+    db.all(`SELECT a.*, u.nome as cliente_nome FROM agendamentos a
+            JOIN users u ON a.user_id = u.id ORDER BY a.created_at DESC`, 
         [], (err, rows) => res.json(rows));
 });
 
+// Todos os clientes (Admin)
+app.get('/api/clientes', (req, res) => {
+    db.all(`SELECT id, nome, username, cpf, data_cadastro FROM users WHERE role = 'cliente' ORDER BY nome`,
+        [], (err, rows) => res.json(rows));
+});
+
+// Meus Pedidos (Cliente)
 app.get('/api/meus-pedidos/:userId', (req, res) => {
     db.all("SELECT * FROM agendamentos WHERE user_id = ? ORDER BY created_at DESC",
         [req.params.userId], (err, rows) => res.json(rows));
 });
 
-// ====================== SERVIÇOS (NOVO) ======================
+// ====================== ATUALIZAR STATUS (NOVO) ======================
+app.put('/api/agendamentos/:id/status', (req, res) => {
+    const { status } = req.body;
+    db.run("UPDATE agendamentos SET status = ? WHERE id = ?",
+        [status, req.params.id], function(err) {
+            if (err) return res.json({ success: false, message: "Erro ao atualizar status" });
+            res.json({ success: true });
+        });
+});
+
+// ====================== SERVIÇOS ======================
 
 // Listar serviços
 app.get('/api/servicos', (req, res) => {
