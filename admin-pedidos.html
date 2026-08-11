@@ -19,24 +19,23 @@
         </nav>
     </header>
 
-    <main>
-        <h1>Todos os Pedidos</h1>
-        <table id="pedidosTable">
+    <main class="form-container" style="max-width: 1200px;">
+        <h2>Todos os Pedidos</h2>
+        <p style="margin-bottom: 2rem; color: #94a3b8;">Altere o status do pedido e o cliente verá a atualização automaticamente.</p>
+
+        <table>
             <thead>
                 <tr>
                     <th>ID</th>
                     <th>Cliente</th>
                     <th>Serviço</th>
-                    <th>Descrição</th>
                     <th>Data</th>
-                    <th>Pagamento</th>
                     <th>Valor</th>
-                    <th>Status</th>
+                    <th>Status Atual</th>
+                    <th>Alterar Status</th>
                 </tr>
             </thead>
-            <tbody id="pedidosBody">
-                <!-- Preenchido via JS -->
-            </tbody>
+            <tbody id="pedidosBody"></tbody>
         </table>
     </main>
 
@@ -47,30 +46,70 @@
     <script>
         async function loadPedidos() {
             try {
-                const response = await fetch('/api/agendamentos');
-                const pedidos = await response.json();
-                
+                const res = await fetch('/api/agendamentos');
+                const pedidos = await res.json();
                 const tbody = document.getElementById('pedidosBody');
                 tbody.innerHTML = '';
 
                 pedidos.forEach(p => {
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
-                        <td>#${p.id}</td>
+                        <td><strong>#${p.id}</strong></td>
                         <td>${p.cliente_nome}</td>
                         <td>${p.servico}</td>
-                        <td>${p.descricao.substring(0, 60)}...</td>
-                        <td>${p.data_preferencial}</td>
-                        <td>${p.pagamento}</td>
-                        <td>R$ ${p.valor}</td>
-                        <td><span style="color: ${p.status === 'Pendente' ? '#fbbf24' : p.status === 'Em Produção' ? '#22d3ee' : '#4ade80'}">
-                            ● ${p.status}
-                        </span></td>
+                        <td>${p.data_preferencial || '-'}</td>
+                        <td>R$ ${p.valor || 0}</td>
+                        <td>
+                            <span style="color: ${getStatusColor(p.status)}">
+                                ● ${p.status}
+                            </span>
+                        </td>
+                        <td>
+                            <select onchange="atualizarStatus(${p.id}, this.value)" style="padding: 8px 12px; border-radius: 8px; background: #0f172a; color: white; border: 1px solid #6366f1;">
+                                <option value="">Alterar...</option>
+                                <option value="Pendente">Pendente</option>
+                                <option value="Em Produção">Em Produção</option>
+                                <option value="Aguardando Feedback">Aguardando Feedback</option>
+                                <option value="Concluído">Concluído</option>
+                                <option value="Cancelado">Cancelado</option>
+                            </select>
+                        </td>
                     `;
                     tbody.appendChild(tr);
                 });
             } catch (e) {
                 console.error(e);
+            }
+        }
+
+        function getStatusColor(status) {
+            if (status === 'Pendente') return '#fbbf24';
+            if (status === 'Em Produção') return '#22d3ee';
+            if (status === 'Aguardando Feedback') return '#a78bfa';
+            if (status === 'Concluído') return '#4ade80';
+            if (status === 'Cancelado') return '#ef4444';
+            return '#94a3b8';
+        }
+
+        async function atualizarStatus(id, novoStatus) {
+            if (!novoStatus) return;
+
+            try {
+                const res = await fetch(`/api/agendamentos/${id}/status`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: novoStatus })
+                });
+
+                const data = await res.json();
+                if (data.success) {
+                    alert(`✅ Status do pedido #${id} atualizado para: ${novoStatus}`);
+                    loadPedidos(); // Recarrega a tabela
+                } else {
+                    alert("Erro ao atualizar status");
+                }
+            } catch (e) {
+                alert("Erro de conexão");
             }
         }
 
