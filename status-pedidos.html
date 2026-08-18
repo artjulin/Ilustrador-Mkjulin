@@ -16,7 +16,7 @@
                 <li><a href="comprar.html">Preços</a></li>
                 <li><a href="agendamento.html">Agendar</a></li>
                 <li><a href="status-pedidos.html" class="active">Meus Pedidos</a></li>
-                 <li><a href="cadastro.html" id="cadastroLink">Cadastro</a></li>
+                <li><a href="cadastro.html" id="cadastroLink">Cadastro</a></li>
                 <li><a href="admin.html" class="admin-link">🔧 Admin</a></li>
             </ul>
             <button class="user-btn" id="userBtn">👤 Entrar</button>
@@ -27,18 +27,44 @@
         <h2>Meus Pedidos</h2>
         <p id="userInfo" style="text-align:center; margin-bottom:1.5rem;"></p>
 
-        <!-- BOTÃO WHATSAPP -->
-        <div style="text-align: center; margin-bottom: 2.5rem;">
-            <a href="https://wa.me/5546999107085?text=Olá%20Mkjulin!%20Quero%20falar%20sobre%20meu%20pedido%20de%20ilustração." 
+        <!-- BOTÕES DE AÇÃO -->
+        <div style="display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 2.5rem;">
+            
+            <!-- Botão WhatsApp -->
+            <a href="https://wa.me/55SEUNUMEROAQUI?text=Olá%20Mkjulin!%20Quero%20falar%20sobre%20meu%20pedido%20de%20ilustração." 
                target="_blank"
-               style="display: inline-flex; align-items: center; gap: 10px; background: #25D366; color: white; padding: 14px 28px; border-radius: 50px; text-decoration: none; font-weight: 600; font-size: 1.1rem; box-shadow: 0 8px 20px rgba(37, 211, 102, 0.3);">
+               style="display: inline-flex; align-items: center; gap: 10px; background: #25D366; color: white; padding: 14px 28px; border-radius: 50px; text-decoration: none; font-weight: 600; font-size: 1.05rem; box-shadow: 0 8px 20px rgba(37, 211, 102, 0.3);">
                 💬 Conversar no WhatsApp
             </a>
-            <p style="margin-top: 10px; color: #94a3b8; font-size: 0.95rem;">
-                Clique para falar diretamente comigo sobre seu pedido, envio de desenho e dúvidas.
-            </p>
+
+            <!-- Botão Pagamento -->
+            <button onclick="mostrarPagamento()" 
+                    style="display: inline-flex; align-items: center; gap: 10px; background: #6366f1; color: white; padding: 14px 28px; border-radius: 50px; border: none; font-weight: 600; font-size: 1.05rem; cursor: pointer; box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);">
+                💳 Realizar Pagamento
+            </button>
         </div>
 
+        <!-- Área de Pagamento (escondida inicialmente) -->
+        <div id="pagamentoBox" style="display: none; background: #1e2937; border: 1px solid #6366f1; border-radius: 16px; padding: 2rem; margin-bottom: 2.5rem; text-align: center;">
+            <h3 style="color: #c4d0ff; margin-bottom: 1.5rem;">Formas de Pagamento</h3>
+            
+            <div style="background: #0f172a; padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem;">
+                <h4 style="color: #4ade80; margin-bottom: 0.8rem;">💚 PIX (Recomendado)</h4>
+                <p style="margin-bottom: 0.5rem;"><strong>Chave PIX:</strong> <span style="color: #a5b4fc;">juliopompy013@gmail.com</span></p>
+                <p style="margin-bottom: 0.5rem;"><strong>Nome:</strong> Júlio Pompermaier</p>
+                <p style="color: #94a3b8; font-size: 0.95rem;">Após o pagamento, envie o comprovante pelo WhatsApp.</p>
+            </div>
+
+            <div style="background: #0f172a; padding: 1.5rem; border-radius: 12px;">
+                <h4 style="color: #60a5fa; margin-bottom: 0.8rem;">🏦 Transferência Bancária</h4>
+                <p style="margin-bottom: 0.4rem;"><strong>Banco:</strong> (coloque aqui)</p>
+                <p style="margin-bottom: 0.4rem;"><strong>Agência:</strong> (coloque aqui)</p>
+                <p style="margin-bottom: 0.4rem;"><strong>Conta:</strong> (coloque aqui)</p>
+                <p><strong>Nome:</strong> Júlio Pompermaier</p>
+            </div>
+        </div>
+
+        <!-- Tabela de Pedidos -->
         <div id="pedidosContainer">
             <table id="pedidosTable" style="width:100%; display:none;">
                 <thead>
@@ -46,7 +72,7 @@
                         <th>ID</th>
                         <th>Serviço</th>
                         <th>Descrição</th>
-                        <th>Data Entrega</th>
+                        <th>Data</th>
                         <th>Pagamento</th>
                         <th>Valor</th>
                         <th>Status</th>
@@ -82,8 +108,12 @@
             userBtn.onclick = () => {
                 if (confirm("Deseja sair da conta?")) logout();
             };
-
             loadMeusPedidos(currentUser.id);
+        }
+
+        function mostrarPagamento() {
+            const box = document.getElementById('pagamentoBox');
+            box.style.display = box.style.display === 'none' ? 'block' : 'none';
         }
 
         async function loadMeusPedidos(userId) {
@@ -108,12 +138,12 @@
                     tr.innerHTML = `
                         <td><strong>#${p.id}</strong></td>
                         <td>${p.servico}</td>
-                        <td>${p.descricao ? p.descricao.substring(0, 50) + '...' : '-'}</td>
+                        <td>${p.descricao ? p.descricao.substring(0, 40) + '...' : '-'}</td>
                         <td>${p.data_preferencial || '-'}</td>
                         <td>${p.pagamento || '-'}</td>
                         <td>R$ ${p.valor || 0}</td>
                         <td>
-                            <span style="color: ${p.status === 'Pendente' ? '#fbbf24' : p.status === 'Em Produção' ? '#22d3ee' : '#4ade80'}">
+                            <span style="color: ${p.status === 'Pendente' ? '#fbbf24' : p.status === 'Em Produção' ? '#22d3ee' : p.status === 'Concluído' ? '#4ade80' : '#a78bfa'}">
                                 ● ${p.status}
                             </span>
                         </td>
@@ -122,7 +152,7 @@
                 });
             } catch (error) {
                 console.error(error);
-                document.getElementById('emptyMessage').innerHTML = `<p style="color:#ef4444;">Erro ao carregar pedidos. Verifique se o servidor está rodando.</p>`;
+                document.getElementById('emptyMessage').innerHTML = `<p style="color:#ef4444;">Erro ao carregar pedidos.</p>`;
                 document.getElementById('emptyMessage').style.display = 'block';
             }
         }
