@@ -8,8 +8,9 @@ app.use(express.static('.'));
 
 const db = new sqlite3.Database('ilustrapro.db');
 
+// ====================== BANCO DE DADOS (SEGURO) ======================
 db.serialize(() => {
-    // Usuários
+    // Cria tabelas apenas se não existirem (não apaga dados)
     db.run(`CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT UNIQUE NOT NULL,
@@ -20,7 +21,6 @@ db.serialize(() => {
         data_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
 
-    // Agendamentos
     db.run(`CREATE TABLE IF NOT EXISTS agendamentos (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER,
@@ -35,7 +35,6 @@ db.serialize(() => {
         FOREIGN KEY(user_id) REFERENCES users(id)
     )`);
 
-    // Serviços
     db.run(`CREATE TABLE IF NOT EXISTS servicos (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nome TEXT NOT NULL,
@@ -44,27 +43,32 @@ db.serialize(() => {
         ativo INTEGER DEFAULT 1
     )`);
 
-    // Tenta adicionar a coluna feedback caso a tabela já exista
-    db.run(`ALTER TABLE agendamentos ADD COLUMN feedback TEXT`, () => {});
+    // Adiciona coluna feedback só se ainda não existir (não apaga nada)
+    db.run(`ALTER TABLE agendamentos ADD COLUMN feedback TEXT`, (err) => {
+        // Ignora o erro se a coluna já existir
+    });
 
-    // Serviços iniciais
-    db.run(`INSERT OR IGNORE INTO servicos (id, nome, descricao, preco) VALUES
-        (1, 'Chibi / Cartoon', 'Ideal para fotos de perfil e presentes fofos', 50),
-        (2, 'Anime Full Body', 'Ilustração completa do corpo', 120),
-        (3, 'Concept Art', 'Arte conceitual detalhada', 200),
-        (4, 'Ilustração Infantil', 'Estilo fofo para crianças', 50),
-        (5, 'Capa de Livro / Thumbnail', 'Capa profissional ou thumbnail', 150)`);
-
-    // Admin padrão
+    // Só insere admin se não existir
     db.run(`INSERT OR IGNORE INTO users (username, password, nome, role)
             VALUES ('admin', '1234', 'Mkjulin', 'admin')`);
 
-    console.log("✅ Banco de dados atualizado!");
+    // Só insere serviços se a tabela estiver vazia
+    db.get("SELECT COUNT(*) as total FROM servicos", (err, row) => {
+        if (row && row.total === 0) {
+            db.run(`INSERT INTO servicos (nome, descricao, preco) VALUES
+                ('Chibi / Cartoon', 'Ideal para fotos de perfil e presentes fofos', 50),
+                ('Anime Full Body', 'Ilustração completa do corpo', 120),
+                ('Concept Art', 'Arte conceitual detalhada', 200),
+                ('Ilustração Infantil', 'Estilo fofo para crianças', 50),
+                ('Capa de Livro / Thumbnail', 'Capa profissional ou thumbnail', 150)`);
+        }
+    });
+
+    console.log("✅ Banco de dados carregado (dados preservados)!");
 });
 
 // ====================== ROTAS ======================
 
-// Cadastro
 app.post('/api/register', (req, res) => {
     const { nome, username, password, cpf } = req.body;
     db.run("INSERT INTO users (nome, username, password, cpf, role) VALUES (?, ?, ?, ?, 'cliente')",
@@ -74,7 +78,6 @@ app.post('/api/register', (req, res) => {
         });
 });
 
-// Login
 app.post('/api/login', (req, res) => {
     const { username, password } = req.body;
     db.get("SELECT id, nome, username, role FROM users WHERE username = ? AND password = ?",
@@ -84,7 +87,6 @@ app.post('/api/login', (req, res) => {
         });
 });
 
-// Agendar
 app.post('/api/agendar', (req, res) => {
     const { user_id, servico, descricao, data_preferencial, pagamento, valor } = req.body;
     if (!user_id) return res.json({ success: false, message: "Você precisa estar logado" });
@@ -98,7 +100,6 @@ app.post('/api/agendar', (req, res) => {
         });
 });
 
-// Todos os agendamentos (Admin) - com CPF e Email
 app.get('/api/agendamentos', (req, res) => {
     db.all(`SELECT a.*, u.nome as cliente_nome, u.cpf as cliente_cpf, u.username as cliente_email 
             FROM agendamentos a
@@ -107,19 +108,16 @@ app.get('/api/agendamentos', (req, res) => {
         [], (err, rows) => res.json(rows));
 });
 
-// Todos os clientes (Admin)
 app.get('/api/clientes', (req, res) => {
     db.all(`SELECT id, nome, username, cpf, data_cadastro FROM users WHERE role = 'cliente' ORDER BY nome`,
         [], (err, rows) => res.json(rows));
 });
 
-// Meus Pedidos (Cliente)
 app.get('/api/meus-pedidos/:userId', (req, res) => {
     db.all("SELECT * FROM agendamentos WHERE user_id = ? ORDER BY created_at DESC",
         [req.params.userId], (err, rows) => res.json(rows));
 });
 
-// Atualizar status do pedido (Admin)
 app.put('/api/agendamentos/:id/status', (req, res) => {
     const { status } = req.body;
     db.run("UPDATE agendamentos SET status = ? WHERE id = ?",
@@ -129,7 +127,6 @@ app.put('/api/agendamentos/:id/status', (req, res) => {
         });
 });
 
-// Salvar feedback do cliente
 app.put('/api/agendamentos/:id/feedback', (req, res) => {
     const { feedback } = req.body;
     db.run("UPDATE agendamentos SET feedback = ? WHERE id = ?",
@@ -138,8 +135,6 @@ app.put('/api/agendamentos/:id/feedback', (req, res) => {
             res.json({ success: true });
         });
 });
-
-// ====================== SERVIÇOS ======================
 
 app.get('/api/servicos', (req, res) => {
     db.all("SELECT * FROM servicos WHERE ativo = 1 ORDER BY id", [], (err, rows) => res.json(rows));
