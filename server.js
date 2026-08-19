@@ -30,6 +30,7 @@ db.serialize(() => {
         pagamento TEXT,
         valor REAL,
         status TEXT DEFAULT 'Pendente',
+        feedback TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY(user_id) REFERENCES users(id)
     )`);
@@ -42,6 +43,9 @@ db.serialize(() => {
         preco REAL NOT NULL,
         ativo INTEGER DEFAULT 1
     )`);
+
+    // Tenta adicionar a coluna feedback caso a tabela já exista
+    db.run(`ALTER TABLE agendamentos ADD COLUMN feedback TEXT`, () => {});
 
     // Serviços iniciais
     db.run(`INSERT OR IGNORE INTO servicos (id, nome, descricao, preco) VALUES
@@ -94,10 +98,12 @@ app.post('/api/agendar', (req, res) => {
         });
 });
 
-// Todos os agendamentos (Admin)
+// Todos os agendamentos (Admin) - com CPF e Email
 app.get('/api/agendamentos', (req, res) => {
-    db.all(`SELECT a.*, u.nome as cliente_nome FROM agendamentos a
-            JOIN users u ON a.user_id = u.id ORDER BY a.created_at DESC`, 
+    db.all(`SELECT a.*, u.nome as cliente_nome, u.cpf as cliente_cpf, u.username as cliente_email 
+            FROM agendamentos a
+            JOIN users u ON a.user_id = u.id 
+            ORDER BY a.created_at DESC`, 
         [], (err, rows) => res.json(rows));
 });
 
@@ -113,24 +119,32 @@ app.get('/api/meus-pedidos/:userId', (req, res) => {
         [req.params.userId], (err, rows) => res.json(rows));
 });
 
-// ====================== ATUALIZAR STATUS (NOVO) ======================
+// Atualizar status do pedido (Admin)
 app.put('/api/agendamentos/:id/status', (req, res) => {
     const { status } = req.body;
     db.run("UPDATE agendamentos SET status = ? WHERE id = ?",
         [status, req.params.id], function(err) {
-            if (err) return res.json({ success: false, message: "Erro ao atualizar status" });
+            if (err) return res.json({ success: false });
+            res.json({ success: true });
+        });
+});
+
+// Salvar feedback do cliente
+app.put('/api/agendamentos/:id/feedback', (req, res) => {
+    const { feedback } = req.body;
+    db.run("UPDATE agendamentos SET feedback = ? WHERE id = ?",
+        [feedback, req.params.id], function(err) {
+            if (err) return res.json({ success: false });
             res.json({ success: true });
         });
 });
 
 // ====================== SERVIÇOS ======================
 
-// Listar serviços
 app.get('/api/servicos', (req, res) => {
     db.all("SELECT * FROM servicos WHERE ativo = 1 ORDER BY id", [], (err, rows) => res.json(rows));
 });
 
-// Atualizar serviço
 app.put('/api/servicos/:id', (req, res) => {
     const { nome, descricao, preco } = req.body;
     db.run("UPDATE servicos SET nome = ?, descricao = ?, preco = ? WHERE id = ?",
@@ -140,7 +154,6 @@ app.put('/api/servicos/:id', (req, res) => {
         });
 });
 
-// Adicionar novo serviço
 app.post('/api/servicos', (req, res) => {
     const { nome, descricao, preco } = req.body;
     db.run("INSERT INTO servicos (nome, descricao, preco) VALUES (?, ?, ?)",
