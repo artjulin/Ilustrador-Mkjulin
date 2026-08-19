@@ -6,14 +6,18 @@
     <title>Todos os Pedidos - Admin</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        .descricao-completa {
-            max-width: 300px;
+        .descricao-completa, .feedback-texto {
+            max-width: 280px;
             white-space: pre-wrap;
             word-break: break-word;
             line-height: 1.4;
         }
+        .feedback-texto {
+            color: #4ade80;
+            font-style: italic;
+        }
         table {
-            font-size: 0.95rem;
+            font-size: 0.92rem;
         }
         th, td {
             padding: 12px 10px;
@@ -34,9 +38,9 @@
         </nav>
     </header>
 
-    <main class="form-container" style="max-width: 1400px;">
+    <main class="form-container" style="max-width: 1500px;">
         <h2>Todos os Pedidos</h2>
-        <p style="margin-bottom: 2rem; color: #94a3b8;">Aqui você vê a descrição completa e os dados do cliente.</p>
+        <p style="margin-bottom: 2rem; color: #94a3b8;">Aqui você vê a descrição completa, dados do cliente e os feedbacks.</p>
 
         <table>
             <thead>
@@ -50,6 +54,7 @@
                     <th>Data</th>
                     <th>Valor</th>
                     <th>Status</th>
+                    <th>Feedback do Cliente</th>
                     <th>Alterar Status</th>
                 </tr>
             </thead>
@@ -70,6 +75,10 @@
                 tbody.innerHTML = '';
 
                 pedidos.forEach(p => {
+                    const feedbackHTML = p.feedback
+                        ? `<div class="feedback-texto">"${p.feedback}"</div>`
+                        : `<span style="color:#64748b; font-size:0.85rem;">Sem feedback</span>`;
+
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td><strong>#${p.id}</strong></td>
@@ -87,6 +96,7 @@
                                 ● ${p.status}
                             </span>
                         </td>
+                        <td>${feedbackHTML}</td>
                         <td>
                             <select onchange="atualizarStatus(${p.id}, this.value)" 
                                     style="padding: 8px 10px; border-radius: 8px; background: #0f172a; color: white; border: 1px solid #6366f1; min-width: 140px;">
@@ -127,7 +137,7 @@
 
                 const data = await res.json();
                 if (data.success) {
-                    alert(`✅ Status dos pedidos #${id} atualizado para: ${novoStatus}`);
+                    alert(`✅ Status do pedido #${id} atualizado para: ${novoStatus}`);
                     loadPedidos();
                 } else {
                     alert("Erro ao atualizar status");
