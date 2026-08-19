@@ -5,6 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Todos os Pedidos - Admin</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        .descricao-completa {
+            max-width: 300px;
+            white-space: pre-wrap;
+            word-break: break-word;
+            line-height: 1.4;
+        }
+        table {
+            font-size: 0.95rem;
+        }
+        th, td {
+            padding: 12px 10px;
+            vertical-align: top;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -19,19 +34,22 @@
         </nav>
     </header>
 
-    <main class="form-container" style="max-width: 1200px;">
+    <main class="form-container" style="max-width: 1400px;">
         <h2>Todos os Pedidos</h2>
-        <p style="margin-bottom: 2rem; color: #94a3b8;">Altere o status do pedido e o cliente verá a atualização automaticamente.</p>
+        <p style="margin-bottom: 2rem; color: #94a3b8;">Aqui você vê a descrição completa e os dados do cliente.</p>
 
         <table>
             <thead>
                 <tr>
                     <th>ID</th>
                     <th>Cliente</th>
+                    <th>CPF</th>
+                    <th>Email</th>
                     <th>Serviço</th>
+                    <th>Descrição Completa</th>
                     <th>Data</th>
                     <th>Valor</th>
-                    <th>Status Atual</th>
+                    <th>Status</th>
                     <th>Alterar Status</th>
                 </tr>
             </thead>
@@ -55,8 +73,13 @@
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td><strong>#${p.id}</strong></td>
-                        <td>${p.cliente_nome}</td>
+                        <td>${p.cliente_nome || '-'}</td>
+                        <td>${p.cliente_cpf || '-'}</td>
+                        <td>${p.cliente_email || '-'}</td>
                         <td>${p.servico}</td>
+                        <td>
+                            <div class="descricao-completa">${p.descricao || '-'}</div>
+                        </td>
                         <td>${p.data_preferencial || '-'}</td>
                         <td>R$ ${p.valor || 0}</td>
                         <td>
@@ -65,7 +88,8 @@
                             </span>
                         </td>
                         <td>
-                            <select onchange="atualizarStatus(${p.id}, this.value)" style="padding: 8px 12px; border-radius: 8px; background: #0f172a; color: white; border: 1px solid #6366f1;">
+                            <select onchange="atualizarStatus(${p.id}, this.value)" 
+                                    style="padding: 8px 10px; border-radius: 8px; background: #0f172a; color: white; border: 1px solid #6366f1; min-width: 140px;">
                                 <option value="">Alterar...</option>
                                 <option value="Pendente">Pendente</option>
                                 <option value="Em Produção">Em Produção</option>
@@ -103,8 +127,8 @@
 
                 const data = await res.json();
                 if (data.success) {
-                    alert(`✅ Status do pedido #${id} atualizado para: ${novoStatus}`);
-                    loadPedidos(); // Recarrega a tabela
+                    alert(`✅ Status dos pedidos #${id} atualizado para: ${novoStatus}`);
+                    loadPedidos();
                 } else {
                     alert("Erro ao atualizar status");
                 }
