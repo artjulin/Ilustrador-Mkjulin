@@ -27,36 +27,22 @@
         <h2>Meus Pedidos</h2>
         <p id="userInfo" style="text-align:center; margin-bottom:1.5rem;"></p>
 
-        <!-- BOTÕES DE AÇÃO -->
+        <!-- Botões WhatsApp e Pagamento -->
         <div style="display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 2.5rem;">
-            
-            <!-- Botão WhatsApp -->
-            <a href="https://wa.me/5546999107085?text=Olá%20Mkjulin!%20Quero%20falar%20sobre%20meu%20pedido%20de%20ilustração." 
-               target="_blank"
-               style="display: inline-flex; align-items: center; gap: 10px; background: #25D366; color: white; padding: 14px 28px; border-radius: 50px; text-decoration: none; font-weight: 600; font-size: 1.05rem; box-shadow: 0 8px 20px rgba(37, 211, 102, 0.3);">
+            <a href="https://wa.me/55SEUNUMEROAQUI?text=Olá%20Mkjulin!" target="_blank"
+               style="display: inline-flex; align-items: center; gap: 10px; background: #25D366; color: white; padding: 14px 28px; border-radius: 50px; text-decoration: none; font-weight: 600;">
                 💬 Conversar no WhatsApp
             </a>
-
-            <!-- Botão Pagamento -->
             <button onclick="mostrarPagamento()" 
-                    style="display: inline-flex; align-items: center; gap: 10px; background: #6366f1; color: white; padding: 14px 28px; border-radius: 50px; border: none; font-weight: 600; font-size: 1.05rem; cursor: pointer; box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);">
+                    style="display: inline-flex; align-items: center; gap: 10px; background: #6366f1; color: white; padding: 14px 28px; border-radius: 50px; border: none; font-weight: 600; cursor: pointer;">
                 💳 Realizar Pagamento
             </button>
         </div>
 
-        <!-- Área de Pagamento (escondida inicialmente) -->
         <div id="pagamentoBox" style="display: none; background: #1e2937; border: 1px solid #6366f1; border-radius: 16px; padding: 2rem; margin-bottom: 2.5rem; text-align: center;">
-            <h3 style="color: #c4d0ff; margin-bottom: 1.5rem;">Formas de Pagamento</h3>
-            
-            <div style="background: #0f172a; padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem;">
-                <h4 style="color: #4ade80; margin-bottom: 0.8rem;">💚 PIX (Recomendado)</h4>
-                <p style="margin-bottom: 0.5rem;"><strong>Chave PIX:</strong> <span style="color: #a5b4fc;">juliopompy013@gmail.com</span></p>
-                <p style="margin-bottom: 0.5rem;"><strong>Nome:</strong> Júlio Cezar Pompermaier Hortiz</p>
-                <p style="color: #94a3b8; font-size: 0.95rem;">Após o pagamento, envie o comprovante pelo WhatsApp.</p>
-            </div>
-
-        
-
+            <h3 style="color: #c4d0ff; margin-bottom: 1rem;">Formas de Pagamento</h3>
+            <p><strong>PIX:</strong> juliopompy013@gmail.com</p>
+            <p style="color: #94a3b8;">Envie o comprovante pelo WhatsApp após o pagamento.</p>
         </div>
 
         <!-- Tabela de Pedidos -->
@@ -66,11 +52,10 @@
                     <tr>
                         <th>ID</th>
                         <th>Serviço</th>
-                        <th>Descrição</th>
                         <th>Data</th>
-                        <th>Pagamento</th>
                         <th>Valor</th>
                         <th>Status</th>
+                        <th>Feedback</th>
                     </tr>
                 </thead>
                 <tbody id="pedidosBody"></tbody>
@@ -90,18 +75,16 @@
     <script src="script.js"></script>
     <script>
         const currentUser = getCurrentUser();
-        const cadastroLink = document.getElementById('cadastroLink');
-        const userBtn = document.getElementById('userBtn');
 
         if (!currentUser) {
-            alert("Você precisa estar logado para ver seus pedidos.");
+            alert("Você precisa estar logado.");
             window.location.href = "cadastro.html";
         } else {
             document.getElementById('userInfo').innerHTML = `Logado como: <strong>${currentUser.nome}</strong>`;
-            cadastroLink.style.display = 'none';
-            userBtn.innerHTML = `👤 ${currentUser.nome.split(" ")[0]} ▼`;
-            userBtn.onclick = () => {
-                if (confirm("Deseja sair da conta?")) logout();
+            document.getElementById('cadastroLink').style.display = 'none';
+            document.getElementById('userBtn').innerHTML = `👤 ${currentUser.nome.split(" ")[0]} ▼`;
+            document.getElementById('userBtn').onclick = () => {
+                if (confirm("Deseja sair?")) logout();
             };
             loadMeusPedidos(currentUser.id);
         }
@@ -115,7 +98,6 @@
             try {
                 const response = await fetch(`/api/meus-pedidos/${userId}`);
                 const pedidos = await response.json();
-
                 const tbody = document.getElementById('pedidosBody');
                 tbody.innerHTML = '';
 
@@ -129,26 +111,71 @@
                 document.getElementById('emptyMessage').style.display = 'none';
 
                 pedidos.forEach(p => {
+                    const podeDarFeedback = ['Aguardando Feedback', 'Concluído', 'Cancelado'].includes(p.status);
+                    
+                    let feedbackHTML = '';
+                    if (p.feedback) {
+                        feedbackHTML = `<div style="color:#4ade80; font-size:0.9rem;">"${p.feedback}"</div>`;
+                    } else if (podeDarFeedback) {
+                        feedbackHTML = `
+                            <textarea id="feedback-${p.id}" rows="2" placeholder="Escreva seu feedback..." 
+                                style="width:100%; padding:8px; border-radius:8px; background:#0f172a; color:white; border:1px solid #475569; resize:vertical;"></textarea>
+                            <button onclick="enviarFeedback(${p.id})" 
+                                style="margin-top:6px; padding:6px 12px; background:#6366f1; color:white; border:none; border-radius:6px; cursor:pointer; font-size:0.85rem;">
+                                Enviar Feedback
+                            </button>
+                        `;
+                    } else {
+                        feedbackHTML = `<span style="color:#64748b; font-size:0.85rem;">Disponível quando finalizado</span>`;
+                    }
+
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td><strong>#${p.id}</strong></td>
                         <td>${p.servico}</td>
-                        <td>${p.descricao ? p.descricao.substring(0, 40) + '...' : '-'}</td>
                         <td>${p.data_preferencial || '-'}</td>
-                        <td>${p.pagamento || '-'}</td>
                         <td>R$ ${p.valor || 0}</td>
                         <td>
-                            <span style="color: ${p.status === 'Pendente' ? '#fbbf24' : p.status === 'Em Produção' ? '#22d3ee' : p.status === 'Concluído' ? '#4ade80' : '#a78bfa'}">
-                                ● ${p.status}
-                            </span>
+                            <span style="color: ${getStatusColor(p.status)}">● ${p.status}</span>
                         </td>
+                        <td style="min-width: 220px;">${feedbackHTML}</td>
                     `;
                     tbody.appendChild(tr);
                 });
             } catch (error) {
                 console.error(error);
-                document.getElementById('emptyMessage').innerHTML = `<p style="color:#ef4444;">Erro ao carregar pedidos.</p>`;
-                document.getElementById('emptyMessage').style.display = 'block';
+            }
+        }
+
+        function getStatusColor(status) {
+            if (status === 'Pendente') return '#fbbf24';
+            if (status === 'Em Produção') return '#22d3ee';
+            if (status === 'Aguardando Feedback') return '#a78bfa';
+            if (status === 'Concluído') return '#4ade80';
+            if (status === 'Cancelado') return '#ef4444';
+            return '#94a3b8';
+        }
+
+        async function enviarFeedback(id) {
+            const texto = document.getElementById(`feedback-${id}`).value.trim();
+            if (!texto) return alert("Escreva um feedback antes de enviar.");
+
+            try {
+                const res = await fetch(`/api/agendamentos/${id}/feedback`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ feedback: texto })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    alert("✅ Feedback enviado com sucesso!");
+                    loadMeusPedidos(currentUser.id);
+                } else {
+                    alert("Erro ao enviar feedback");
+                }
+            } catch (e) {
+                alert("Erro de conexão");
             }
         }
     </script>
