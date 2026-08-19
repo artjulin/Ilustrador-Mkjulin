@@ -65,7 +65,6 @@ async function registerUser(nome, username, password, cpf = '') {
 
         if (data.success) {
             alert("✅ Cadastro realizado! Faça login agora.");
-            // Se estiver na página de cadastro, volta para o formulário de login
             if (typeof showLogin === 'function') {
                 showLogin();
             } else {
@@ -80,6 +79,7 @@ async function registerUser(nome, username, password, cpf = '') {
 }
 
 // ==================== AGENDAMENTO ====================
+// Função auxiliar (usada apenas se a página chamar manualmente)
 async function enviarAgendamento(servico, descricao, data_preferencial, pagamento = 'PIX') {
     const user = getCurrentUser();
     if (!user) return alert("Você precisa estar logado!");
@@ -109,7 +109,7 @@ async function enviarAgendamento(servico, descricao, data_preferencial, pagament
         const data = await response.json();
         if (data.success) {
             alert("🎉 Agendamento enviado com sucesso! ID: " + data.id);
-            window.location.href = 'status-pedido.html';
+            window.location.href = 'status-pedidos.html';
         } else {
             alert(data.message || "Erro ao enviar agendamento");
         }
@@ -140,23 +140,6 @@ function updateNavbar() {
 // ==================== INICIALIZAÇÃO ====================
 document.addEventListener('DOMContentLoaded', () => {
     updateNavbar();
-
-    // Suporte automático ao formulário de agendamento (se existir)
-    const form = document.getElementById('agendamentoForm');
-    if (form) {
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const servico = document.querySelector('[name="servico"]')?.value;
-            const descricao = document.querySelector('[name="descricao"]')?.value;
-            const data = document.querySelector('[name="data_preferencial"]')?.value || document.querySelector('[name="data"]')?.value;
-            const pagamento = document.querySelector('[name="pagamento"]')?.value || 'PIX';
-
-            if (!servico || !descricao || !data) {
-                return alert("Preencha todos os campos obrigatórios");
-            }
-
-            await enviarAgendamento(servico, descricao, data, pagamento);
-        });
-    }
+    // NÃO adiciona listener no formulário de agendamento aqui
+    // para evitar envio duplicado (o agendamento.html já cuida disso)
 });
