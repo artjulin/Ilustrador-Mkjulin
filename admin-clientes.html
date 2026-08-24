@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clientes - Admin</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        .actions { display: flex; gap: 8px; }
+        .btn-small { padding: 6px 12px; font-size: 0.85rem; }
+    </style>
 </head>
 <body>
     <header>
@@ -31,6 +35,7 @@
                     <th>Email</th>
                     <th>CPF</th>
                     <th>Data de Cadastro</th>
+                    <th>Ações</th>
                 </tr>
             </thead>
             <tbody id="clientesBody"></tbody>
@@ -46,7 +51,6 @@
             try {
                 const res = await fetch('/api/clientes');
                 const clientes = await res.json();
-
                 document.getElementById('totalClientes').textContent = clientes.length;
                 const tbody = document.getElementById('clientesBody');
                 tbody.innerHTML = '';
@@ -59,11 +63,55 @@
                         <td>${c.username}</td>
                         <td>${c.cpf || '-'}</td>
                         <td>${c.data_cadastro ? new Date(c.data_cadastro).toLocaleDateString('pt-BR') : '-'}</td>
+                        <td class="actions">
+                            <button onclick="editarCliente(${c.id})" class="btn-small" style="background:#6366f1;">Editar</button>
+                            <button onclick="excluirCliente(${c.id})" class="btn-small" style="background:#ef4444;">Excluir</button>
+                        </td>
                     `;
                     tbody.appendChild(tr);
                 });
             } catch (e) {
                 console.error(e);
+            }
+        }
+
+        async function editarCliente(id) {
+            const cliente = clientes.find(c => c.id === id);
+            if (!cliente) return;
+
+            const novoNome = prompt("Novo nome:", cliente.nome);
+            const novoEmail = prompt("Novo email:", cliente.username);
+            const novoCPF = prompt("Novo CPF:", cliente.cpf);
+
+            if (!novoNome || !novoEmail) return;
+
+            try {
+                const res = await fetch(`/api/clientes/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nome: novoNome, username: novoEmail, cpf: novoCPF })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert("✅ Cliente atualizado!");
+                    loadClientes();
+                }
+            } catch (e) {
+                alert("Erro ao editar cliente");
+            }
+        }
+
+        async function excluirCliente(id) {
+            if (!confirm("Tem certeza que deseja excluir este cliente?")) return;
+
+            try {
+                const res = await fetch(`/api/clientes/${id}`, { method: 'DELETE' });
+                if (res.ok) {
+                    alert("✅ Cliente excluído!");
+                    loadClientes();
+                }
+            } catch (e) {
+                alert("Erro ao excluir cliente");
             }
         }
 
