@@ -8,7 +8,6 @@
     <style>
         .actions { display: flex; gap: 8px; }
         .btn-small { padding: 6px 14px; font-size: 0.85rem; border-radius: 8px; }
-        table th, table td { padding: 12px 10px; vertical-align: top; }
         .cpf-destaque { color: #c026d3; font-weight: 700; }
     </style>
 </head>
@@ -78,7 +77,7 @@
         }
 
         async function editarCliente(id) {
-            const cliente = clientes.find(c => c.id === id); // clientes é global (adicione no topo)
+            const cliente = clientes.find(c => c.id === id);
             if (!cliente) return;
 
             const novoNome = prompt("Novo nome:", cliente.nome);
