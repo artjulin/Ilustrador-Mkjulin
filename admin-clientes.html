@@ -7,7 +7,9 @@
     <link rel="stylesheet" href="styles.css">
     <style>
         .actions { display: flex; gap: 8px; }
-        .btn-small { padding: 6px 12px; font-size: 0.85rem; }
+        .btn-small { padding: 6px 14px; font-size: 0.85rem; border-radius: 8px; }
+        table th, table td { padding: 12px 10px; vertical-align: top; }
+        .cpf-destaque { color: #c026d3; font-weight: 700; }
     </style>
 </head>
 <body>
@@ -61,7 +63,7 @@
                         <td>#${c.id}</td>
                         <td>${c.nome}</td>
                         <td>${c.username}</td>
-                        <td>${c.cpf || '-'}</td>
+                        <td class="cpf-destaque">${c.cpf || '-'}</td>
                         <td>${c.data_cadastro ? new Date(c.data_cadastro).toLocaleDateString('pt-BR') : '-'}</td>
                         <td class="actions">
                             <button onclick="editarCliente(${c.id})" class="btn-small" style="background:#6366f1;">Editar</button>
@@ -76,7 +78,7 @@
         }
 
         async function editarCliente(id) {
-            const cliente = clientes.find(c => c.id === id);
+            const cliente = clientes.find(c => c.id === id); // clientes é global (adicione no topo)
             if (!cliente) return;
 
             const novoNome = prompt("Novo nome:", cliente.nome);
@@ -93,11 +95,11 @@
                 });
                 const data = await res.json();
                 if (data.success) {
-                    alert("✅ Cliente atualizado!");
+                    alert("✅ Cliente atualizado com sucesso!");
                     loadClientes();
                 }
             } catch (e) {
-                alert("Erro ao editar cliente");
+                alert("Erro ao atualizar cliente");
             }
         }
 
@@ -107,7 +109,7 @@
             try {
                 const res = await fetch(`/api/clientes/${id}`, { method: 'DELETE' });
                 if (res.ok) {
-                    alert("✅ Cliente excluído!");
+                    alert("✅ Cliente excluído com sucesso!");
                     loadClientes();
                 }
             } catch (e) {
