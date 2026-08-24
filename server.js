@@ -10,7 +10,6 @@ const db = new sqlite3.Database('ilustrapro.db');
 
 // ====================== BANCO DE DADOS (SEGURO) ======================
 db.serialize(() => {
-    // Cria tabelas apenas se não existirem (não apaga dados)
     db.run(`CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT UNIQUE NOT NULL,
@@ -43,16 +42,11 @@ db.serialize(() => {
         ativo INTEGER DEFAULT 1
     )`);
 
-    // Adiciona coluna feedback só se ainda não existir (não apaga nada)
-    db.run(`ALTER TABLE agendamentos ADD COLUMN feedback TEXT`, (err) => {
-        // Ignora o erro se a coluna já existir
-    });
+    db.run(`ALTER TABLE agendamentos ADD COLUMN feedback TEXT`, (err) => {});
 
-    // Só insere admin se não existir
     db.run(`INSERT OR IGNORE INTO users (username, password, nome, role)
             VALUES ('admin', '1234', 'Mkjulin', 'admin')`);
 
-    // Só insere serviços se a tabela estiver vazia
     db.get("SELECT COUNT(*) as total FROM servicos", (err, row) => {
         if (row && row.total === 0) {
             db.run(`INSERT INTO servicos (nome, descricao, preco) VALUES
@@ -69,6 +63,7 @@ db.serialize(() => {
 
 // ====================== ROTAS ======================
 
+// Cadastro
 app.post('/api/register', (req, res) => {
     const { nome, username, password, cpf } = req.body;
     db.run("INSERT INTO users (nome, username, password, cpf, role) VALUES (?, ?, ?, ?, 'cliente')",
@@ -78,6 +73,7 @@ app.post('/api/register', (req, res) => {
         });
 });
 
+// Login
 app.post('/api/login', (req, res) => {
     const { username, password } = req.body;
     db.get("SELECT id, nome, username, role FROM users WHERE username = ? AND password = ?",
@@ -87,6 +83,7 @@ app.post('/api/login', (req, res) => {
         });
 });
 
+// Agendar
 app.post('/api/agendar', (req, res) => {
     const { user_id, servico, descricao, data_preferencial, pagamento, valor } = req.body;
     if (!user_id) return res.json({ success: false, message: "Você precisa estar logado" });
@@ -100,24 +97,28 @@ app.post('/api/agendar', (req, res) => {
         });
 });
 
+// Todos os agendamentos (Admin)
 app.get('/api/agendamentos', (req, res) => {
-    db.all(`SELECT a.*, u.nome as cliente_nome, u.cpf as cliente_cpf, u.username as cliente_email 
+    db.all(`SELECT a.*, u.nome as cliente_nome, u.cpf as cliente_cpf, u.username as cliente_email
             FROM agendamentos a
-            JOIN users u ON a.user_id = u.id 
-            ORDER BY a.created_at DESC`, 
+            JOIN users u ON a.user_id = u.id
+            ORDER BY a.created_at DESC`,
         [], (err, rows) => res.json(rows));
 });
 
+// Todos os clientes (Admin)
 app.get('/api/clientes', (req, res) => {
     db.all(`SELECT id, nome, username, cpf, data_cadastro FROM users WHERE role = 'cliente' ORDER BY nome`,
         [], (err, rows) => res.json(rows));
 });
 
+// Meus Pedidos
 app.get('/api/meus-pedidos/:userId', (req, res) => {
     db.all("SELECT * FROM agendamentos WHERE user_id = ? ORDER BY created_at DESC",
         [req.params.userId], (err, rows) => res.json(rows));
 });
 
+// Editar status do pedido
 app.put('/api/agendamentos/:id/status', (req, res) => {
     const { status } = req.body;
     db.run("UPDATE agendamentos SET status = ? WHERE id = ?",
@@ -127,6 +128,7 @@ app.put('/api/agendamentos/:id/status', (req, res) => {
         });
 });
 
+// Salvar feedback
 app.put('/api/agendamentos/:id/feedback', (req, res) => {
     const { feedback } = req.body;
     db.run("UPDATE agendamentos SET feedback = ? WHERE id = ?",
@@ -135,6 +137,40 @@ app.put('/api/agendamentos/:id/feedback', (req, res) => {
             res.json({ success: true });
         });
 });
+
+// ====================== NOVAS ROTAS ======================
+
+// Editar cliente (Admin)
+app.put('/api/clientes/:id', (req, res) => {
+    const { nome, username, cpf } = req.body;
+    db.run("UPDATE users SET nome = ?, username = ?, cpf = ? WHERE id = ?",
+        [nome, username, cpf, req.params.id], function(err) {
+            if (err) return res.json({ success: false });
+            res.json({ success: true });
+        });
+});
+
+// Excluir cliente
+app.delete('/api/clientes/:id', (req, res) => {
+    db.run("DELETE FROM users WHERE id = ?", [req.params.id], function(err) {
+        if (err) return res.json({ success: false });
+        res.json({ success: true });
+    });
+});
+
+// Editar perfil do cliente (cliente logado)
+app.put('/api/clientes/profile', (req, res) => {
+    const user = getCurrentUser();
+    const { nome, username, cpf } = req.body;
+
+    db.run("UPDATE users SET nome = ?, username = ?, cpf = ? WHERE id = ?",
+        [nome, username, cpf, user.id], function(err) {
+            if (err) return res.json({ success: false });
+            res.json({ success: true });
+        });
+});
+
+// ====================== SERVIÇOS ======================
 
 app.get('/api/servicos', (req, res) => {
     db.all("SELECT * FROM servicos WHERE ativo = 1 ORDER BY id", [], (err, rows) => res.json(rows));
