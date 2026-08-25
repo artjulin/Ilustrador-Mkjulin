@@ -6,23 +6,9 @@
     <title>Todos os Pedidos - Admin</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        .descricao-completa, .feedback-texto {
-            max-width: 280px;
-            white-space: pre-wrap;
-            word-break: break-word;
-            line-height: 1.4;
-        }
-        .feedback-texto {
-            color: #4ade80;
-            font-style: italic;
-        }
-        table {
-            font-size: 0.92rem;
-        }
-        th, td {
-            padding: 12px 10px;
-            vertical-align: top;
-        }
+        .descricao-completa { max-width: 320px; white-space: pre-wrap; word-break: break-word; line-height: 1.4; }
+        .cpf-destaque { color: #c026d3; font-weight: 700; }
+        table { font-size: 0.92rem; }
     </style>
 </head>
 <body>
@@ -40,7 +26,7 @@
 
     <main class="form-container" style="max-width: 1500px;">
         <h2>Todos os Pedidos</h2>
-        <p style="margin-bottom: 2rem; color: #94a3b8;">Aqui você vê a descrição completa, dados do cliente e os feedbacks.</p>
+        <p style="margin-bottom: 2rem; color: #94a3b8;">Aqui você pode alterar o status e visualizar feedbacks.</p>
 
         <table>
             <thead>
@@ -54,8 +40,8 @@
                     <th>Data</th>
                     <th>Valor</th>
                     <th>Status</th>
-                    <th>Feedback do Cliente</th>
-                    <th>Alterar Status</th>
+                    <th>Feedback</th>
+                    <th>Ações</th>
                 </tr>
             </thead>
             <tbody id="pedidosBody"></tbody>
@@ -75,31 +61,26 @@
                 tbody.innerHTML = '';
 
                 pedidos.forEach(p => {
-                    const feedbackHTML = p.feedback
-                        ? `<div class="feedback-texto">"${p.feedback}"</div>`
-                        : `<span style="color:#64748b; font-size:0.85rem;">Sem feedback</span>`;
+                    const feedbackHTML = p.feedback 
+                        ? `<div style="color:#4ade80; font-style:italic;">"${p.feedback}"</div>` 
+                        : `<span style="color:#64748b;">Sem feedback</span>`;
 
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td><strong>#${p.id}</strong></td>
                         <td>${p.cliente_nome || '-'}</td>
-                        <td>${p.cliente_cpf || '-'}</td>
+                        <td class="cpf-destaque">${p.cliente_cpf || '-'}</td>
                         <td>${p.cliente_email || '-'}</td>
                         <td>${p.servico}</td>
-                        <td>
-                            <div class="descricao-completa">${p.descricao || '-'}</div>
-                        </td>
+                        <td><div class="descricao-completa">${p.descricao || '-'}</div></td>
                         <td>${p.data_preferencial || '-'}</td>
                         <td>R$ ${p.valor || 0}</td>
                         <td>
-                            <span style="color: ${getStatusColor(p.status)}">
-                                ● ${p.status}
-                            </span>
+                            <span style="color: ${getStatusColor(p.status)}">● ${p.status}</span>
                         </td>
                         <td>${feedbackHTML}</td>
                         <td>
-                            <select onchange="atualizarStatus(${p.id}, this.value)" 
-                                    style="padding: 8px 10px; border-radius: 8px; background: #0f172a; color: white; border: 1px solid #6366f1; min-width: 140px;">
+                            <select onchange="atualizarStatus(${p.id}, this.value)" style="padding:8px 12px; border-radius:8px; background:#0f172a; color:white; border:1px solid #6366f1;">
                                 <option value="">Alterar...</option>
                                 <option value="Pendente">Pendente</option>
                                 <option value="Em Produção">Em Produção</option>
@@ -127,20 +108,15 @@
 
         async function atualizarStatus(id, novoStatus) {
             if (!novoStatus) return;
-
             try {
                 const res = await fetch(`/api/agendamentos/${id}/status`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ status: novoStatus })
                 });
-
-                const data = await res.json();
-                if (data.success) {
-                    alert(`✅ Status do pedido #${id} atualizado para: ${novoStatus}`);
+                if (res.ok) {
+                    alert(`✅ Status atualizado para: ${novoStatus}`);
                     loadPedidos();
-                } else {
-                    alert("Erro ao atualizar status");
                 }
             } catch (e) {
                 alert("Erro de conexão");
